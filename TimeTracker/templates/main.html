@@ -135,38 +135,6 @@
             transition: color 0.5s, ease-in-out 0s;
         }
 
-        .button2 {
-            width: calc((100% - 200px) / 2 + 5%);
-            position: absolute;
-            right: 0px;
-            bottom: -6px;
-            height: 54px;
-            display: flex;
-            -webkit-box-align: center;
-            align-items: center;
-            -webkit-box-pack: center;
-            justify-content: center;
-            pointer-events: none;
-        }
-
-        .button3 {
-            cursor: pointer;
-            user-select: none;
-            background: none;
-            border: none;
-            -webkit-box-pack: center;
-            -webkit-box-align: center;
-            align-items: center;
-            justify-content: center;
-            height: 28px;
-            width: 28px;
-            bottom: 9px;
-            right: -50px;
-            piointer-events: none;
-            opacity: 0;
-            transition: all 0.2s, ease-out 0s;
-        }
-
         .button4 {
             display: flex;
             -webkit-box-pack: center;
@@ -185,11 +153,6 @@
             min-width: auto;
             border: none;
             color: white;
-        }
-
-        .img1 {
-            width: 22px;
-            opacity: 0.9;
         }
 
         .text {
@@ -291,6 +254,20 @@
         #taskList li button:hover {
             background-color: #b71c1c; /* 鼠标悬停时按钮背景色 */
         }
+
+        #currentTask {
+            margin: 20px auto;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.3); /* 轻微透明的白色背景 */
+            border-radius: 10px; /* 圆角边框 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
+            color: white; /* 文本颜色 */
+            font-size: 18px; /* 文本大小 */
+            text-align: center; /* 文本居中 */
+            width: 80%; /* 宽度，根据需要调整 */
+            max-width: 600px; /* 最大宽度，根据需要调整 */
+            transition: all 0.3s ease-in-out; /* 平滑过渡效果 */
+        }
     </style>
 </head>
 <body>
@@ -318,14 +295,12 @@
             <div class="container3">
                 <div id="timer-string" class="time">25:00</div>
                 <div class="container4">
-                    <button color="rgb(186, 73, 73)" title="Press spacebar to start/pause"
+                    <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause"
                             class="button">START
                     </button>
-                    <div class="button2">
-                        <button class="button3"><img src="/img/next-white3.png" class="img1">
-                        </button>
-                    </div>
+                    <button id="resetButton" class="button">RESET</button>
                 </div>
+                <div id="currentTask">No task running.</div>
             </div>
             <div class="text">Time to focus!</div>
         </div>
@@ -339,8 +314,7 @@
                         <span class="caret"></span>
                     </div>
                     <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
-                        <li><a href="#" id="clearFinishedTasks">Clear finished tasks</a></li>
-                        <li role="separator" class="divider"></li>
+{#                        <li role="separator" class="divider"></li>#}
                         <li><a href="#" id="clearAllTasks">Clear all tasks</a></li>
                     </ul>
                 </button>
@@ -363,45 +337,6 @@
 
 <script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script>
-    $('.dropdown-toggle').dropdown();
-
-    function addTask() {
-        var taskContent = $("#task").val().trim();
-        var taskTime = $("#taskTime").val(); // 获取任务的具体时间
-
-        if (taskContent && taskTime) { // 确保任务描述和时间都已输入
-            var taskInfo = taskContent + " - " + taskTime; // 合并任务描述和时间
-            var newLi = $("<li>").text(taskInfo);
-            var deleteBtn = $("<button>").text("Delete").click(function () {
-                $(this).parent().remove();
-            });
-
-            newLi.append(deleteBtn);
-            $("#taskList").append(newLi);
-
-            // 清空输入框和时间选择器
-            $("#task").val("");
-            $("#taskTime").val("");
-        }
-    }
-
-    $(document).ready(function () {
-        // 实现清除所有任务的功能
-        $("#clearAllTasks").click(function () {
-            $("#taskList").empty(); // 清空任务列表
-        });
-
-        // 假设每个任务项在完成时会添加一个 `.finished` 类
-        // 实现清除已完成任务的功能
-        $("#clearFinishedTasks").click(function () {
-            $("#taskList .finished").remove(); // 移除所有标记为完成的任务
-        });
-    });
-
-    function markTaskAsFinished(taskElement) {
-        $(taskElement).addClass('finished'); // 标记任务为已完成
-    }
-</script>
+<script src="{% static '/js/main.js' %}"></script>
 </body>
 </html>
