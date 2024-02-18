@@ -1,0 +1,407 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TimeTracker</title>
+    <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+
+    <style>
+        body {
+            background-color: rgb(186, 73, 73);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-container {
+            width: 620px;
+            margin: 0px 426px;
+            padding: 0px 12px;
+        }
+
+        .header a {
+            color: white;
+            display: inline-block;
+            margin: 0px 10px;
+            padding: 10px 0px;
+            font-size: 20px;
+            text-decoration: none;
+            opacity: 0.7;
+        }
+
+        .header a:hover {
+            opacity: 1;
+        }
+
+        .header .menu {
+            float: left;
+            color: white;
+        }
+
+        .header .account {
+            float: right;
+            color: white;
+        }
+
+        .body-container {
+            margin: auto;
+            padding: 0px 12px;
+            max-width: 620px;
+        }
+
+        .sub-container {
+            text-align: center;
+        }
+
+        .sub-header {
+            background-color: rgba(0, 0, 0, 0.1);
+            height: 1px;
+            margin-bottom: 40px;
+        }
+
+        .sub-header1 {
+            height: 3px;
+            background-color: white;
+            border-radius: 100px;
+            transform: translateY(-1px);
+            width: 0%;
+        }
+
+        .container2 {
+            max-width: 480px;
+            margin: auto;
+        }
+
+        .container3 {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px 0px 30px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .time {
+            font-size: 120px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .container4 {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .container5 {
+            max-width: 480px;
+            margin: 20px auto 42px;
+            display: flex; /* 如果需要使用flex布局 */
+            flex-direction: column; /* 子元素垂直排列 */
+            align-items: center; /* 子元素居中对齐 */
+        }
+
+        .container6 {
+            display: flex;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+            padding-bottom: 14px;
+            z-index: 1000;
+        }
+
+        .button {
+            cursor: pointer;
+            border: none;
+            margin: 20px 0px 0px;
+            padding: 0px 12px;
+            border-radius: 4px;
+            box-shadow: rgb(235, 235, 235) 0px 6px 0px;
+            font-family: "Arial";
+            font-size: 22px;
+            height: 55px;
+            color: rgb(186, 73, 73);
+            font-weight: bold;
+            width: 200px;
+            background-color: white;
+            transition: color 0.5s, ease-in-out 0s;
+        }
+
+        .button2 {
+            width: calc((100% - 200px) / 2 + 5%);
+            position: absolute;
+            right: 0px;
+            bottom: -6px;
+            height: 54px;
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .button3 {
+            cursor: pointer;
+            user-select: none;
+            background: none;
+            border: none;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            justify-content: center;
+            height: 28px;
+            width: 28px;
+            bottom: 9px;
+            right: -50px;
+            piointer-events: none;
+            opacity: 0;
+            transition: all 0.2s, ease-out 0s;
+        }
+
+        .button4 {
+            display: flex;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+            opacity: 0.9;
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            margin-left: 10px;
+            font-size: 13px;
+            padding: 8px;
+            min-width: auto;
+            border: none;
+            color: white;
+        }
+
+        .img1 {
+            width: 22px;
+            opacity: 0.9;
+        }
+
+        .text {
+            color: white;
+            font-size: 18px;
+            font-weight: 100;
+            overflow-wrap: break-word;
+        }
+
+        .task {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .marg {
+            margin-top: 18px;
+        }
+
+        .input-area {
+            width: 100%;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* 添加外边距 */
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="time"] {
+            border: 2px solid #ccc; /* 边框 */
+            border-radius: 8px; /* 圆角 */
+            padding: 8px 12px; /* 内边距 */
+            margin-right: 5px; /* 输入框之间的间距 */
+            width: auto; /* 自动宽度，根据内容调整 */
+            flex-grow: 1; /* 让输入框占据可用空间 */
+        }
+
+        .input-group-btn > button {
+            background-color: rgba(255, 255, 255, 0.2); /* 按钮背景色 */
+            color: white; /* 按钮文字颜色 */
+            border: none;
+            border-radius: 8px; /* 圆角 */
+            padding: 10px 15px; /* 内边距 */
+            box-shadow: 0 4px #999; /* 阴影效果 */
+            cursor: pointer; /* 鼠标悬停时指针形状 */
+        }
+
+        .input-group-btn > button:hover {
+            background-color: rgb(186, 73, 73); /* 鼠标悬停时的背景色 */
+        }
+
+        .input-group-btn > button:active {
+            box-shadow: 0 2px #666; /* 按下时的阴影效果 */
+            transform: translateY(2px); /* 按下时轻微下移 */
+        }
+
+        #taskList {
+            list-style-type: none; /* 移除小黑点 */
+            padding: 0; /* 移除内边距 */
+        }
+
+        #taskList li {
+            background-color: #f9f9f9; /* 列表项背景色 */
+            border: 1px solid #ddd; /* 边框 */
+            border-radius: 8px; /* 圆角 */
+            padding: 10px 15px; /* 内边距 */
+            margin: 8px 0; /* 外边距 */
+            display: flex;
+            justify-content: space-between; /* 内容和删除按钮分布在两端 */
+            align-items: center; /* 垂直居中对齐 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+            transition: background-color 0.3s; /* 背景色变化过渡效果 */
+        }
+
+        #taskList li:hover {
+            background-color: #eef9ff; /* 鼠标悬停背景色 */
+        }
+
+        #taskList li button {
+            background-color: #ef5350; /* 删除按钮背景色 */
+            color: white; /* 文字颜色 */
+            border: none; /* 移除边框 */
+            border-radius: 4px; /* 圆角 */
+            padding: 5px 10px; /* 内边距 */
+            cursor: pointer; /* 鼠标悬停指针形状 */
+            transition: background-color 0.2s; /* 背景色变化过渡效果 */
+        }
+
+        #taskList li button:hover {
+            background-color: #b71c1c; /* 鼠标悬停时按钮背景色 */
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-container">
+        <div class="menu">
+            <a href="/main">
+                <div style="color: white">TimeTracker</div>
+            </a>
+        </div>
+        <div class="account">
+            <a href="/report" style="color: white">Report</a>
+            <a href="/setting" style="color: white">Setting</a>
+            <a href="/login" style="color: white">Login</a>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+<div class="body-container">
+    <div class="sub-container">
+        <div class="sub-header">
+            <div class="sub-header1"></div>
+        </div>
+        <div class="container2">
+            <div class="container3">
+                <div id="timer-string" class="time">25:00</div>
+                <div class="container4">
+                    <button color="rgb(186, 73, 73)" title="Press spacebar to start/pause"
+                            class="button">START
+                    </button>
+                    <div class="button2">
+                        <button class="button3"><img src="/img/next-white3.png" class="img1">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="text">Time to focus!</div>
+        </div>
+        <div class="container5">
+            <div class="container6">
+                <span class="task">Tasks</span>
+                <button role="presentation" class="dropdown button4">
+                    <div id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                         aria-haspopup="true" aria-expanded="false">
+                        Manage
+                        <span class="caret"></span>
+                    </div>
+                    <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
+                        <li><a href="#" id="clearFinishedTasks">Clear finished tasks</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" id="clearAllTasks">Clear all tasks</a></li>
+                    </ul>
+                </button>
+            </div>
+            <div class="marg"></div>
+            <div class="col-lg-6 input-area">
+                <div class="input-group">
+                    <input type="text" id="task" class="form-control" placeholder="Input your task...">
+                    <input type="time" id="taskTime" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="addTask()">Submit</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+            <ul id="taskList"></ul>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+<script>
+    $('.dropdown-toggle').dropdown();
+
+    function addTask() {
+        var taskContent = $("#task").val().trim();
+        var taskTime = $("#taskTime").val(); // 获取任务的具体时间
+
+        if (taskContent && taskTime) { // 确保任务描述和时间都已输入
+            var taskInfo = taskContent + " - " + taskTime; // 合并任务描述和时间
+            var newLi = $("<li>").text(taskInfo);
+            var deleteBtn = $("<button>").text("Delete").click(function () {
+                $(this).parent().remove();
+            });
+
+            newLi.append(deleteBtn);
+            $("#taskList").append(newLi);
+
+            // 清空输入框和时间选择器
+            $("#task").val("");
+            $("#taskTime").val("");
+        }
+    }
+
+    $(document).ready(function () {
+        // 实现清除所有任务的功能
+        $("#clearAllTasks").click(function () {
+            $("#taskList").empty(); // 清空任务列表
+        });
+
+        // 假设每个任务项在完成时会添加一个 `.finished` 类
+        // 实现清除已完成任务的功能
+        $("#clearFinishedTasks").click(function () {
+            $("#taskList .finished").remove(); // 移除所有标记为完成的任务
+        });
+    });
+
+    function markTaskAsFinished(taskElement) {
+        $(taskElement).addClass('finished'); // 标记任务为已完成
+    }
+</script>
+</body>
+</html>
