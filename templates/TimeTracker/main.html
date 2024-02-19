@@ -3,13 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TimeTracker</title>
+    <link rel="icon" href="{% static 'img/1.jpg' %}" type="image/jpg">
+    <title>SecondSavings</title>
     <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static '/plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
 
     <style>
         body {
-            background-color: rgb(186, 73, 73);
+            background-color: #9D7553;
             margin: 0;
             padding: 0;
         }
@@ -32,11 +33,7 @@
             padding: 10px 0px;
             font-size: 20px;
             text-decoration: none;
-            opacity: 0.7;
-        }
 
-        .header a:hover {
-            opacity: 1;
         }
 
         .header .menu {
@@ -44,9 +41,22 @@
             color: white;
         }
 
-        .header .account {
+        .dropdown-menu {
+            background-color: #DABEA7; /* 背景颜色 */
+            border: none; /* 移除边框 */
+        }
+
+        .account {
             float: right;
-            color: white;
+            margin-top: 8px;
+        }
+
+        .dropdown-item {
+            color: white; /* 文字颜色 */
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* 鼠标悬停背景色 */
         }
 
         .body-container {
@@ -128,7 +138,7 @@
             font-family: "Arial";
             font-size: 22px;
             height: 55px;
-            color: rgb(186, 73, 73);
+            color: #A98B73;
             font-weight: bold;
             width: 200px;
             background-color: white;
@@ -211,7 +221,7 @@
         }
 
         .input-group-btn > button:hover {
-            background-color: rgb(186, 73, 73); /* 鼠标悬停时的背景色 */
+            background-color: #876D5A; /* 鼠标悬停时的背景色 */
         }
 
         .input-group-btn > button:active {
@@ -242,7 +252,7 @@
         }
 
         #taskList li button {
-            background-color: #ef5350; /* 删除按钮背景色 */
+            background-color: #DABEA7; /* 删除按钮背景色 */
             color: white; /* 文字颜色 */
             border: none; /* 移除边框 */
             border-radius: 4px; /* 圆角 */
@@ -252,7 +262,7 @@
         }
 
         #taskList li button:hover {
-            background-color: #b71c1c; /* 鼠标悬停时按钮背景色 */
+            background-color: #876D5A; /* 鼠标悬停时按钮背景色 */
         }
 
         #currentTask {
@@ -274,14 +284,23 @@
 <div class="header">
     <div class="header-container">
         <div class="menu">
-            <a href="/main">
-                <div style="color: white">TimeTracker</div>
+            <a href="/main" style="color: white; text-decoration: none;">
+                <i class="fa fa-clock-o" aria-hidden="true" style="vertical-align: middle;"></i>
+                <span style="vertical-align: middle;">SecondSavings</span>
             </a>
         </div>
-        <div class="account">
-            <a href="/report" style="color: white">Report</a>
-            <a href="/setting" style="color: white">Setting</a>
-            <a href="/login" style="color: white">Login</a>
+        <div class="account dropdown">
+            <button class="btn btn-default dropdown-toggle button4" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="/report">Report</a></li>
+                <li><a class="dropdown-item" href="/setting">Setting</a></li>
+                <li><a class="dropdown-item" href="/login">Login</a></li>
+                {#                <li><a class="dropdown-item" href="/profile">Profile</a></li> <!-- 新增的 Profile 链接 -->#}
+            </ul>
         </div>
         <div style="clear: both;"></div>
     </div>
@@ -314,7 +333,7 @@
                         <span class="caret"></span>
                     </div>
                     <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
-{#                        <li role="separator" class="divider"></li>#}
+                        {#                        <li role="separator" class="divider"></li>#}
                         <li><a href="#" id="clearAllTasks">Clear all tasks</a></li>
                     </ul>
                 </button>
