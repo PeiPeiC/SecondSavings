@@ -22,4 +22,5 @@ urlpatterns = [
     path('login/', views.user_login, name='user_login'),
     path("admin/", admin.site.urls),
     path('secondSavings/', include('TimeTracker.urls')),
+    path('googleLogin/', include('allauth.urls')),
 ]
