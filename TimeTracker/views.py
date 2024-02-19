@@ -17,11 +17,11 @@ def user_login(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # Authenticate the user
-            user = authenticate(request,username = email, password= password)
+            user = authenticate(request, username=email, password=password)
             print(f"Authenticate result: {user}")
             list(messages.get_messages(request))
-            
-            # find the correct user by user email 
+
+            # find the correct user by user email
             try:
                 user = User.objects.get(email=email)
                 username = user.username
@@ -32,7 +32,7 @@ def user_login(request):
             if user is not None:
                 user = authenticate(request, username=username, password=password)
                 print(f"Authenticate result: {user}")
-            
+
                 if user:
                     print("User is authenticated")
                     if user.is_active:
@@ -41,11 +41,11 @@ def user_login(request):
                         return redirect(reverse('homepage'))
                     else:
                         messages.error(request, "Your account is disabled.")
-                else:                
+                else:
                     messages.error(request, "Invalid login details supplied.")
             else:
                 messages.error(request, "No user found with that email address.")
-        else:          
+        else:
             messages.error(request, "Invalid form submission.")
     else:
         form = LoginForm()  # Provide an instance of 'LoginForm' when the method is GET
@@ -86,3 +86,5 @@ def user_signup(request):
     # todo need signup page
     return render(request, 'sign up', {'form': form})
 
+def main(request):
+    return render(request, 'TimeTracker/main.html')
