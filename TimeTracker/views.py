@@ -4,4 +4,4 @@ from django.http import HttpResponse
 # Create your views here.
 
 def main(request):
-    return render(request, 'main.html')
+    return render(request, 'TimeTracker/main.html')
