@@ -22,10 +22,10 @@ from TimeTracker import views
 from django.urls import path,include
 from TimeTracker import views
 urlpatterns = [
-    # path("admin/", admin.site.urls),
     path("main/", views.main),
     path('',views.user_login,name='user_login'),
     path('login/', views.user_login, name='user_login'),
     path("admin/", admin.site.urls),
     path('secondSavings/', include('TimeTracker.urls')),
+    path('googleLogin/', include('allauth.urls')),
 ]
