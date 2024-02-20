@@ -42,6 +42,6 @@ class Record(models.Model):
     # break or study
     type = models.CharField(max_length=TYPE_MAX_LENGTH, choices=RECORD_TYPE_CHOICES, default='task')
     # when task is deleted, all its records should be deleted
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True)
-    startTime = models.DateTimeField(default=timezone.now(), blank=True)
-    endTime = models.DateTimeField(blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True, null=True)
+    startTime = models.DateTimeField(default=timezone.now, blank=True)
+    endTime = models.DateTimeField(blank=True, null=True)
