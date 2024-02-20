@@ -32,8 +32,13 @@ jobs:
           python manage.py makemigrations --check --dry-run
           # or python manage.py check
 <<<<<<< HEAD
+<<<<<<< HEAD
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 =======
 >>>>>>> f94cfb3 ( add cicd.yaml to github workflows)
+=======
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+>>>>>>> fe85251 (updated cicd.yaml set repo serect)
           
