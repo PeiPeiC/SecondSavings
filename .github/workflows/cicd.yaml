@@ -34,6 +34,7 @@ jobs:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 =======
@@ -44,4 +45,8 @@ jobs:
 >>>>>>> fe85251 (updated cicd.yaml set repo serect)
 =======
 >>>>>>> 2520f31 ( add cicd.yaml to github workflows)
+=======
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+>>>>>>> 10eaeeb (updated cicd.yaml set repo serect)
           
