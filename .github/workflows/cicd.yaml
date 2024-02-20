@@ -31,4 +31,6 @@ jobs:
           # use Django migrations
           python manage.py makemigrations --check --dry-run
           # or python manage.py check
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           
