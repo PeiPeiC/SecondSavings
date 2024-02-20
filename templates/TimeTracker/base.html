@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户信息面板</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.staticfile.org/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .sidebar {
+      background-color: #f8f9fa;
+      border-right: 1px solid #dee2e6;
+    }
+    .nav-link {
+      color: #495057;
+      background-color: #e9ecef;
+      margin-bottom: 2px;
+      border-radius: 0;
+    }
+    .nav-link.active, .nav-link:hover, .nav-link:focus {
+      color: #fff;
+      background-color: #007bff;
+    }
+    .user-info {
+      padding: 20px;
+      margin-top: -55px;
+    }
+    .user-info .form-control {
+      border-radius: 0;
+    }
+    .user-icon img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .user-field {
+      margin-bottom: 1rem;
+    }
+    .user-field label {
+      margin-bottom: .5rem;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
+      <div class="sidebar-sticky pt-3">
+<!--        <i class="bi bi-house-door-fill" style="font-size: 35px"></i>-->
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/index">
+             Account
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/test">Check-in Board</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Group</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Music List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Badges</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Cion</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+      <div class="user-info">
+        <div class="user-icon text-center">
+          <i class="bi bi-person-circle" style="font-size: 70px"></i>
+        </div>
+          {% block content %}
+          {% endblock %}
+      </div>
+    </main>
+  </div>
+
+</div>
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.staticfile.org/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
