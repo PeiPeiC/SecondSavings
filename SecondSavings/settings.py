@@ -16,13 +16,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TEMPLATE_DIR  = os.path.join(BASE_DIR,'templates')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_URL = '/static/'
-STATIC_DIR = os.path.join(BASE_DIR,'static')
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') #for heroku
-MEDIA_DIR = os.path.join(BASE_DIR,'media')
-MEDIA_ROOT =MEDIA_DIR
-MEDIA_URL ='/media/'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -34,10 +34,11 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app','127.0.0.1','localhost','second-savings-45733b1b5b8c.herokuapp.com']
+ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost',
+                 'second-savings-45733b1b5b8c.herokuapp.com']
 
 # Application definition
-SITE_ID = 2
+SITE_ID = 1
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -145,7 +146,18 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"  
-ACCOUNT_EMAIL_REQUIRED = True  
-ACCOUNT_USERNAME_REQUIRED = False  
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"  
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+LOGIN_REDIRECT_URL = '/main/'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '2750536ac@gmail.com'  # own: Lixingwan Cao
+EMAIL_HOST_PASSWORD = 'jmwp lbhn dpkh yibu'
+EMAIL_USE_TLS = True
+EMAIL_FROM = '2750536ac@gmail.com'
+
+DEFAULT_FROM_EMAIL = '2750536ac@gmail.com'
