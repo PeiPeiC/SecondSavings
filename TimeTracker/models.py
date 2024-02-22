@@ -24,9 +24,12 @@ class UserProfile(models.Model):
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
                                  options={'quality': 95})
+<<<<<<< HEAD
 
 
     # other setting fields
+=======
+>>>>>>> b2d4ba0 (login with google)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.user.username)
