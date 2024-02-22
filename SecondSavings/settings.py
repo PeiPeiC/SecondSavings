@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
 
+    'imagekit',
     "TimeTracker",
 ]
 
@@ -174,6 +175,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_UNIQUE_EMAIL = True
 
 LOGIN_REDIRECT_URL = '/main/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'

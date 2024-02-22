@@ -16,9 +16,6 @@ class UserProfile(models.Model):
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
                                  options={'quality': 95})
-    slug = models.SlugField(unique=True)
-
-    # other setting fields
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.user.username)
