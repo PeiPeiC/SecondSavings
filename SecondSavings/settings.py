@@ -61,7 +61,7 @@ ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost'
                  'second-savings-45733b1b5b8c.herokuapp.com']
 
 # Application definition
-SITE_ID = 1
+SITE_ID = 3
 
 INSTALLED_APPS = [
     "django.contrib.admin",
