@@ -13,23 +13,46 @@ import os
 import environ
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Initialize environ
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# Assuming your .env file is located at the project's root
+# Read .env file
+environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# Now, you can safely read the environment variables
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env('DEBUG')
+
+# env_file_path = BASE_DIR / '.env'
+# if not env_file_path.exists():
+#   raise ValueError(f"{env_file_path=} does not exists")
+# print("DEBUG: SECRET_KEY is", SECRET_KEY)
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    # 这里可以添加其他静态文件目录
+]
+
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-env = environ.Env()
-# read .env file
-environ.Env.read_env()
-SECRET_KEY = env('DJANGO_SECRET_KEY')
+
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
