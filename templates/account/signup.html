@@ -85,7 +85,9 @@
 <div class="container">
     <h2>Time Tracker</h2>
     <h5>Create Account</h5>
-    <button class="google-btn">Sign up with Google</button>
+    <button class="google-btn">
+        <a href="{% url 'google_login' %}">Sign up with Google</a>
+    </button>
     <div class="or-separator">
         <span class="or-text">—or—</span>
     </div>
