@@ -1,10 +1,12 @@
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
+
 from django.db import models
 
 from SecondSavings import settings
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+
 
 
 class UserProfile(models.Model):
@@ -17,14 +19,15 @@ class UserProfile(models.Model):
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
                                  options={'quality': 95})
+    study_time = models.TimeField(default="00:00:00")  # learning time
 
-    def save(self, *args, **kwargs):
+
+def save(self, *args, **kwargs):
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
     study_time = models.TimeField(default="00:00:00")  # learning time
-
 
     def __str__(self):
         return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url

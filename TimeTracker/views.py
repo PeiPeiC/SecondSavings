@@ -10,14 +10,18 @@ from django.core.files.base import ContentFile
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from TimeTracker.forms import LoginForm, ResetPasswordForm, SignUpForm
 from TimeTracker.models import Group, UserProfile
+from django.views.decorators.csrf import csrf_exempt
+
 
 from TimeTracker.models import UserProfile, UserSetting
 import logging
+
 
 logger = logging.getLogger('django')
 
