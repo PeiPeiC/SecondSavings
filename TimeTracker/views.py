@@ -88,3 +88,17 @@ def user_signup(request):
 
 def main(request):
     return render(request, 'TimeTracker/main.html')
+
+
+from django.shortcuts import render
+
+def userInfo(request):
+    if request.method == 'GET':
+        return render(request,'userInfo.html')
+def profile2(request):
+    if request.method == 'GET':
+        return render(request,'profile2.html')
+def test(request):
+    if request.method == 'GET':
+        return render(request,'profile3.html')
+
