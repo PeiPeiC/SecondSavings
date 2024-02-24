@@ -21,6 +21,7 @@
   <div class="row h-100">
     <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+<<<<<<< HEAD
         <a href="{% url 'login_main' %}">
             <!-- main page button -->
             <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
@@ -50,6 +51,38 @@
                 <li class="nav-item {% if request.path == '/Setting/' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'setting' %}">Setting</a>
                 </li>
+=======
+      <a href={% url 'TimeTracker:mian' %} ><i class="bi bi-house-door-fill" style="font-size: 35px"></i></a>
+<!--      主页房屋按钮-->
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/userInfo">
+             Account
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/report">report</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/Group">Group</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/MusicList">Music List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Badges">Badges</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Cion">Cion</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Settings">Settings</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+>>>>>>> 579dd95 (modify models)
 
             </ul>
         </div>

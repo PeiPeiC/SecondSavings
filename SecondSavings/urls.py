@@ -27,6 +27,7 @@ urlpatterns = [
     path('',views.main,name='main'),
     path("main/", views.main, name='main'),
     # path('login/', views.user_login, name='user_login'),
+
     path("login_main/", views.login_main, name='login_main'),
     # Django admin
     path("admin/", admin.site.urls),

@@ -304,8 +304,13 @@
                     aria-haspopup="true" aria-expanded="false">
                 Menu
             </button>
+            {% if user.is_authenticated %}
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+<<<<<<< HEAD
                 <li><a class="dropdown-item" href={%  url 'TimeTracker:profile' %}>Profile</a></li> <!-- 新增的 Profile 链接 -->
+=======
+                <li><a class="dropdown-item" href={%  url 'TimeTracker:profile' user.username %}>Profile</a></li> <!-- 新增的 Profile 链接 -->
+>>>>>>> 579dd95 (modify models)
                 <li><a class="dropdown-item" href="/report">Report</a></li>
                 <li><a class="dropdown-item" href="/setting">Setting</a></li>
                 <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a> </li>
