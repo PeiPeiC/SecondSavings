@@ -3,10 +3,17 @@ from django import forms
 from TimeTracker.models import Task, Record, UserProfile
 
 
+<<<<<<< HEAD
 class ProfileAvatarForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['avatar']
+=======
+class UserProfileForm(forms.ModelForm):
+    class Mate:
+        model = UserProfile
+        fields = ('nickName', 'picture',)
+>>>>>>> bcd3f23 (add model)
 
 
 # for creating task
