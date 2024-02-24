@@ -1,26 +1,30 @@
 from django.utils import timezone
-
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
+from django.template.defaultfilters import slugify
+
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 
-class UserProfile(AbstractUser):
+class UserProfile(models.Model):
     NICK_NAME_MAX_LENGTH = 30
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
-    picture = ProcessedImageField(upload_to='profile_images',
-                                  processors=[ResizeToFill(100, 100)],
-                                  format='JPEG',
-                                  options={'quality': 95})
+    avatar = ProcessedImageField(upload_to='avatar_images',
+                                 processors=[ResizeToFill(100, 100)],
+                                 format='JPEG',
+                                 options={'quality': 95})
+    slug = models.SlugField(unique=True)
 
     # other setting fields
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.user.username)
         if not self.nickName:
-            self.nickName = self.username
-        super(self).save(*args, **kwargs)
+            self.nickName = self.user.username
+        super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.username
