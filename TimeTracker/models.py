@@ -1,16 +1,14 @@
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
-
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from SecondSavings import settings
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 
-
 class UserProfile(models.Model):
-
     NICK_NAME_MAX_LENGTH = 30
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
@@ -21,16 +19,15 @@ class UserProfile(models.Model):
                                  options={'quality': 95})
     study_time = models.TimeField(default="00:00:00")  # learning time
 
-
-def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
-    study_time = models.TimeField(default="00:00:00")  # learning time
-
     def __str__(self):
         return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url
+
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
@@ -38,7 +35,7 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
