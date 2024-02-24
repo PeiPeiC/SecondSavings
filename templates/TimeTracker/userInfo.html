@@ -1,14 +1,14 @@
 <!-- profile默认页（account) -->
-{% extends 'base.html' %}
+{% extends 'TimeTracker/base.html' %}
 {% block content %}
 <form>
     <div class="user-field">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" value="USER_1" readonly>
+        <input type="text" class="form-control" id="name" value={{ user_profile.nickName }} readonly>
     </div>
     <div class="user-field">
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" value="EXAMPLE@GMAIL.COM" readonly>
+        <input type="email" class="form-control" id="email" value={{ user.email }} readonly>
     </div>
     <button type="button" class="btn btn-secondary" onclick="enableFields()">Reset</button>
 </form>

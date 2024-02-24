@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from TimeTracker.forms import LoginForm, ResetPasswordForm, SignUpForm
@@ -9,6 +10,7 @@ from TimeTracker.models import Group, UserProfile
 from django.views.decorators.csrf import csrf_exempt
 
 from TimeTracker.forms import UserProfileForm
+from TimeTracker.models import UserProfile
 
 
 def main(request):
@@ -36,14 +38,20 @@ def top_study_times(request):
     }
     return JsonResponse(data)
 @login_required
-def profile(request):
-    user = request.user
-    return render(request, 'TimeTracker/profile.html', {'user': user})
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        messages.error(request, 'Invalid Login')
+        user_profile=UserProfile()
+        # return redirect('/accounts/login/')
+    return render(request, 'TimeTracker/userinfo.html', {'user_profile': user_profile})
 
 
 @login_required
 @csrf_exempt
-def profile_update(request):
+def profile_update(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=request.user)
         if form.is_valid():
