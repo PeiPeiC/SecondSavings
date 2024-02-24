@@ -32,18 +32,12 @@ class UserProfile(models.Model):
 >>>>>>> b2d4ba0 (login with google)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        if not self.nickName:
-            self.nickName = self.username
-        super(self).save(*args, **kwargs)
-
     def __str__(self):
-        return self.username
+        return self.user.username
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
