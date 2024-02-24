@@ -12,5 +12,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('userInfo/', views.userInfo),
     path('report/', views.report),
+    path('group/', views.group),
+    path('music_list/', views.music_list),
+    path('badges/', views.badges),
+    path('cion/', views.cion),
+    path('settings/', views.settings),
 ]
 
