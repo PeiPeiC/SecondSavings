@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // 使用了Echarts（无影响
         var chartDom = document.getElementById('main');
-=======
- var chartDom = document.getElementById('main');
->>>>>>> 57877b9 (added profile .css/js/img)
         var myChart = echarts.init(chartDom);
         var option;
 
