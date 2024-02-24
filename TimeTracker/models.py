@@ -1,19 +1,8 @@
 from django.utils import timezone
-<<<<<<< HEAD
-<<<<<<< HEAD
-from django.contrib.auth.models import User, AbstractUser, Group, Permission
-=======
 
-from django.contrib.auth.models import User, AbstractUser
->>>>>>> bcd3f23 (add model)
-=======
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
->>>>>>> 579dd95 (modify models)
+
 from django.db import models
-from django.template.defaultfilters import slugify
-
-from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFill
 
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
@@ -23,8 +12,7 @@ from imagekit.processors import ResizeToFill
 
 
 class UserProfile(models.Model):
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
     NICK_NAME_MAX_LENGTH = 30
 
@@ -42,42 +30,9 @@ class UserProfile(models.Model):
 
     study_time = models.TimeField(default="00:00:00")  # learning time
 
-=======
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-=======
->>>>>>> 579dd95 (modify models)
-    NICK_NAME_MAX_LENGTH = 30
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
-    nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
-
-    study_time = models.TimeField(default="00:00:00")  # learning time
-    avatar = ProcessedImageField(upload_to='avatar_images',
-                                 processors=[ResizeToFill(100, 100)],
-                                 format='JPEG',
-                                 options={'quality': 95})
-<<<<<<< HEAD
-
-
-    # other setting fields
-=======
->>>>>>> b2d4ba0 (login with google)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.user.username)
-        if not self.nickName:
-<<<<<<< HEAD
-            self.nickName = self.username
-        super(self).save(*args, **kwargs)
->>>>>>> bcd3f23 (add model)
-=======
-            self.nickName = self.user.username
-        super(UserProfile, self).save(*args, **kwargs)
->>>>>>> 579dd95 (modify models)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
