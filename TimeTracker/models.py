@@ -23,6 +23,11 @@ class UserProfile(models.Model):
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
+    def save(self, *args, **kwargs):
+        if not self.nickName:
+            self.nickName = self.username
+        super(self).save(*args, **kwargs)
+
     def __str__(self):
         return self.username
 
