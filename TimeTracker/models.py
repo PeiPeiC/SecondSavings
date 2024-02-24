@@ -18,18 +18,12 @@ class UserProfile(models.Model):
                                  options={'quality': 95})
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        if not self.nickName:
-            self.nickName = self.username
-        super(self).save(*args, **kwargs)
-
     def __str__(self):
-        return self.username
+        return self.user.username
 
 
 class Task(models.Model):
