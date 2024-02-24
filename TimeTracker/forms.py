@@ -1,36 +1,12 @@
-from django.utils import timezone
-
 from django import forms
-from django.contrib.auth.models import User
 
-from TimeTracker.models import UserProfile, Task, Record
-
-
-class LoginForm(forms.Form):
-    email = forms.EmailField(label='Email', help_text='Email address', required=True)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput, help_text='Enter your password',
-                               required=True)
+from TimeTracker.models import Task, Record, UserProfile
 
 
-# reset password
-class ResetPasswordForm(forms.Form):
-    email = forms.EmailField(label='Email', required=True)
-
-
-# sign up
-class SignUpForm(forms.ModelForm):
-    email = forms.EmailField(label='Email', required=True)
-
-    class Meta:
-        model = User
-        fields = ('email',)
-
-
-# used for modify user's profile
 class UserProfileForm(forms.ModelForm):
     class Mate:
         model = UserProfile
-        fields = ('picture',)
+        fields = ('nickName', 'picture',)
 
 
 # for creating task

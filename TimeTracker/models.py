@@ -1,22 +1,37 @@
 from django.utils import timezone
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    NICK_NAME_MAX_LENGTH = 30
+
+    nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
+
     picture = ProcessedImageField(upload_to='profile_images',
                                   processors=[ResizeToFill(100, 100)],
                                   format='JPEG',
                                   options={'quality': 95})
     study_time = models.TimeField(default="00:00:00")  # learning time
 
+    # other setting fields
+
+    def save(self, *args, **kwargs):
+        if not self.nickName:
+            self.nickName = self.username
+        super(self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.user.username
+        return self.username
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
