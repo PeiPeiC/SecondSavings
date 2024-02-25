@@ -26,11 +26,24 @@ SECRET_KEY = os.environ.get(
 # also explicitly exclude CI:
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
-# SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU_APP:
-    DEBUG = True
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+#STATIC_URL = '/static/'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
+#STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
 
+STATICFILES_DIRS = [
+    STATIC_DIR,
+    # 这里可以添加其他静态文件目录
+]
+
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -163,23 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-#STATIC_URL = '/static/'
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
-#STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    STATIC_DIR,
-    # 这里可以添加其他静态文件目录
-]
-
-MEDIA_DIR = os.path.join(BASE_DIR, 'media')
-MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = '/media/'
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
