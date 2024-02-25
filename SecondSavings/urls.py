@@ -26,6 +26,8 @@ from TimeTracker import views
 from django.conf.urls.static import static
 urlpatterns = [
     path("main/", views.main, name='main'),
+    path("login_main/", views.login_main, name='login_main'),
+
     path('',views.user_login,name='user_login'),
     path('login/', views.user_login, name='user_login'),
     path("admin/", admin.site.urls),

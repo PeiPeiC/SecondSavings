@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <link rel="icon" href="{% static 'img/1.jpg' %}" type="image/jpg">
     <title>SecondSavings</title>
-    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static '/plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
 
     <style>
         body {
@@ -298,21 +298,33 @@
             </a>
         </div>
         <div class="account dropdown">
-            {% if user.is_authenticated %}
             <button class="btn btn-default dropdown-toggle button4" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 Menu
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="/profile">Profile</a></li> <!-- 新增的 Profile 链接 -->
-                <li><a class="dropdown-item" href="/report">Report</a></li>
-                <li><a class="dropdown-item" href="/setting">Setting</a></li>
-                <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a> </li>
+                <li>
+                    <a class="dropdown-item" href="/profile">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>Profile
+                    </a>
+                </li> <!-- 新增的 Profile 链接 -->
+                <li>
+                    <a class="dropdown-item" href="/report">
+                        <i class="fa fa-bar-chart-o" aria-hidden="true"></i>Report
+                    </a></li>
+                <li>
+                    <a class="dropdown-item" href="/setting">
+                        <i class="fa fa-cog" aria-hidden="true"></i>Setting
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/login">
+                        <i class="fa fa-user" aria-hidden="true"></i>Login
+                    </a>
+                </li>
+
             </ul>
-            {% else %}
-                <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
-            {% endif %}
         </div>
         <div style="clear: both;"></div>
     </div>
@@ -324,14 +336,14 @@
         </div>
         <div class="container2">
             <div class="container3">
-                <div id="timer-string" class="time">25:00</div>
+                <div id="timer-string" class="time">00:00</div>
                 <div class="container4">
-                    <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause"
-                            class="button">START
-                    </button>
-                    <button id="resetButton" class="button">RESET</button>
+                    <button id="startPauseButton" class="button" onclick="startPauseTimer()">START</button>
+                    <!-- Finish 按钮 -->
+                    <button id="finishButton" class="button" onclick="finishTask()">FINISH</button>
                 </div>
                 <div id="currentTask">No task running.</div>
+                {#                <div id="finalTime">Final Time: --:--</div>#}
             </div>
             <div class="text">Time to focus!</div>
         </div>
@@ -353,9 +365,17 @@
             <div class="marg"></div>
             <div class="col-lg-6 input-area">
                 <div class="input-group">
-                    <input type="text" id="task" class="form-control" placeholder="Input your task...">
-                    <input type="number" id="taskDuration" class="form-control" placeholder="Duration in minutes..." min="1">
-{#                    <input type="time" id="taskTime" class="form-control">#}
+                    <input type="text" id="taskName" class="form-control" placeholder="Input your task...">
+                    <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
+                        <option value="" disabled selected hidden>Select type</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="study">Study</option>
+                        <option value="exercise">Exercise</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <input type="date" id="taskDate" class="form-control" placeholder="Date...">
+                    {#                    <input type="time" id="taskTime" class="form-control">#}
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="addTask()">Submit</button>
                     </div>
@@ -367,8 +387,9 @@
 </div>
 
 
-<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-<script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static '/js/main.js' %}"></script>
+<script src="{% static '/js/login_main.js' %}"></script>
 </body>
 </html>
