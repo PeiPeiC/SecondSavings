@@ -166,8 +166,8 @@ USE_TZ = True
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 #STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
+#STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [

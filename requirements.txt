@@ -1,3 +1,4 @@
+appconf==0.1.11
 asgiref==3.7.2
 certifi==2024.2.2
 cffi==1.16.0
