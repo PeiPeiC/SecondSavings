@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reset Password</title>
+    <title>Confirm Email Address</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
             margin-top: 20px; /* Move the button down a bit */
         }
         .login-links {
-            margin-top: 5px;
+            margin-top: 20px;
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -49,9 +49,9 @@
 </head>
 <body>
 <div class="container">
-    <h2>SecondSavings</h2>
-    <h5>Reset Password</h5>
-    <form method="post" action="{% url 'account_reset_password' %}">
+    <h2>Confirm Email Address</h2>
+    <h5>Please confirm that <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> is an email address for user {{ confirmation.email_address.user }}.</h5>
+    <form method="post" action="{% url 'account_logout' %}" no_visible_fields=True>
             {% csrf_token %}
             {% for field in form %}
                 <div class="form-field">
@@ -59,24 +59,8 @@
                     {{ field.label_tag }}{{ field }}
                 </div>
             {% endfor %}
-            {% if messages %}
-                {% comment %} <div class="alert {{ messages.0.tags }}" style="color: red;">
-                    {{ messages.0 }}
-                </div> {% endcomment %}
-
-                {% for message in messages %}
-                    <div style="color: red;">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            <button type="submit" class="submit-btn">Reset Password</button>
+            <button type="submit" class="submit-btn">Confirm</button>
     </form>
-    <div class="login-links">
-        <h5>Try other method?</h5>
-    </div>
-    <div class="login-links">
-        <a href="{% url 'account_login' %}">Log in</a>
-    </div>
-
 </div>
 </body>
 </html>
