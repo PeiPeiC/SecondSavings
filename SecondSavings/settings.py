@@ -41,7 +41,7 @@ STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    STATIC_DIR,
     # 这里可以添加其他静态文件目录
 ]
 
