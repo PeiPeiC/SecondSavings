@@ -142,3 +142,5 @@ def badges(request):
 
 def report(request):
     return render(request, 'TimeTracker/report.html')
+def login_main(request):
+    return render(request, 'TimeTracker/login_main.html')

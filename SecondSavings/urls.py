@@ -29,8 +29,15 @@ from django.urls import re_path
 
 urlpatterns = [
     path("main/", views.main, name='main'),
+<<<<<<< HEAD
     path('',views.main,name='main'),
     # path('login/', views.user_login, name='user_login'),
+=======
+    path("login_main/", views.login_main, name='login_main'),
+
+    path('',views.user_login,name='user_login'),
+    path('login/', views.user_login, name='user_login'),
+>>>>>>> ef134ce (add login_main page)
     path("admin/", admin.site.urls),
     path('TimeTracker/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
