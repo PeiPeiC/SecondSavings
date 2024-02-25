@@ -30,9 +30,12 @@ from django.urls import re_path
 urlpatterns = [
     path("main/", views.main, name='main'),
 <<<<<<< HEAD
+<<<<<<< HEAD
     path('',views.main,name='main'),
     # path('login/', views.user_login, name='user_login'),
 =======
+=======
+>>>>>>> 2fc6edb (add login_main page)
     path("login_main/", views.login_main, name='login_main'),
 
     path('',views.user_login,name='user_login'),
