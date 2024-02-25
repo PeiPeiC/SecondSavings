@@ -3,12 +3,16 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db import models
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
-
-    # other setting fields
+    picture = ProcessedImageField(upload_to='profile_images',
+                                  processors=[ResizeToFill(100, 100)],
+                                  format='JPEG',
+                                  options={'quality': 95})
 
     def __str__(self):
         return self.user.username
