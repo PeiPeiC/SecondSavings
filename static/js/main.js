@@ -2,16 +2,16 @@ $('.dropdown-toggle').dropdown();
 
 function addTask() {
     var taskContent = $("#task").val().trim(); // 获取任务描述
-    var taskTimeInput = $("#taskTime").val(); // 获取任务的时间输入
+    var taskDurationInput = $("#taskDuration").val(); // 获取任务的时间输入
 
-    if (taskContent && taskTimeInput) { // 确保任务描述和时间都已输入
-        var timeParts = taskTimeInput.split(":");
-        var taskHours = parseInt(timeParts[0], 10);
-        var taskMinutes = parseInt(timeParts[1], 10);
-        var totalSeconds = (taskHours * 60 + taskMinutes) * 60; // 转换总时间为秒
+    if (taskContent && taskDurationInput) { // 确保任务描述和时间都已输入
+        var timeParts = taskDurationInput.split(":");
+        // var taskHours = parseInt(timeParts[0], 10);
+        var taskMinutes = parseInt(taskDurationInput, 10);
+        var totalSeconds = taskMinutes * 60; // 转换总时间为秒
 
         // 创建任务项和删除按钮
-        var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskTimeInput);
+        var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDurationInput);
         var deleteBtn = $("<button>").text("Delete").addClass('deleteButton').click(function () {
             $(this).parent().remove(); // 删除这个任务项
         });
@@ -34,7 +34,7 @@ function addTask() {
 
         // 清空输入框和时间选择器
         $("#task").val("");
-        $("#taskTime").val("");
+        $("#taskDuration").val("");
     }
 }
 
@@ -67,7 +67,7 @@ document.getElementById('startButton').addEventListener('click', function () {
         isRunning = false; // 更新状态为未运行
         this.textContent = "START"; // 更新按钮文本为 "START"
     }
-});
+});//start button
 
 document.getElementById('resetButton').addEventListener('click', function () {
     resetTimer();
@@ -76,7 +76,7 @@ document.getElementById('resetButton').addEventListener('click', function () {
     document.getElementById('startButton').textContent = "START"; // 重置开始按钮文本
     isRunning = false; // 更新计时器状态为未运行
     document.getElementById('currentTask').textContent = "No task running."; // 重置当前任务显示
-});
+});//reset
 
 function startTimer(duration, display) {
     var secondsLeft = duration;

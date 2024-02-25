@@ -88,3 +88,6 @@ def user_signup(request):
 
 def main(request):
     return render(request, 'TimeTracker/main.html')
+
+def login_main(request):
+    return render(request, 'TimeTracker/login_main.html')
