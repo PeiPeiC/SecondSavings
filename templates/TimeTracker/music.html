@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="/statics/css/music.css">
+    <link rel="stylesheet " href="/statics/css/style.css">
+{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+        <h2>Music List</h2>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block">MUSIC LIST 1</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block">MUSIC LIST 2</button>
+            </div>
+            <div class="w-100"></div> <!-- This will create a new line -->
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block">MUSIC LIST 3</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block">+</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+{% endblock %}
