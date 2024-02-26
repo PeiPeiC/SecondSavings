@@ -19,7 +19,7 @@ def profile(request, username):
         user_profile = UserProfile.objects.get(user=user)
     except UserProfile.DoesNotExist:
         messages.error(request, 'Invalid Login')
-        user_profile=UserProfile()
+        user_profile = UserProfile()
         # return redirect('/accounts/login/')
     return render(request, 'TimeTracker/userinfo.html', {'user_profile': user_profile})
 
@@ -37,3 +37,38 @@ def profile_update(request, username):
         form = UserProfileForm()
 
     return render(request, 'TimeTracker/profile_update.html', context={'form': form})
+
+
+def index(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/userInfo.html')
+
+
+def line_chart(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/report.html')
+
+
+def table(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/Group.html')
+
+
+def music(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/music.html')
+
+
+def coin(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/coin.html')
+
+
+def setting(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/setting.html')
+
+
+def badges(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/badges.html')

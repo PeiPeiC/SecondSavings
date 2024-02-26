@@ -1,0 +1,41 @@
+
+.sidebar {
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+}
+
+.nav-link {
+    color: #495057;
+    background-color: #e9ecef;
+    margin-bottom: 2px;
+    border-radius: 0;
+}
+
+.nav-link.active, .nav-link:hover, .nav-link:focus {
+    color: #fff;
+}
+
+.user-info {
+    padding: 20px;
+    margin-top: -55px;
+}
+
+.user-info .form-control {
+    border-radius: 0;
+}
+
+.user-icon img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.user-field {
+    margin-bottom: 1rem;
+}
+
+.user-field label {
+    margin-bottom: .5rem;
+}
+
