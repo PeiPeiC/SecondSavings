@@ -177,3 +177,38 @@ def top_study_times(request):
     }
     return JsonResponse(data)
 
+
+def index(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/userInfo.html')
+
+
+def line_chart(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/report.html')
+
+
+def table(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/Group.html')
+
+
+def music(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/music.html')
+
+
+def coin(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/coin.html')
+
+
+def setting(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/setting.html')
+
+
+def badges(request):
+    if request.method == 'GET':
+        return render(request, 'TimeTracker/badges.html')
+
