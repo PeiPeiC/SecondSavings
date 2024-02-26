@@ -1,57 +1,26 @@
-<!-- profile base -->
+{#profile base#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.staticfile.org/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    .sidebar {
-      background-color: #f8f9fa;
-      border-right: 1px solid #dee2e6;
-    }
-    .nav-link {
-      color: #495057;
-      background-color: #e9ecef;
-      margin-bottom: 2px;
-      border-radius: 0;
-    }
-    .nav-link.active, .nav-link:hover, .nav-link:focus {
-      color: #fff;
-      background-color: #007bff;
-    }
-    .user-info {
-      padding: 20px;
-      margin-top: -55px;
-    }
-    .user-info .form-control {
-      border-radius: 0;
-    }
-    .user-icon img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-    .user-field {
-      margin-bottom: 1rem;
-    }
-    .user-field label {
-      margin-bottom: .5rem;
-    }
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/statics/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.staticfile.org/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
-  </style>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    {% block css %}
+    {% endblock %}
 </head>
 <body>
 
 <div class="container-fluid h-100">
   <div class="row h-100">
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-      <a href={% url 'TimeTracker:mian' %} ><i class="bi bi-house-door-fill" style="font-size: 35px"></i></a>
+      <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
 <!--      主页房屋按钮-->
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
@@ -70,13 +39,13 @@
             <a class="nav-link" href="/MusicList">Music List</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="Badges">Badges</a>
+            <a class="nav-link" href="/Badges">Badges</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="Cion">Cion</a>
+            <a class="nav-link" href="/Coin">Coin</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="Settings">Settings</a>
+            <a class="nav-link" href="/Settings">Settings</a>
           </li>
         </ul>
       </div>
