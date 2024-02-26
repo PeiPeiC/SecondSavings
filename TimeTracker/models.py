@@ -16,18 +16,14 @@ class UserProfile(models.Model):
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
                                  options={'quality': 95})
-    slug = models.SlugField(unique=True)
-
-    # other setting fields
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 
 class Task(models.Model):

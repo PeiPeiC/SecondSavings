@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load allauth %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center
+        }
+        .container {
+            width: 300px;
+            justify-content: center;
+            align-items: center;
+        }
+        h2, h5 {
+            text-align: center;
+        }
+        input[type=email], input[type=password] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px; /* Move the button down a bit */
+        }
+        .login-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .login-links a {
+            color: #4285F4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Log in via Google</h2>
+    <h5>You are about to log in using a third-party account from Google</h5>
+    <form method="post" no_visible_fields=True>
+            {% csrf_token %}
+            <button type="submit" class="submit-btn">Continue</button>
+    </form>
+    <div class="login-links">
+        <a href="{% url 'account_login' %}">Back to Log in</a>
+    </div>
+
+</div>
+</body>
+</html>
