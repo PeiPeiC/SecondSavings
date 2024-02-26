@@ -1,5 +1,8 @@
 <!-- profile默认页（account) -->
 {% extends 'TimeTracker/base.html' %}
+{% block css %}
+    <link rel="stylesheet " href="/statics/css/style.css">
+{% endblock %}
 {% block content %}
 <form>
     <div class="user-field">
@@ -11,6 +14,7 @@
         <input type="email" class="form-control" id="email" value={{ user.email }} readonly>
     </div>
     <button type="button" class="btn btn-secondary" onclick="enableFields()">Reset</button>
+    <button type="button" class="btn btn-primary" id="submit-btn" style="display: none;" onclick="submitForm()">Submit</button>
 </form>
 
 <script>
@@ -18,8 +22,34 @@ function enableFields() {
     document.getElementById("name").readOnly = false;
     document.getElementById("email").readOnly = false;
 }
-// click the button to enable the flieds
+ // 将“Reset”按钮变成可点击的提交按钮
+    var resetButton = document.querySelector('.btn-secondary');
+    resetButton.innerHTML = 'Cancel'; // 更改按钮文本
+    resetButton.classList.remove('btn-secondary'); // 移除原按钮样式
+    resetButton.classList.add('btn-primary'); // 添加提交按钮样式
+    resetButton.setAttribute('onclick', 'cancelChanges()'); // 更改按钮点击行为
+
+    // 显示提交按钮
+    document.getElementById("submit-btn").style.display = 'inline-block';
+}
+
+function cancelChanges() {
+    // 取消编辑状态，将字段设置为只读
+    document.getElementById("name").readOnly = true;
+    document.getElementById("email").readOnly = true;
+    // 恢复“Reset”按钮状态
+    var resetButton = document.querySelector('.btn-primary');
+    resetButton.innerHTML = 'Reset';
+    resetButton.classList.remove('btn-primary');
+    resetButton.classList.add('btn-secondary');
+    resetButton.setAttribute('onclick', 'enableFields()');
+    // 隐藏提交按钮
+    document.getElementById("submit-btn").style.display = 'none';
+}
+
+function submitForm() {
+    // 提交的操作，可以通过JavaScript来实现
+    document.getElementById("user-form").submit();
+}
 </script>
 {% endblock %}
-
-
