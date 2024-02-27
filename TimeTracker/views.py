@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-from TimeTracker.forms import UserProfileForm
 from TimeTracker.models import UserProfile
 
 
@@ -28,15 +27,22 @@ def profile(request, username):
 @csrf_exempt
 def profile_update(request, username):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, 'Update Successfully')
-            return redirect('TimeTracker:profile')
-    else:
-        form = UserProfileForm()
+        user = User.objects.get(username=username)
+        user_profile = UserProfile.objects.get(user=user)
 
-    return render(request, 'TimeTracker/profile_update.html', context={'form': form})
+        form_data = request.POST
+        nick_name = form_data.get('nickName')
+
+        user_profile.nickName = nick_name
+        user_profile.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        return redirect('TimeTracker:profile', username)
+    else:
+        user_profile = UserProfile()
+        user = request.user
+
+    return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile, 'user':user})
 
 
 def index(request):
@@ -72,3 +78,7 @@ def setting(request):
 def badges(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/badges.html')
+
+
+def report(request):
+    return render(request, 'TimeTracker/report.html')
