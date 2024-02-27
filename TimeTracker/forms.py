@@ -4,7 +4,7 @@ from TimeTracker.models import Task, Record, UserProfile
 
 
 class UserProfileForm(forms.ModelForm):
-    class Mate:
+    class Meta:
         model = UserProfile
         fields = ('nickName', 'picture',)
 

@@ -1,10 +1,12 @@
 <!-- profile默认页（account) -->
 {% extends 'TimeTracker/base.html' %}
 {% block css %}
-    <link rel="stylesheet " href="/statics/css/style.css">
+    <link rel="stylesheet " href="/static/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 {% endblock %}
 {% block content %}
-<form>
+<form id="user_form" action="{% url 'TimeTracker:profile_update' user.username %}" method="post">
     <div class="user-field">
         <label for="name">Name</label>
         <input type="text" class="form-control" id="name" value={{ user_profile.nickName }} readonly>
@@ -22,9 +24,9 @@ function enableFields() {
     document.getElementById("name").readOnly = false;
     document.getElementById("email").readOnly = false;
 
- // 将“Reset”按钮变成可点击的提交按钮
-const resetButton = document.querySelector('.btn-secondary');
-resetButton.innerHTML = 'Cancel'; // 更改按钮文本
+    // 将“Reset”按钮变成可点击的提交按钮
+    const resetButton = document.querySelector('.btn-secondary');
+    resetButton.innerHTML = 'Cancel'; // 更改按钮文本
     resetButton.classList.remove('btn-secondary'); // 移除原按钮样式
     resetButton.classList.add('btn-primary'); // 添加提交按钮样式
     resetButton.setAttribute('onclick', 'cancelChanges()'); // 更改按钮点击行为
@@ -49,7 +51,19 @@ function cancelChanges() {
 
 function submitForm() {
     // 提交的操作，可以通过JavaScript来实现
-    document.getElementById("user-form").submit();
+    {#document.getElementById("user_form").submit();#}
+    // 构建包含表单数据的数据对象
+    var formData = {
+        nickName: $('#name').val(),
+        email: $('#email').val(),
+        // 添加其他字段...
+    };
+
+    // 发送POST请求到指定的URL
+    $.post($("#user_form").attr("action"), formData, function(response) {
+        // 处理响应，可以在这里进行重定向或其他操作
+        console.log(response);
+    });
 }
 </script>
 {% endblock %}
