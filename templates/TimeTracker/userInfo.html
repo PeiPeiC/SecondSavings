@@ -21,10 +21,10 @@
 function enableFields() {
     document.getElementById("name").readOnly = false;
     document.getElementById("email").readOnly = false;
-}
+
  // 将“Reset”按钮变成可点击的提交按钮
-    var resetButton = document.querySelector('.btn-secondary');
-    resetButton.innerHTML = 'Cancel'; // 更改按钮文本
+const resetButton = document.querySelector('.btn-secondary');
+resetButton.innerHTML = 'Cancel'; // 更改按钮文本
     resetButton.classList.remove('btn-secondary'); // 移除原按钮样式
     resetButton.classList.add('btn-primary'); // 添加提交按钮样式
     resetButton.setAttribute('onclick', 'cancelChanges()'); // 更改按钮点击行为
@@ -38,7 +38,7 @@ function cancelChanges() {
     document.getElementById("name").readOnly = true;
     document.getElementById("email").readOnly = true;
     // 恢复“Reset”按钮状态
-    var resetButton = document.querySelector('.btn-primary');
+    const resetButton = document.querySelector('.btn-primary');
     resetButton.innerHTML = 'Reset';
     resetButton.classList.remove('btn-primary');
     resetButton.classList.add('btn-secondary');
