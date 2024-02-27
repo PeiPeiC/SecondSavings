@@ -34,5 +34,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('secondSavings/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
+    path('userInfo/', views.index),
+    path('report/', views.report),
+    path('Group/', views.table),
+    path('MusicList/', views.music),
+    path('Coin/', views.coin),
+    path('Settings/', views.setting),
+    path('Badges/', views.badges),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
