@@ -69,7 +69,7 @@ def index(request):
         return render(request, 'TimeTracker/userInfo.html')
 
 
-def line_chart(request):
+def report(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/report.html')
 
