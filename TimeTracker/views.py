@@ -77,8 +77,7 @@ def avatar_update(request):
             user_profile = UserProfile.objects.get(user=request.user)
             user_profile.avatar = avatar_data
             user_profile.save()
-            return render(request, 'TimeTracker/userInfo.html',
-                          context={'username': request.user.username, 'user_profile': user_profile})
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         else:
             messages.error(request, 'Invalid Image')
     else:
