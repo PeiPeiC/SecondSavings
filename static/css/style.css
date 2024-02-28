@@ -1,4 +1,3 @@
-
 .sidebar {
     background-color: #f8f9fa;
     border-right: 1px solid #dee2e6;
@@ -11,8 +10,10 @@
     border-radius: 0;
 }
 
-.nav-link.active, .nav-link:hover, .nav-link:focus {
-    color: #fff;
+/* Style for active navigation link */
+.nav-link.active {
+    color: #fff; /* White text */
+    background-color: #343a40; /* Dark gray background */
 }
 
 .user-info {
@@ -39,3 +40,25 @@
     margin-bottom: .5rem;
 }
 
+/* CSS样式：使用户头像呈圆形 */
+.user-icon img {
+    border-radius: 50%;
+    width: 100px; /* 根据需要调整 */
+    height: 100px; /* 根据需要调整 */
+    object-fit: cover;
+}
+
+.sidebar .nav-link {
+    color: #495057; /* 设置为默认颜色 */
+    background-color: #e9ecef; /* 设置为默认背景颜色 */
+}
+
+.sidebar a[href="{% url 'TimeTracker:mian' %}"] .bi-house-door-fill {
+    color: #000; /* 设置为默认颜色 */
+}
+
+/* 导航栏按钮被选中时的样式 */
+.nav-link.active {
+    color: #fff; /* 白色文本 */
+    background-color: #333; /* 深灰色背景 */
+}
