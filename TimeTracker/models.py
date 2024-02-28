@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
