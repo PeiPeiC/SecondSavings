@@ -1,7 +1,0 @@
-/* CSS样式：使用户头像呈圆形 */
-.user-icon img {
-    border-radius: 50%;
-    width: 100px; /* 根据需要调整 */
-    height: 100px; /* 根据需要调整 */
-    object-fit: cover;
-}
