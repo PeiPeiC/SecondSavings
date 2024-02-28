@@ -44,13 +44,13 @@
                 </li>
                 <li class="nav-item {% if request.path == '/Coin/' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'coin' %}">Coin</a>
+                <li class="nav-item {% if request.path == '/Badges/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'badges' %}">Badges</a>
                 </li>
                 <li class="nav-item {% if request.path == '/Setting/' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'setting' %}">Setting</a>
                 </li>
-                <li class="nav-item {% if request.path == '/Badges/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'badges' %}">Badges</a>
-                </li>
+
             </ul>
         </div>
     </nav>

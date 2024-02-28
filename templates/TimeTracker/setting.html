@@ -1,32 +1,84 @@
 {% extends 'TimeTracker/base.html' %}
+
 {% block css %}
-    <link rel="stylesheet" href="/statics/css/setting.css">
-    <link rel="stylesheet " href="/statics/css/style.css">
+    <!-- 导入样式表 -->
+    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/setting.css">
+    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
 {% endblock %}
+
 {% block content %}
 <div class="container mt-3">
+  <!-- 设置标题为“通知” -->
   <h4>Notification</h4>
-  <div class="form-group">
-    <label for="alarmSound">Alarm Sound</label>
-    <select class="form-control" id="alarmSound">
-      <option>Beep</option>
-      <!-- More options here -->
-    </select>
+  <!-- 添加水平分割线 -->
+  <hr style="border-color: #ccc; margin-bottom: 20px;">
+  <!-- 创建一个行布局 -->
+  <div class="row">
+    <!-- 左侧列，占据6个网格 -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <!-- 标签：报警声音 -->
+        <label for="alarmSound">Alarm Sound</label>
+        <!-- 下拉菜单：报警声音选择 -->
+        <div class="dropdown">
+          <!-- 触发下拉菜单的按钮 -->
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <!-- 按钮显示的文字 -->
+            Select Alarm Sound
+          </button>
+          <!-- 下拉菜单的选项 -->
+          <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">
+            <!-- 选项1：Beep -->
+            <a class="dropdown-item" href="#">Beep</a>
+            <!-- 选项2：Ticking -->
+            <a class="dropdown-item" href="#">Ticking</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧列，占据6个网格 -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <!-- 标签：音量控制 -->
+        <label for="volumeControl">Volume Control</label>
+        <!-- 输入范围：音量控制 -->
+        <input type="range" class="form-control-range" id="volumeControl">
+      </div>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="volumeControl">Volume Control</label>
-    <input type="range" class="slider1" id="volumeControl">
-  </div>
-
+  <!-- 一些空行，如果需要的话 -->
+  <br><br><br>
+  <!-- 设置标题为“同步” -->
   <h4>Synchronization</h4>
+  <!-- 添加水平分割线 -->
+  <hr style="border-color: #ccc; margin-bottom: 20px;">
+  <!-- 同步到Google任务的复选框 -->
   <div class="form-group">
+    <!-- 标签：同步到Google任务 -->
     <label for="syncGoogleTask">Sync to Google Task</label>
+    <!-- 开关复选框 -->
     <label class="switch">
+      <!-- 复选框 -->
       <input type="checkbox" checked>
+      <!-- 自定义样式的滑块 -->
       <span class="slider round"></span>
     </label>
   </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+   <!-- 引入 jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('.dropdown-toggle').dropdown();
+});
+</script>
+
+<!-- 引入 Popper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+<!-- 引入 Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 {% endblock %}
