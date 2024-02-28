@@ -7,7 +7,7 @@
 
 
 {% block content %}
-<form id="user_form" action="{% url 'TimeTracker:profile_update' user.username %}" method="post">
+<form id="user_form" action="{% url 'TimeTracker:profile_update' %}" method="post">
     <div class="user-field">
         <label for="name">Name</label>
         &nbsp;
