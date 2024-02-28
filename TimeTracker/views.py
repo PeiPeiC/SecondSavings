@@ -1,5 +1,6 @@
+import json
+
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -12,10 +13,9 @@ def main(request):
 
 
 @login_required
-def profile(request, username):
+def profile(request):
     try:
-        user = User.objects.get(username=username)
-        user_profile = UserProfile.objects.get(user=user)
+        user_profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
         messages.error(request, 'Invalid Login')
         user_profile = UserProfile()
@@ -25,10 +25,9 @@ def profile(request, username):
 
 @login_required
 @csrf_exempt
-def profile_update(request, username):
+def profile_update(request):
     if request.method == 'POST':
-        user = User.objects.get(username=username)
-        user_profile = UserProfile.objects.get(user=user)
+        user_profile = UserProfile.objects.get(user=request.user)
 
         form_data = request.POST
         nick_name = form_data.get('nickName')
@@ -37,12 +36,29 @@ def profile_update(request, username):
         user_profile.save()
 
         messages.add_message(request, messages.SUCCESS, 'Update Successfully')
-        return redirect('TimeTracker:profile', username)
+        return redirect('TimeTracker:profile')
     else:
         user_profile = UserProfile()
-        user = request.user
 
-    return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile, 'user':user})
+    return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile, 'user': request.user})
+
+
+@login_required
+def avatar_update(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        avatar_data = data.get('avatarData', None)
+        if avatar_data:
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_profile.avatar = avatar_data
+            user_profile.save()
+            return render(request, 'TimeTracker/userInfo.html',
+                          context={'username': request.user.username, 'user_profile': user_profile})
+        else:
+            messages.error(request, 'Invalid Image')
+    else:
+        return render(request, 'TimeTracker/userInfo.html',
+                      context={'username': request.user.username})
 
 
 def index(request):

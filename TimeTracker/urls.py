@@ -6,7 +6,8 @@ app_name = 'TimeTracker'
 urlpatterns = [
     path('',views.main,name='mian'),
     # profile
-    path('profile/<slug:username>/',views.profile, name='profile'),
-    path('profile/update/<slug:username>', views.profile_update, name='profile_update'),
+    path('profile/',views.profile, name='profile'),
+    path('profile/update/', views.profile_update, name='profile_update'),
+    path('profile/avater_update/', views.avatar_update, name='avatar_update')
 
 ]
