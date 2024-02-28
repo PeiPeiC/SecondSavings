@@ -13,10 +13,18 @@ class UserProfile(models.Model):
                                   processors=[ResizeToFill(100, 100)],
                                   format='JPEG',
                                   options={'quality': 95})
+    study_time = models.TimeField(default="00:00:00")  # learning time
 
     def __str__(self):
         return self.user.username
 
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+    members = models.ManyToManyField(User, related_name='group_memberships')
+
+    def __str__(self):
+        return self.name
+    
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120

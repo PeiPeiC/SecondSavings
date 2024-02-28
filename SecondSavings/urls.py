@@ -29,6 +29,6 @@ urlpatterns = [
     path('',views.user_login,name='user_login'),
     path('login/', views.user_login, name='user_login'),
     path("admin/", admin.site.urls),
-    path('secondSavings/', include('TimeTracker.urls')),
+    path('TimeTracker/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
