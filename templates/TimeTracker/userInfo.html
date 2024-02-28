@@ -3,52 +3,105 @@
 {% block css %}
     <link rel="stylesheet " href="/static/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 {% endblock %}
+
 {% block content %}
 <form id="user_form" action="{% url 'TimeTracker:profile_update' user.username %}" method="post">
     <div class="user-field">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" value={{ user_profile.nickName }} readonly>
+        <!-- 空格 -->
+        &nbsp;
+        <!-- Name的编辑符号 -->
+        <span class="edit-symbol" onclick="enableNameEdit()">&#9998;</span>
+        <!-- 姓名输入框 -->
+        <input type="text" class="form-control" id="name" value="{{ user_profile.nickName }}" readonly>
     </div>
     <div class="user-field">
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" value={{ user.email }} readonly>
+        <!-- 邮箱输入框 -->
+        <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
     </div>
-    <button type="button" class="btn btn-secondary" onclick="enableFields()">Reset</button>
+    <div class="user-field" id="password_field" style="display: none;">
+        <label for="password">Password</label>
+        <!-- 密码输入框 -->
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <!-- 重置密码按钮 -->
+    <button type="button" class="btn btn-secondary" onclick="resetPassword()">Reset Password</button>
+    <!-- 取消按钮 -->
+    <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;" onclick="cancelChanges()">Cancel</button>
+    <!-- 提交按钮 -->
     <button type="button" class="btn btn-primary" id="submit-btn" style="display: none;" onclick="submitForm()">Submit</button>
 </form>
 
 <script>
-function enableFields() {
+// 启用姓名编辑
+function enableNameEdit() {
     document.getElementById("name").readOnly = false;
-    document.getElementById("email").readOnly = false;
+    document.getElementById("name").focus();
 
-    // 将“Reset”按钮变成可点击的提交按钮
+    // 隐藏重置密码按钮
+    document.querySelector('.btn-secondary').style.display = 'none';
+    // 显示取消按钮和提交按钮
+    document.getElementById("cancel-btn").style.display = 'inline-block';
+    document.getElementById("submit-btn").style.display = 'inline-block';
+}
+
+// 取消更改
+function cancelChanges() {
+    // 将姓名字段设为只读
+    document.getElementById("name").readOnly = true;
+
+    // 隐藏取消按钮和提交按钮
+    document.getElementById("cancel-btn").style.display = 'none';
+    document.getElementById("submit-btn").style.display = 'none';
+
+    // 显示重置密码按钮
+    document.querySelector('.btn-secondary').style.display = 'inline-block';
+}
+
+// 重置密码
+function resetPassword() {
+    // 清空密码输入框
+    document.getElementById("password").value = '';
+    // 显示密码输入框
+    document.getElementById("password_field").style.display = 'block';
+
     const resetButton = document.querySelector('.btn-secondary');
-    resetButton.innerHTML = 'Cancel'; // 更改按钮文本
-    resetButton.classList.remove('btn-secondary'); // 移除原按钮样式
-    resetButton.classList.add('btn-primary'); // 添加提交按钮样式
-    resetButton.setAttribute('onclick', 'cancelChanges()'); // 更改按钮点击行为
+    // 更改按钮文本为取消
+    resetButton.innerHTML = 'Cancel';
+    resetButton.classList.remove('btn-secondary');
+    resetButton.classList.add('btn-primary');
+    // 更改按钮点击事件为取消重置密码
+    resetButton.setAttribute('onclick', 'cancelReset()');
 
     // 显示提交按钮
     document.getElementById("submit-btn").style.display = 'inline-block';
 }
 
-function cancelChanges() {
-    // 取消编辑状态，将字段设置为只读
-    document.getElementById("name").readOnly = true;
-    document.getElementById("email").readOnly = true;
-    // 恢复“Reset”按钮状态
+// 取消重置密码
+function cancelReset() {
+    // 隐藏密码输入框
+    document.getElementById("password_field").style.display = 'none';
+    // 清空密码输入框
+    document.getElementById("password").value = '';
+
     const resetButton = document.querySelector('.btn-primary');
-    resetButton.innerHTML = 'Reset';
+    // 更改按钮文本为重置密码
+    resetButton.innerHTML = 'Reset Password';
     resetButton.classList.remove('btn-primary');
     resetButton.classList.add('btn-secondary');
-    resetButton.setAttribute('onclick', 'enableFields()');
+    // 更改按钮点击事件为重置密码
+    resetButton.setAttribute('onclick', 'resetPassword()');
+
     // 隐藏提交按钮
     document.getElementById("submit-btn").style.display = 'none';
 }
+</script>
 
+
+<script>
+// 提交表单
 function submitForm() {
     // 提交的操作，可以通过JavaScript来实现
     {#document.getElementById("user_form").submit();#}
@@ -56,13 +109,23 @@ function submitForm() {
     var formData = {
         nickName: $('#name').val(),
         email: $('#email').val(),
-        // 添加其他字段...
+        password: $('#password').val(),
     };
 
     // 发送POST请求到指定的URL
     $.post($("#user_form").attr("action"), formData, function(response) {
         // 处理响应，可以在这里进行重定向或其他操作
         console.log(response);
+
+        // 成功提交后，将姓名字段设为只读
+        document.getElementById("name").readOnly = true;
+
+        // 隐藏取消按钮和提交按钮
+        document.getElementById("cancel-btn").style.display = 'none';
+        document.getElementById("submit-btn").style.display = 'none';
+
+        // 显示重置密码按钮
+        document.querySelector('.btn-secondary').style.display = 'inline-block';
     });
 }
 </script>
