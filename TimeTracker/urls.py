@@ -23,4 +23,8 @@ urlpatterns = [
     path('setting/', views.setting, name='setting'),
     path('setting/sync_google_task', views.setting_sync, name='setting_sync_google_task'),
     path('setting/update_alarm', views.alarm_update, name='setting_update_alarm'),
+
+
+    path('groupStudy/', views.group_study, name='group_study'),
+    path('topStudyTimes', views.top_study_times, name='top_study_times'),
 ]

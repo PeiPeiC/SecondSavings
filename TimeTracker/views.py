@@ -7,9 +7,14 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from TimeTracker.forms import LoginForm, ResetPasswordForm, SignUpForm
+from TimeTracker.models import Group, UserProfile
 
 from TimeTracker.models import UserProfile, UserSetting
 import logging
@@ -154,3 +159,23 @@ def badges(request):
 @login_required
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
+#Group study funtion
+def group_study(request):                                                       
+    group_instance = Group.objects.first()  
+    members = group_instance.members.all()
+    context = {
+        'group': group_instance,
+        'members': members
+    }
+    return render(request, 'TimeTracker/group_study.html', context)
+
+#Study Time Ranking Popup 
+def top_study_times(request):                                                                       
+    top_users = UserProfile.objects.all().order_by('-study_time')[:3]
+    data = {
+        'top_users': [
+            {'username': profile.user.username, 'study_time': profile.study_time}
+            for profile in top_users
+        ]
+    }
+    return JsonResponse(data)

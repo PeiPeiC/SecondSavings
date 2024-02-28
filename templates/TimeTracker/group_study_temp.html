@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Study</title>
+</head>
+<body>
+    <!--What needs to be refreshed-->
+    <div id="group-study-container">
+    <h1>{{ group.name }}</h1>
+    <p>Total members: {{ members.count }}</p>
+    <div id="group-study-container">
+        <ul>
+            {% for member in members %}
+                <li>{{ member.userprofile.user.username }} - Study time: {{ member.userprofile.study_time }} hours</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!--What needs to be refreshed-->
+
+    <!--jqueryFunction↓-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function updateGroupStudy() {
+                $.ajax({
+                    url: "{% url 'TimeTracker:group_study' %}",
+                
+                    success: function(data) {
+                        $('#group-study-container').html(''); // clear all elements in contianer
+                        $('#group-study-container').html(data);
+                    }
+                });
+            }
+
+            updateGroupStudy();
+
+            // Refresh every five seconds
+            setInterval(updateGroupStudy, 5000);
+        });
+    </script>
+
+
+
+
+
+</body>
+</html>

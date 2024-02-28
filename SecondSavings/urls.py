@@ -31,6 +31,7 @@ urlpatterns = [
     # Django admin
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
+    path('TimeTracker/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
     path('secondSavings/', include('TimeTracker.urls')),
     path('report/', views.report, name='report'),
