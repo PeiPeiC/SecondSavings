@@ -1,4 +1,5 @@
- var chartDom = document.getElementById('main');
+// 使用了Echarts（无影响
+        var chartDom = document.getElementById('main');
         var myChart = echarts.init(chartDom);
         var option;
 
