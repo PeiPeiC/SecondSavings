@@ -52,8 +52,6 @@ MEDIA_URL = '/media/'
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -178,7 +176,9 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 
 LOGIN_REDIRECT_URL = '/main/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+ACCOUNT_SET_PASSWORD_REDIRECT_URL = '/accounts/login/'  # require log in with new password
+ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = '/accounts/login/'  # require log in with new password
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
