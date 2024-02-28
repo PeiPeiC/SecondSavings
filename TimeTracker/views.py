@@ -1,10 +1,16 @@
+import base64
 import json
+from io import BytesIO
 
+from PIL import Image
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
+from TimeTracker.forms import ProfileAvatarForm
 from TimeTracker.models import UserProfile
 
 
@@ -48,11 +54,20 @@ def avatar_update(request):
     if request.method == "POST":
         data = json.loads(request.body)
         avatar_data = data.get('avatarData', None)
+
         if avatar_data:
+            file_data = avatar_data.split(',')[1]  # remove data:image/png;base64,
+            image_data_decoded = base64.b64decode(file_data)
+            image = Image.open(BytesIO(image_data_decoded))
+            image_io = BytesIO()
+            image.save(image_io, format='JPEG')
             user_profile = UserProfile.objects.get(user=request.user)
-            user_profile.avatar = avatar_data
-            user_profile.save()
-            return redirect(request.META.get('HTTP_REFERER', '/'))
+            if user_profile.avatar:
+                user_profile.avatar.delete()  # delete the old one
+
+            user_profile.avatar.save(request.user.username + '.jpg', ContentFile(image_io.getvalue()), save=True)
+
+            return redirect('TimeTracker:profile')
         else:
             messages.error(request, 'Invalid Image')
     else:

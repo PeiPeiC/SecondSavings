@@ -60,7 +60,7 @@
             <!-- avatar -->
             <div class="user-icon text-center">
                 {% if user_profile.avatar %}
-                <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar }}" alt="avatar">
+                <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar.url }}" alt="avatar">
                 {% else %}
                 <i class="bi bi-person-circle" style="font-size: 70px"></i>
                 {% endif %}
