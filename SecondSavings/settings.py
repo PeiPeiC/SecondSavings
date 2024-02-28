@@ -177,8 +177,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 
 LOGIN_REDIRECT_URL = '/main/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-ACCOUNT_SET_PASSWORD_REDIRECT_URL = '/accounts/login/'  # require log in with new password
-ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = '/accounts/login/'  # require log in with new password
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True # After changing password, require log in with new password
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
