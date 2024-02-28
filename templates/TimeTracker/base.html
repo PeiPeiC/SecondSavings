@@ -19,15 +19,15 @@
 
 <div class="container-fluid h-100">
   <div class="row h-100">
-    <!-- 侧边栏导航 -->
+    <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
         <a href="{% url 'TimeTracker:mian' %}">
-            <!-- 主页房屋按钮 -->
+            <!-- main page button -->
             <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
         </a>
         <div class="sidebar-sticky pt-3">
             <ul class="nav flex-column">
-                <!-- 导航链接 -->
+                <!-- Sidebar link -->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'TimeTracker:profile' %}">
                         Account
@@ -54,13 +54,13 @@
             </ul>
         </div>
     </nav>
-    <!-- 主内容区域 -->
+    <!-- profile content -->
     <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
         <div class="user-info">
-            <!-- 用户头像 -->
+            <!-- avatar -->
             <div class="user-icon text-center">
                 {% if user_profile.avatar %}
-                <img id="avatar" src="{{ user_profile.avatar }}" alt="avatar">
+                <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar }}" alt="avatar">
                 {% else %}
                 <i class="bi bi-person-circle" style="font-size: 70px"></i>
                 {% endif %}
@@ -72,26 +72,26 @@
   </div>
 </div>
 
-<!-- 引入单独的JavaScript文件 -->
+<!-- JavaScript for avatar -->
+{#<script src="static/js/avatar.js"></script>#}
 
 
 
-<!-- Bootstrap的JavaScript脚本 -->
+<!-- Bootstrap JavaScript -->
 <script src="https://cdn.staticfile.org/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // profile base 头像
+    // profile base avatar
 let csrftoken = '{{ csrf_token }}'
 
 document.addEventListener("DOMContentLoaded", function() {
-    // 添加事件监听器到头像图标
     var avatarIcon = document.querySelector(".user-icon .bi-person-circle");
     if (avatarIcon) {
         avatarIcon.addEventListener("click", function() {
-            // 触发图片编辑功能
+            // edit avatar
             console.log("Edit Avatar");
 
-            // 弹出文件选择框，让用户选择新头像图片文件
+            // selection box for file
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -99,11 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 var file = event.target.files[0];
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    // 更新头像图标的样式
+                    // show new avatar
                     avatarIcon.style.backgroundImage = "url('" + event.target.result + "')";
-                    // 设置提示文本
+                    // prompt text
                     avatarIcon.title = "Click to Change Avatar";
-                    // 可以在这里将新头像提交到服务器保存
+                    // send to service
                     submitAvatar(event.target.result);
                 };
                 reader.readAsDataURL(file);
@@ -111,13 +111,13 @@ document.addEventListener("DOMContentLoaded", function() {
             input.click();
         });
 
-        // 添加鼠标悬停提示
+        // prompt text
         avatarIcon.title = "Click to Edit Avatar";
     }
 });
 
 function submitAvatar(avatarData) {
-    // 构建 HTTP 请求
+    // Http Request
     fetch('{% url 'TimeTracker:avatar_update' %}', {
         method: 'POST',
         headers: {
