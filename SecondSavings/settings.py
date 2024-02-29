@@ -218,9 +218,8 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 
-LOGIN_REDIRECT_URL = '/login_main/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True  # After changing password, require log in with new password
+LOGIN_REDIRECT_URL = 'secondSavings/main/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
