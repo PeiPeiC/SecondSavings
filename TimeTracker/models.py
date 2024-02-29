@@ -1,6 +1,3 @@
-import os
-import uuid
-
 from django.utils import timezone
 
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
@@ -37,6 +34,7 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
@@ -44,6 +42,7 @@ class Group(models.Model):
     def __str__(self):
         return self.name
     
+
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
