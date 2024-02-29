@@ -51,7 +51,7 @@
 <div class="container">
     <h2>Confirm Email Address</h2>
     <h5>Please confirm that <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> is an email address for user {{ confirmation.email_address.user }}.</h5>
-    <form method="post" action="{% url 'account_logout' %}" no_visible_fields=True>
+    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}" no_visible_fields=True>
             {% csrf_token %}
             {% for field in form %}
                 <div class="form-field">
