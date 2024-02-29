@@ -16,13 +16,9 @@ Including another URLconf
 """
 import statistics
 from django.contrib import admin
-from django.urls import path
 from SecondSavings import settings
-
 from TimeTracker import views
-
 from django.urls import path,include
-from TimeTracker import views
 from django.conf.urls.static import static
 
 from django.urls import re_path
@@ -32,8 +28,9 @@ urlpatterns = [
     path('',views.main,name='main'),
     # path('login/', views.user_login, name='user_login'),
     path("login_main/", views.login_main, name='login_main'),
+    # Django admin
     path("admin/", admin.site.urls),
-    path('secondSavings/', include('TimeTracker.urls')),
+    # Django-allauth routes for authentication
     path('accounts/', include('allauth.urls')),
     path('report/', views.report, name='report'),
     path('Group/', views.table, name='table'),
@@ -41,5 +38,12 @@ urlpatterns = [
     path('Coin/', views.coin, name='coin'),
     path('Settings/', views.setting, name='setting'),
     path('Badges/', views.badges, name='badges'),
-
+    path('secondSavings/', include('TimeTracker.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    # Include your app's urls here
+    
+# Static and media files in development
+
+# 确保在开发环境中也能正确服务静态文件
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
