@@ -1,6 +1,3 @@
-import os
-import uuid
-
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
@@ -32,12 +29,14 @@ class UserProfile(models.Model):
         return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url
 
 
+
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
 
     def __str__(self):
         return self.name
+
 
 
 class Task(models.Model):

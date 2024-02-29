@@ -9,6 +9,8 @@ from django.core.files.base import ContentFile
 from django.http import HttpResponse, JsonResponse
 import base64
 import json
+import random
+import string
 from io import BytesIO
 
 from PIL import Image
