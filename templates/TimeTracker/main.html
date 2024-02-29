@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <link rel="icon" href="{% static 'img/1.jpg' %}" type="image/jpg">
     <title>SecondSavings</title>
-    <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static '/plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
 
     <style>
         body {
@@ -50,17 +50,8 @@
             margin-top: 8px;
         }
 
-        .dropdown-item i {
-            width: 20px; /* 或者其他适合的宽度 */
-            text-align: center; /* 确保图标在其宽度内居中 */
-            margin-right: 5px; /* 在图标和文本之间添加一些间距 */
-            display: inline-block; /* 使图标表现得像块级元素，但仍然在行内 */
-        }
-
         .dropdown-item {
             color: white; /* 文字颜色 */
-            display: flex; /* 启用Flexbox布局 */
-            align-items: center; /* 垂直居中对齐图标和文本 */
         }
 
         .dropdown-item:hover {
@@ -298,33 +289,21 @@
             </a>
         </div>
         <div class="account dropdown">
+            {% if user.is_authenticated %}
             <button class="btn btn-default dropdown-toggle button4" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 Menu
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li>
-                    <a class="dropdown-item" href="/profile">
-                        <i class="fa fa-user-circle" aria-hidden="true"></i>Profile
-                    </a>
-                </li> <!-- 新增的 Profile 链接 -->
-                <li>
-                    <a class="dropdown-item" href="/report">
-                        <i class="fa fa-bar-chart-o" aria-hidden="true"></i>Report
-                    </a></li>
-                <li>
-                    <a class="dropdown-item" href="/setting">
-                        <i class="fa fa-cog" aria-hidden="true"></i>Setting
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/login">
-                        <i class="fa fa-user" aria-hidden="true"></i>Login
-                    </a>
-                </li>
-
+                <li><a class="dropdown-item" href="/profile">Profile</a></li> <!-- 新增的 Profile 链接 -->
+                <li><a class="dropdown-item" href="/report">Report</a></li>
+                <li><a class="dropdown-item" href="/setting">Setting</a></li>
+                <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a> </li>
             </ul>
+            {% else %}
+                <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
+            {% endif %}
         </div>
         <div style="clear: both;"></div>
     </div>
@@ -366,11 +345,10 @@
             <div class="col-lg-6 input-area">
                 <div class="input-group">
                     <input type="text" id="task" class="form-control" placeholder="Input your task...">
-                    <input type="number" id="taskDuration" class="form-control" placeholder="Duration in minutes..." min="1">
-{#                    <input type="time" id="taskTime" class="form-control">#}
-                    <div class="input-group-btn">
+                    <input type="time" id="taskTime" class="form-control">
+                    <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="addTask()">Submit</button>
-                    </div>
+                    </span>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
             <ul id="taskList"></ul>
@@ -379,8 +357,8 @@
 </div>
 
 
-<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
-<script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/js/main.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

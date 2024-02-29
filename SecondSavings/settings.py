@@ -41,7 +41,7 @@ STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for heroku
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    STATIC_DIR,
     # 这里可以添加其他静态文件目录
 ]
 
@@ -75,6 +75,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
+
+    'imagekit',
     "TimeTracker",
 ]
 
@@ -173,6 +175,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_UNIQUE_EMAIL = True
 
 LOGIN_REDIRECT_URL = '/main/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
