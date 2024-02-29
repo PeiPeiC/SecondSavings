@@ -61,6 +61,9 @@ function cancelChanges() {
 
     // show set password button
     document.querySelector('.btn-secondary').style.display = 'inline-block';
+
+    // reset the input text
+    document.getElementById("name").value = '{{ user_profile.nickName }}';
 }
 </script>
 

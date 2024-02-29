@@ -126,7 +126,11 @@ function submitAvatar(avatarData) {
         },
         body: JSON.stringify({ avatarData }),
     })
-    .then(response => response.json())
+    .then(response => {
+        response.json()
+        console.log('Avatar update successful');
+        window.location.href = "{% url 'TimeTracker:profile' %}" // refresh
+    })
     .then(data => {
         console.log('Avatar update successful:', data);
     })
