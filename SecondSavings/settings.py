@@ -181,9 +181,9 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True  # After changing password, require log
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = '2750536ac@gmail.com'  # own: Lixingwan Cao
-EMAIL_HOST_PASSWORD = 'jmwp lbhn dpkh yibu'
+EMAIL_HOST_USER = 'secondsavings2024@gmail.com'  # own: Lixingwan Cao
+EMAIL_HOST_PASSWORD = 'sntr rchl hdor ygoo'
 EMAIL_USE_TLS = True
-EMAIL_FROM = '2750536ac@gmail.com'
+EMAIL_FROM = 'secondsavings2024@gmail.com'
 
-DEFAULT_FROM_EMAIL = '2750536ac@gmail.com'
+DEFAULT_FROM_EMAIL = 'secondsavings2024@gmail.com'
