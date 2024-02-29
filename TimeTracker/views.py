@@ -19,7 +19,6 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -91,7 +90,6 @@ def avatar_update(request):
             messages.error(request, 'Invalid Image')
             logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-
 
 
 def report(request):
