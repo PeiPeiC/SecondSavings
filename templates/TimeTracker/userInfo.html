@@ -22,15 +22,9 @@
         <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
     </div>
     <!-- set password button -->
-    {% if 'password/set/' in request.path %}
-    <a href="{% url 'account_set_password' %}" >
-    <button type="button" class="btn btn-secondary">Set Password</button>
-    </a>
-    {% else %}
     <a href="{% url 'account_change_password' %}" >
-    <button type="button" class="btn btn-secondary">Reset Password</button>
+    <button type="button" class="btn btn-secondary">Change Password</button>
     </a>
-    {% endif %}
     <!-- cancel button -->
     <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;" onclick="cancelChanges()">Cancel</button>
     <!-- submit button -->
