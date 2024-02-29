@@ -44,7 +44,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('TimeTracker/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
-    path('userInfo/', views.index),
     path('report/', views.report, name='report'),
     path('Group/', views.table, name='table'),
     path('MusicList/', views.music, name='music'),

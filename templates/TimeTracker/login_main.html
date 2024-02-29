@@ -305,7 +305,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li>
-                    <a class="dropdown-item" href="/profile">
+                    <a class="dropdown-item" href={% url 'TimeTracker:profile' %}>
                         <i class="fa fa-user-circle" aria-hidden="true"></i>Profile
                     </a>
                 </li> <!-- 新增的 Profile 链接 -->
@@ -319,8 +319,8 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/login">
-                        <i class="fa fa-user" aria-hidden="true"></i>Login
+                    <a class="dropdown-item" href={% url 'account_logout' %}>
+                        <i class="fa fa-user" aria-hidden="true"></i>Logout
                     </a>
                 </li>
 
