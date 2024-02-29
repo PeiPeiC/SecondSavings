@@ -16,6 +16,23 @@ from pathlib import Path
 import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
+# also explicitly exclude CI:
+# https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+
+if not IS_HEROKU_APP:
+    env_file = BASE_DIR / '.env'
+    # Check if the .env file exists, and then read it
+    if env_file.is_file():
+        environ.Env.read_env(str(env_file))
+
+env = environ.Env()
+# 读取.env文件
+environ.Env.read_env()
+
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 # https://devcenter.heroku.com/articles/config-vars
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.environ.get(
@@ -23,18 +40,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #     default=secrets.token_urlsafe(nbytes=64),
 # )
 
-
-env = environ.Env()
-# 读取.env文件
-environ.Env.read_env()
-
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-
-
-# The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
-# also explicitly exclude CI:
-# https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
-IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 #STATIC_URL = '/static/'
@@ -57,11 +62,11 @@ MEDIA_URL = '/media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# 给DEBUG设置一个默认值
-# DEBUG = False
-# # SECURITY WARNING: don't run with debug turned on in production!
-# if not IS_HEROKU_APP:
-DEBUG = True
+#给DEBUG设置一个默认值
+DEBUG = False
+# SECURITY WARNING: don't run with debug turned on in production!
+if not IS_HEROKU_APP:
+    DEBUG = True
 
 if IS_HEROKU_APP:
     ALLOWED_HOSTS = ["*"]
