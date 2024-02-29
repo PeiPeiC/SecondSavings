@@ -16,7 +16,6 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
