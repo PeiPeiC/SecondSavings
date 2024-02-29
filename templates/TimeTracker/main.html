@@ -298,33 +298,21 @@
             </a>
         </div>
         <div class="account dropdown">
-            <button class="btn btn-default dropdown-toggle button4" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                Menu
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li>
-                    <a class="dropdown-item" href="/profile">
-                        <i class="fa fa-user-circle" aria-hidden="true"></i>Profile
-                    </a>
-                </li> <!-- 新增的 Profile 链接 -->
-                <li>
-                    <a class="dropdown-item" href="/report">
-                        <i class="fa fa-bar-chart-o" aria-hidden="true"></i>Report
-                    </a></li>
-                <li>
-                    <a class="dropdown-item" href="/setting">
-                        <i class="fa fa-cog" aria-hidden="true"></i>Setting
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/login">
-                        <i class="fa fa-user" aria-hidden="true"></i>Login
-                    </a>
-                </li>
-
-            </ul>
+            {% if user.is_authenticated %}
+                <button class="btn btn-default dropdown-toggle button4" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Menu
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li> <!-- 新增的 Profile 链接 -->
+                    <li><a class="dropdown-item" href="/report">Report</a></li>
+                    <li><a class="dropdown-item" href="/setting">Setting</a></li>
+                    <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                </ul>
+            {% else %}
+                <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
+            {% endif %}
         </div>
         <div style="clear: both;"></div>
     </div>
@@ -366,8 +354,9 @@
             <div class="col-lg-6 input-area">
                 <div class="input-group">
                     <input type="text" id="task" class="form-control" placeholder="Input your task...">
-                    <input type="number" id="taskDuration" class="form-control" placeholder="Duration in minutes..." min="1">
-{#                    <input type="time" id="taskTime" class="form-control">#}
+                    <input type="number" id="taskDuration" class="form-control" placeholder="Duration in minutes..."
+                           min="1">
+                    {#                    <input type="time" id="taskTime" class="form-control">#}
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="addTask()">Submit</button>
                     </div>
