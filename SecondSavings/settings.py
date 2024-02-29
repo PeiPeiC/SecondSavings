@@ -18,10 +18,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # https://devcenter.heroku.com/articles/config-vars
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    default=secrets.token_urlsafe(nbytes=64),
-)
+# SECRET_KEY = os.environ.get(
+#     "DJANGO_SECRET_KEY",
+#     default=secrets.token_urlsafe(nbytes=64),
+# )
+
+
+env = environ.Env()
+# 读取.env文件
+environ.Env.read_env()
+
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+
+
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
 # also explicitly exclude CI:
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
@@ -214,8 +223,8 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True  # After changing password, require log
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'secondsavings2024@gmail.com'  # own: Lixingwan Cao
-EMAIL_HOST_PASSWORD = 'sntr rchl hdor ygoo'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_FROM = 'secondsavings2024@gmail.com'
 
