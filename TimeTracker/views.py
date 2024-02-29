@@ -117,3 +117,10 @@ def badges(request):
 
 def report(request):
     return render(request, 'TimeTracker/report.html')
+
+def main(request):
+    return render(request, 'TimeTracker/main.html')
+
+def login_main(request):
+    return render(request, 'TimeTracker/login_main.html')
+

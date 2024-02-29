@@ -31,6 +31,7 @@ urlpatterns = [
     path("main/", views.main, name='main'),
     path('',views.main,name='main'),
     # path('login/', views.user_login, name='user_login'),
+    path("login_main/", views.login_main, name='login_main'),
     path("admin/", admin.site.urls),
     path('secondSavings/', include('TimeTracker.urls')),
     path('accounts/', include('allauth.urls')),
