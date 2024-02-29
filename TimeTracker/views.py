@@ -7,12 +7,10 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-from TimeTracker.forms import ProfileAvatarForm
 from TimeTracker.models import UserProfile
 
 
@@ -72,17 +70,12 @@ def avatar_update(request):
                                      save=True)
 
             return render(request, 'TimeTracker/base.html',
-                      context={'user_file': user_profile})
+                          context={'user_file': user_profile})
         else:
             messages.error(request, 'Invalid Image')
     else:
         return render(request, 'TimeTracker/userInfo.html',
                       context={'username': request.user.username})
-
-
-def index(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/userInfo.html')
 
 
 def report(request):
@@ -118,9 +111,11 @@ def badges(request):
 def report(request):
     return render(request, 'TimeTracker/report.html')
 
+
 def main(request):
     return render(request, 'TimeTracker/main.html')
 
+
+@login_required
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
-
