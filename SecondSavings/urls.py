@@ -24,7 +24,6 @@ from django.conf.urls.static import static
 from django.urls import re_path
 
 urlpatterns = [
-    path("main/", views.main, name='main'),
     path('',views.main,name='main'),
     # path('login/', views.user_login, name='user_login'),
     path("login_main/", views.login_main, name='login_main'),
