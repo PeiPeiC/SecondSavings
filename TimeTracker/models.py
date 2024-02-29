@@ -1,11 +1,7 @@
-import os
-import uuid
-
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
 
-from SecondSavings import settings
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
@@ -43,6 +39,7 @@ class UserProfile(models.Model):
         return self.user.username
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
@@ -64,6 +61,8 @@ class Group(models.Model):
         return uuid_str_name
 
 >>>>>>> 03f7eaf (update avatar update)
+=======
+>>>>>>> 5dae0fb (update avatar)
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
