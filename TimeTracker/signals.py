@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from TimeTracker.models import UserProfile
+from TimeTracker.models import UserProfile, UserSetting
 
 
 # When create a new User, create a related UserProfile
@@ -10,3 +10,4 @@ from TimeTracker.models import UserProfile
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+        UserSetting.objects.create(user=instance)

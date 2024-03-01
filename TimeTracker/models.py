@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
 
+from SecondSavings import settings
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
@@ -56,3 +57,19 @@ class Record(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True, null=True)
     startTime = models.DateTimeField(default=timezone.now, blank=True)
     endTime = models.DateTimeField(blank=True, null=True)
+
+
+class UserSetting(models.Model):
+    ALARM_MAX_LENGTH = 10
+    ALARM_CHOICES = [
+        ('default', f"{settings.MEDIA_ROOT}alarm/default.mp3"),
+        ('marimba', f"{settings.MEDIA_ROOT}alarm/Marimba.mp3"),
+        ('harp', f"{settings.MEDIA_ROOT}alarm/Harp.mp3")
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
+    syncGoogleTask = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username

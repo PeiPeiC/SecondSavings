@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-from TimeTracker.models import UserProfile
+from TimeTracker.models import UserProfile, UserSetting
 
 
 def main(request):
@@ -99,8 +99,32 @@ def coin(request):
 
 
 def setting(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/setting.html')
+    try:
+        user_setting = UserSetting.objects.get(user=request.user)
+    except UserSetting.DoesNotExist:
+        messages.error(request, 'Invalid Login')
+        user_setting = UserSetting()
+    return render(request, 'TimeTracker/setting.html',
+                  {'user_setting': user_setting, 'alarm_choices': UserSetting.ALARM_CHOICES})
+
+
+def setting_sync(request):
+    if request.method == 'POST':
+        print(request)
+        data = request.POST
+        sync = data.get('sync')
+
+        user_setting = UserSetting.objects.get(user=request.user)
+        user_setting.syncGoogleTask = sync
+        user_setting.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        return redirect('TimeTracker:setting')
+    else:
+        user_setting = UserSetting.objects.get(user=request.user)
+
+    return render(request, 'TimeTracker/setting.html', context={'user_setting': user_setting, 'user': request.user})
+
 
 
 def badges(request):
