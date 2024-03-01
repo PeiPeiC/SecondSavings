@@ -1,101 +1,145 @@
-<!-- profile base -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.staticfile.org/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    .sidebar {
-      background-color: #f8f9fa;
-      border-right: 1px solid #dee2e6;
-    }
-    .nav-link {
-      color: #495057;
-      background-color: #e9ecef;
-      margin-bottom: 2px;
-      border-radius: 0;
-    }
-    .nav-link.active, .nav-link:hover, .nav-link:focus {
-      color: #fff;
-      background-color: #007bff;
-    }
-    .user-info {
-      padding: 20px;
-      margin-top: -55px;
-    }
-    .user-info .form-control {
-      border-radius: 0;
-    }
-    .user-icon img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-    .user-field {
-      margin-bottom: 1rem;
-    }
-    .user-field label {
-      margin-bottom: .5rem;
-    }
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 
-  </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.staticfile.org/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    {% block css %}
+    {% endblock %}
 </head>
 <body>
 
 <div class="container-fluid h-100">
   <div class="row h-100">
+    <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-      <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
-<!--      主页房屋按钮-->
-      <div class="sidebar-sticky pt-3">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="/userInfo">
-             Account
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/report">report</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/Group">Group</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/MusicList">Music List</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="Badges">Badges</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="Cion">Cion</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="Settings">Settings</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+        <a href="{% url 'login_main' %}">
+            <!-- main page button -->
+            <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
+        </a>
+        <div class="sidebar-sticky pt-3">
+            <ul class="nav flex-column">
+                <!-- Sidebar link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'TimeTracker:profile' %}">
+                        Account
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'report' %}">Report</a>
+                </li>
+                <li class="nav-item {% if request.path == '/Group/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'table' %}">Group</a>
+                </li>
+                <li class="nav-item {% if request.path == '/MusicList/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'music' %}">Music List</a>
+                </li>
+                <li class="nav-item {% if request.path == '/Coin/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'coin' %}">Coin</a>
+                <li class="nav-item {% if request.path == '/Badges/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'badges' %}">Badges</a>
+                </li>
+                <li class="nav-item {% if request.path == '/Setting/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'setting' %}">Setting</a>
+                </li>
 
-    <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
-      <div class="user-info">
-        <div class="user-icon text-center">
-          <i class="bi bi-person-circle" style="font-size: 70px"></i>
-<!--          用户头像-->
+            </ul>
         </div>
-          {% block content %}
-          {% endblock %}
-      </div>
+    </nav>
+    <!-- profile content -->
+    <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="user-info">
+            <!-- avatar -->
+            <div class="user-icon text-center">
+                {% if user_profile.avatar %}
+                <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar.url }}" alt="avatar">
+                {% else %}
+                <i class="bi bi-person-circle" style="font-size: 70px"></i>
+                {% endif %}
+            </div>
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
   </div>
-
 </div>
 
+<!-- JavaScript for avatar -->
+{#<script src="static/js/avatar.js"></script>#}
+
+
+
+<!-- Bootstrap JavaScript -->
 <script src="https://cdn.staticfile.org/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // profile base avatar
+let csrftoken = '{{ csrf_token }}'
+
+document.addEventListener("DOMContentLoaded", function() {
+    var avatarIcon = document.querySelector(".user-icon .bi-person-circle");
+    if (avatarIcon) {
+        avatarIcon.addEventListener("click", function() {
+            // edit avatar
+            console.log("Edit Avatar");
+
+            // selection box for file
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    // show new avatar
+                    avatarIcon.style.backgroundImage = "url('" + event.target.result + "')";
+                    // prompt text
+                    avatarIcon.title = "Click to Change Avatar";
+                    // send to service
+                    submitAvatar(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        });
+
+        // prompt text
+        avatarIcon.title = "Click to Edit Avatar";
+    }
+});
+
+function submitAvatar(avatarData) {
+    // Http Request
+    fetch('{% url 'TimeTracker:avatar_update' %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ avatarData }),
+    })
+    .then(response => {
+        response.json()
+        console.log('Avatar update successful');
+        window.location.href = "{% url 'TimeTracker:profile' %}" // refresh
+    })
+    .then(data => {
+        console.log('Avatar update successful:', data);
+    })
+    .catch(error => {
+        console.error('Error updating avatar:', error);
+    });
+}
+
+</script>
+
 </body>
 </html>

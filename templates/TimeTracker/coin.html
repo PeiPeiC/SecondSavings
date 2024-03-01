@@ -1,0 +1,43 @@
+{% extends 'TimeTracker/base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/coin.css">
+    <link rel="stylesheet " href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+{% endblock %}
+{% block content %}
+  <div class="container mt-3">
+  <h2>coin</h2>
+  <p>Every hour of use equals <span class="highlight"><input style="width: 30px;"></span> saved</p>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Time</th>
+          <th scope="col">Item</th>
+          <th scope="col">Hour</th>
+          <th scope="col">Amount(£)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>16/01/2024</td>
+          <td>project A</td>
+          <td>4</td>
+          <td>4</td>
+        </tr>
+
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="2">Total</th>
+          <td>19</td>
+          <td>19</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+{% endblock %}
