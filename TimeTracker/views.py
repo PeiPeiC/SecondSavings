@@ -24,13 +24,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from TimeTracker.forms import GroupCreateForm
-from TimeTracker.models import Group, UserProfile
-from TimeTracker.models import Group, UserProfile, Task, Record
+from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting
 from django.views.decorators.csrf import csrf_exempt
-
-from TimeTracker.models import UserProfile, UserSetting, Group
 import logging
-
 
 logger = logging.getLogger('django')
 
@@ -82,7 +78,8 @@ def avatar_update(request):
                 user_profile.avatar.delete()  # delete the old one
                 logger.info(f'Old avatar deleted for user {request.user.username}')  # debug log
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
+                                     save=False)
             logger.info(f'New avatar saved: {request.user.username}_{rand_str}.jpg for user {request.user.username}')
             user_profile.save()
 
@@ -165,19 +162,23 @@ def alarm_update(request):
                            'alarm_url': user_setting.get_url()})
 
 
+
 def badges(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/badges.html')
+
 
 @login_required
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
 
+
 def group(request):
-    groups = Group.objects.filter(members=request.user)  
+    groups = Group.objects.filter(members=request.user)
     return render(request, 'TimeTracker/Group.html', {'groups': groups})
 
-#get user groups
+
+# get user groups
 def get_user_groups(request):
     if request.user.is_authenticated:
         groups = request.user.group_memberships.all().values(
@@ -195,7 +196,8 @@ def get_user_groups(request):
         return JsonResponse({'groups': groups_data})
     return JsonResponse({'groups': []})
 
-#create group
+
+# create group
 def create_group(request):
     form = GroupCreateForm(request.POST)
     if form.is_valid():
@@ -219,7 +221,9 @@ def create_group(request):
         # 返回错误响应
         return JsonResponse({'success': False, 'error': form.errors})
 
-    #delete group
+    # delete group
+
+
 def delete_group(request, group_id):
     try:
         group = Group.objects.get(id=group_id, creator=request.user)  # Make sure only the creator can delete
@@ -227,7 +231,8 @@ def delete_group(request, group_id):
         return JsonResponse({'success': True})
     except Group.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Group not found.'}, status=404)
-    
+
+
 def search_group(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -237,6 +242,7 @@ def search_group(request):
         return JsonResponse({
             'groups': list(groups.values('id', 'name', 'creator__username'))
         })
+
 
 def join_group(request, group_id):
     if request.method == 'POST':
@@ -255,6 +261,7 @@ def join_group(request, group_id):
 
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
+
 def quit_group(request, group_id):
     if request.method == 'POST':
         group = get_object_or_404(Group, id=group_id)
@@ -266,9 +273,10 @@ def quit_group(request, group_id):
 
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 
-#Group study funtion
-def group_study(request,  group_id):                                                       
-    group_instance = get_object_or_404(Group, id=group_id) 
+
+# Group study funtion
+def group_study(request, group_id):
+    group_instance = get_object_or_404(Group, id=group_id)
     members = group_instance.members.all()
     context = {
         'group': group_instance,
@@ -276,8 +284,9 @@ def group_study(request,  group_id):
     }
     return render(request, 'TimeTracker/group_study.html', context)
 
-#Study Time Ranking Popup 
-def top_study_times(request):                                                                       
+
+# Study Time Ranking Popup
+def top_study_times(request):
     top_users = UserProfile.objects.all().order_by('-study_time')[:3]
     data = {
         'top_users': [
@@ -331,12 +340,14 @@ def create_task(request):
         task_type = request.POST.get('taskType')
         task_date = request.POST.get('taskDate')
         # 创建并保存任务对象
-        task = Task(user=request.user, title=title, category = task_type, chosenDate = task_date)
+        task = Task(user=request.user, title=title, category=task_type, chosenDate=task_date)
         task.save()
-        return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime':task.totalTaskTime, 'TotalBreakTime':task.totalBreakTime, 'chosenDate':task.chosenDate})
+        return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime': task.totalTaskTime,
+                             'TotalBreakTime': task.totalBreakTime, 'chosenDate': task.chosenDate})
     return JsonResponse({'status': 'error'}, status=400)
 
-#更改task日期
+
+# 更改task日期
 def update_task_date(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
@@ -347,12 +358,14 @@ def update_task_date(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
-#点击delete后删除task
+
+# 点击delete后删除task
 def delete_task(request):
     task_id = request.POST.get('task_id')
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     task.delete()
     return JsonResponse({'status': 'success'})
+
 
 def delete_incomplete_tasks(request):
     if request.method == 'POST':
@@ -362,7 +375,8 @@ def delete_incomplete_tasks(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-#点击finish后调用
+
+# 点击finish后调用
 def finish_task(request):
     task_id = request.POST.get('taskId')
     isCompleted = request.POST.get('isCompleted') == 'true'
@@ -370,10 +384,11 @@ def finish_task(request):
     print("Received endTime from frontend:", endTime)
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     task.isCompleted = isCompleted
-    #task.endTime = endTime
+    # task.endTime = endTime
     task.endTime = timezone.now()
     task.save()
     return JsonResponse({'status': 'success'})
+
 
 def get_task_info(request):
     task_id = request.GET.get('taskId')
@@ -389,24 +404,25 @@ def get_task_info(request):
     })
 
 
-#前端获取用户task，保证每次刷新网页都保留已创建的task
+# 前端获取用户task，保证每次刷新网页都保留已创建的task
 def get_tasks(request):
     tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
     return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回
 
 
-#startTimer()触发后调用，新建对应record
+# startTimer()触发后调用，新建对应record
 def start_record(request):
     if request.method == 'POST':
         task_id = request.POST.get('taskId')
         record_type = request.POST.get('recordType', 'task')  # 默认为 'task'
         print(task_id)
         task = get_object_or_404(Task, pk=task_id, user=request.user)
-        #task = Task.objects.get(pk=task_id)
+        # task = Task.objects.get(pk=task_id)
         record = Record.objects.create(task=task, user=request.user, type=record_type, startTime=timezone.now())
         return JsonResponse({'record_id': record.pk})
 
-#Fix postgreSql bug version end_record funtion
+
+# Fix postgreSql bug version end_record funtion
 def time_to_timedelta(time_obj):
     return timedelta(hours=time_obj.hour, minutes=time_obj.minute, seconds=time_obj.second)
 
@@ -414,7 +430,8 @@ def time_to_timedelta(time_obj):
 def add_timedelta_to_time(original_time, time_delta):
     original_timedelta = time_to_timedelta(original_time)
     new_timedelta = original_timedelta + time_delta
-    return (datetime.min + new_timedelta).time() 
+    return (datetime.min + new_timedelta).time()
+
 
 def end_record(request):
     if request.method == 'POST':
@@ -446,12 +463,8 @@ def end_record(request):
 
         user_profile.save()
         task.save()
-        
-        return JsonResponse({'status': 'success'}) 
 
-
-
-
+        return JsonResponse({'status': 'success'})
 
 
 """  #pauseTimer()触发后调用

@@ -88,6 +88,7 @@ class UserSetting(models.Model):
         ('default', f"{settings.MEDIA_URL}alarm/default.mp3"),
         ('marimba', f"{settings.MEDIA_URL}alarm/Marimba.mp3"),
         ('harp', f"{settings.MEDIA_URL}alarm/Harp.mp3")
+
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
