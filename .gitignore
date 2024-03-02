@@ -321,6 +321,8 @@ cython_debug/
 # avatar images
 media/avatar_images/*
 !media/avatar_images/.gitkeep
+
+.DS_Store
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
