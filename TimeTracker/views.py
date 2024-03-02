@@ -21,7 +21,7 @@ def main(request):
 @login_required
 def profile(request):
     try:
-        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile = UserProfile.objects.get_or_create(user=request.user)
     except UserProfile.DoesNotExist:
         messages.error(request, 'Invalid Login')
         user_profile = UserProfile()
