@@ -39,7 +39,8 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 #     "DJANGO_SECRET_KEY",
 #     default=secrets.token_urlsafe(nbytes=64),
 # )
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 #STATIC_URL = '/static/'
@@ -69,7 +70,7 @@ if not IS_HEROKU_APP:
     DEBUG = True
 
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ['.herokuapp.com']
 else:
     ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost','second-savings-45733b1b5b8c.herokuapp.com']
 
