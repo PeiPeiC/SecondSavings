@@ -21,7 +21,7 @@ def main(request):
 @login_required
 def profile(request):
     try:
-        user_profile = UserProfile.objects.get_or_create(user=request.user)
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     except UserProfile.DoesNotExist:
         messages.error(request, 'Invalid Login')
         user_profile = UserProfile()
@@ -33,8 +33,7 @@ def profile(request):
 @csrf_exempt
 def profile_update(request):
     if request.method == 'POST':
-        user_profile = UserProfile.objects.get(user=request.user)
-
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         form_data = request.POST
         nick_name = form_data.get('nickName')
 
@@ -52,6 +51,7 @@ def profile_update(request):
 @login_required
 def avatar_update(request):
     if request.method == "POST":
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         data = json.loads(request.body)
         avatar_data = data.get('avatarData', None)
 
@@ -61,21 +61,20 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
-            user_profile = UserProfile.objects.get(user=request.user)
+            
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
 
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(request.user.username + '_' + rand_str + '.jpg', ContentFile(image_io.getvalue()),
-                                     save=True)
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
+            
+            user_profile.save()
 
-            return render(request, 'TimeTracker/base.html',
-                          context={'user_file': user_profile})
+            return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
             messages.error(request, 'Invalid Image')
-    else:
-        return render(request, 'TimeTracker/userInfo.html',
-                      context={'username': request.user.username})
+    return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
+
 
 
 def report(request):
