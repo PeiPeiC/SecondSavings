@@ -24,6 +24,7 @@ class UserProfile(models.Model):
                                  options={'quality': 95})
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
@@ -32,8 +33,7 @@ class UserProfile(models.Model):
 
 
     def __str__(self):
-        return self.user.username
-
+        return self.username
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
@@ -42,7 +42,6 @@ class Group(models.Model):
     def __str__(self):
         return self.name
     
-
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
