@@ -64,10 +64,10 @@ MEDIA_URL = '/media/'
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 #给DEBUG设置一个默认值
-DEBUG = False
-# SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU_APP:
-    DEBUG = True
+# DEBUG = False
+# # SECURITY WARNING: don't run with debug turned on in production!
+# if not IS_HEROKU_APP:
+DEBUG = True
 
 if IS_HEROKU_APP:
     ALLOWED_HOSTS = ['.herokuapp.com']
