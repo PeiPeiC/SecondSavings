@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
@@ -23,23 +24,19 @@ class UserProfile(models.Model):
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
                                  options={'quality': 95})
-<<<<<<< HEAD
 
 
     # other setting fields
-=======
->>>>>>> b2d4ba0 (login with google)
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.user.username)
         if not self.nickName:
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.user.username
+        return self.username
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
@@ -47,22 +44,6 @@ class Group(models.Model):
     def __str__(self):
         return self.name
     
-=======
-    def save_avatar(self,upload_image):
-        #创建与用户名的文件夹
-        upload_path=os.path.join(settings.MEDIA_ROOT,'avatar_images')
-
-        # 生成一个随机字符串
-        uuid_str_name = uuid.uuid4().hex+'.jpg'
-        #保存
-        with open(os.path.join(upload_path,uuid_str_name), 'wb+') as file:
-            for chunk in upload_image.chunks():
-                file.write(chunk)
-        return uuid_str_name
-
->>>>>>> 03f7eaf (update avatar update)
-=======
->>>>>>> 5dae0fb (update avatar)
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
