@@ -31,6 +31,12 @@ urlpatterns = [
     # Django-allauth routes for authentication
     path('accounts/', include('allauth.urls')),
     path('secondSavings/', include('TimeTracker.urls')),
+    path('report/', views.report, name='report'),
+    path('Group/', views.table, name='table'),
+    path('MusicList/', views.music, name='music'),
+    path('Coin/', views.coin, name='coin'),
+    path('Settings/', views.setting, name='setting'),
+    path('Badges/', views.badges, name='badges'),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
     

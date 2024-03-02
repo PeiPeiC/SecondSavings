@@ -6,6 +6,7 @@ app_name = 'TimeTracker'
 urlpatterns = [
     path('', views.main, name='main'),
     path("main/", views.main, name='main'),
+
     path('report/', views.report, name='report'),
     path('Group/', views.table, name='table'),
     path('MusicList/', views.music, name='music'),
