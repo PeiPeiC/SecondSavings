@@ -1,0 +1,14 @@
+{% extends 'TimeTracker/base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/report.css">
+{% endblock %}
+{% block content %}
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary">Week</button>
+        <button type="button" class="btn btn-primary">Month</button>
+        <button type="button" class="btn btn-primary">Year</button>
+    </div>
+    <div id="main"></div>
+    <script src="/statics/js/line_table.js"></script>
+{% endblock %}

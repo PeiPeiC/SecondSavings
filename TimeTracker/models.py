@@ -1,6 +1,5 @@
 from django.utils import timezone
-
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
 
 from imagekit.models import ProcessedImageField
@@ -8,11 +7,19 @@ from imagekit.processors import ResizeToFill
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    picture = ProcessedImageField(upload_to='profile_images',
-                                  processors=[ResizeToFill(100, 100)],
-                                  format='JPEG',
-                                  options={'quality': 95})
+    NICK_NAME_MAX_LENGTH = 30
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
+    avatar = ProcessedImageField(upload_to='avatar_images',
+                                 processors=[ResizeToFill(100, 100)],
+                                 format='JPEG',
+                                 options={'quality': 95})
+
+    def save(self, *args, **kwargs):
+        if not self.nickName:
+            self.nickName = self.user.username
+        super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username

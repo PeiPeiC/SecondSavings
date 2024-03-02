@@ -1,25 +1,91 @@
-<!-- profile默认页（account) -->
-{% extends 'base.html' %}
-{% block content %}
-<form>
-    <div class="user-field">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" value="USER_1" readonly>
-    </div>
-    <div class="user-field">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" value="EXAMPLE@GMAIL.COM" readonly>
-    </div>
-    <button type="button" class="btn btn-secondary" onclick="enableFields()">Reset</button>
-</form>
-
-<script>
-function enableFields() {
-    document.getElementById("name").readOnly = false;
-    document.getElementById("email").readOnly = false;
-}
-// click the button to enable the flieds
-</script>
+<!-- profile default page（account) -->
+{% extends 'TimeTracker/base.html' %}
+{% block css %}
+    <link rel="stylesheet " href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}
 
 
+{% block content %}
+<form id="user_form" action="{% url 'TimeTracker:profile_update' %}" method="post">
+    <div class="user-field">
+        <label for="name">Name</label>
+        &nbsp;
+        <!-- Nickname edit icon -->
+        <span class="edit-symbol" onclick="enableNameEdit()">&#9998;</span>
+        <!-- Nickname input -->
+        <input type="text" class="form-control" id="name" value="{{ user_profile.nickName }}" readonly>
+    </div>
+    <div class="user-field">
+        <label for="email">Email</label>
+        <!-- email input -->
+        <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
+    </div>
+    <!-- set password button -->
+    <a href="{% url 'account_change_password' %}" >
+    <button type="button" class="btn btn-secondary">Change Password</button>
+    </a>
+    <!-- cancel button -->
+    <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;" onclick="cancelChanges()">Cancel</button>
+    <!-- submit button -->
+    <button type="button" class="btn btn-primary" id="submit-btn" style="display: none;" onclick="submitForm()">Submit</button>
+</form>
+
+<script>
+// Nickname edit
+function enableNameEdit() {
+    document.getElementById("name").readOnly = false;
+    document.getElementById("name").focus();
+
+    // set password button display
+    document.querySelector('.btn-secondary').style.display = 'none';
+    // show cancel & submit buttons
+    document.getElementById("cancel-btn").style.display = 'inline-block';
+    document.getElementById("submit-btn").style.display = 'inline-block';
+}
+
+// cancel edit
+function cancelChanges() {
+    // set Nickname read only
+    document.getElementById("name").readOnly = true;
+
+    // cancel & submit button display
+    document.getElementById("cancel-btn").style.display = 'none';
+    document.getElementById("submit-btn").style.display = 'none';
+
+    // show set password button
+    document.querySelector('.btn-secondary').style.display = 'inline-block';
+
+    // reset the input text
+    document.getElementById("name").value = '{{ user_profile.nickName }}';
+}
+</script>
+
+
+<script>
+// submit form
+function submitForm() {
+    // create object
+    var formData = {
+        nickName: $('#name').val(),
+        email: $('#email').val(),
+        {#password: $('#password').val(),#}
+    };
+
+    // send post
+    $.post($("#user_form").attr("action"), formData, function(response) {
+        console.log(response);
+
+        // After submitting, set Nickname read only
+        document.getElementById("name").readOnly = true;
+
+        // cancel & submit buttons display
+        document.getElementById("cancel-btn").style.display = 'none';
+        document.getElementById("submit-btn").style.display = 'none';
+
+        // show set password button
+        document.querySelector('.btn-secondary').style.display = 'inline-block';
+    });
+}
+</script>
+{% endblock %}
