@@ -82,7 +82,7 @@ $(document).ready(function () {
             // send post
             $.ajax({
                 type: 'POST',
-                url: {% url 'TimeTracker:setting' %},  // 请将此替换为您的后端处理URL
+                url: {% url 'TimeTracker:setting' %},
                 data: {
                     'sync': isChecked ? 1 : 0
                 },

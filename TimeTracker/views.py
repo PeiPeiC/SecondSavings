@@ -100,7 +100,7 @@ def coin(request):
 
 def setting(request):
     try:
-        user_setting = UserSetting.objects.get(user=request.user)
+        user_setting = UserSetting.objects.get_or_create(user=request.user)
     except UserSetting.DoesNotExist:
         messages.error(request, 'Invalid Login')
         user_setting = UserSetting()
