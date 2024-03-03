@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import base64
 import json
 import random
@@ -7,6 +8,10 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
+=======
+from django.utils import timezone
+from datetime import datetime, date
+>>>>>>> 7f3e5ed (The first version of main page backend implements)
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
@@ -19,11 +24,15 @@ from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
+<<<<<<< HEAD
 from django.views.decorators.csrf import csrf_exempt
 from TimeTracker.forms import LoginForm, ResetPasswordForm, SignUpForm
 from TimeTracker.models import Group, UserProfile
+=======
+from TimeTracker.models import Group, UserProfile, Task, Record
+>>>>>>> 7f3e5ed (The first version of main page backend implements)
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -146,6 +155,7 @@ def top_study_times(request):
     return JsonResponse(data)
 
 
+<<<<<<< HEAD
 def index(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/userInfo.html')
@@ -180,3 +190,67 @@ def badges(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/badges.html')
 
+=======
+
+
+#点击submit后创建task
+def create_task(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        start_time = request.POST.get('startTime')
+        totalSeconds = request.POST.get('totalSeconds')
+        # 创建并保存任务对象
+        task = Task(user=request.user, title=title, startTime=start_time,totalSeconds=totalSeconds)
+        task.save()
+        return JsonResponse({'status': 'success', 'task_id': task.id})
+    return JsonResponse({'status': 'error'}, status=400)
+
+#点击delete后删除task
+def delete_task(request):
+    task_id = request.POST.get('task_id')
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    task.delete()
+    return JsonResponse({'status': 'success'})
+
+
+
+#前端获取用户task，保证每次刷新网页都保留已创建的task
+def get_tasks(request):
+    tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
+    return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回
+
+
+#startTimer()触发后调用，新建对应record
+def start_record(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('taskId')
+        print(task_id)
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+        #task = Task.objects.get(pk=task_id)
+        record = Record.objects.create(task=task, user=request.user, startTime=timezone.now())
+        return JsonResponse({'record_id': record.pk})
+
+#pauseTimer()触发后调用，新建对应record
+def end_record(request):
+    if request.method == 'POST':
+        record_id = request.POST.get('recordId')
+        record = Record.objects.get(pk=record_id)
+        record.endTime = timezone.now()
+        record.save()
+        # 这里可以计算study_time并更新UserProfile 还没实现
+        # 计算学习时间
+        study_time_delta = record.endTime - record.startTime
+
+        # 获取当前的累积学习时间
+        user_profile = UserProfile.objects.get(user=record.user)
+        current_study_time = user_profile.study_time
+
+        # 将 timedelta 转换为时间
+        new_study_time = (datetime.combine(date.min, current_study_time) + study_time_delta).time()
+
+        # 更新UserProfile里的study_time
+        user_profile.study_time = new_study_time
+        user_profile.save()
+
+        return JsonResponse({'status': 'success'})
+>>>>>>> ba503c0 (The first version of main page backend implements)
