@@ -43,4 +43,7 @@ urlpatterns = [
     path('Settings/', views.setting, name='setting'),
     path('Badges/', views.badges, name='badges'),
 
+    path('start_record/', views.start_record, name='start_record'),
+    path('end_record/', views.end_record, name='end_record'),
+
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
