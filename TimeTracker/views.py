@@ -26,7 +26,7 @@ def profile(request):
         messages.error(request, 'Invalid Login')
         user_profile = UserProfile()
         # return redirect('/accounts/login/')
-    return render(request, 'TimeTracker/userInfo.html', {'user_profile': user_profile})
+    return render(request, 'TimeTracker/userinfo.html', {'user_profile': user_profile})
 
 
 @login_required
