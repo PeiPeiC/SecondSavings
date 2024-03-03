@@ -85,10 +85,9 @@ class Record(models.Model):
 class UserSetting(models.Model):
     ALARM_MAX_LENGTH = 10
     ALARM_CHOICES = [
-        ('default', f"{settings.MEDIA_URL}alarm/default.mp3"),
-        ('marimba', f"{settings.MEDIA_URL}alarm/Marimba.mp3"),
-        ('harp', f"{settings.MEDIA_URL}alarm/Harp.mp3")
-
+        ('default', f"{settings.MEDIA_ROOT}/alarm/default.mp3"),
+        ('marimba', f"{settings.MEDIA_ROOT}/alarm/Marimba.mp3"),
+        ('harp', f"{settings.MEDIA_ROOT}/alarm/Harp.mp3")
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)

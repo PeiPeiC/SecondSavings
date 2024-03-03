@@ -73,35 +73,19 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
-<<<<<<< HEAD
-
-=======
-            
->>>>>>> e814e1b (solve the avatar upload issue for old users)
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
                 logger.info(f'Old avatar deleted for user {request.user.username}')  # debug log
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-<<<<<<< HEAD
             user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
                                      save=False)
-            logger.info(f'New avatar saved: {request.user.username}_{rand_str}.jpg for user {request.user.username}')
-=======
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
-            
->>>>>>> e814e1b (solve the avatar upload issue for old users)
+
             user_profile.save()
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
             messages.error(request, 'Invalid Image')
-<<<<<<< HEAD
-            logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-=======
-    return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-
->>>>>>> e814e1b (solve the avatar upload issue for old users)
 
 
 def report(request):
