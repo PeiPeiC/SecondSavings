@@ -12,6 +12,9 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
 from TimeTracker.models import UserProfile, UserSetting
+import logging
+
+logger = logging.getLogger('django')
 
 
 def main(request):
@@ -61,18 +64,19 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
-            
+
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
-
+                logger.info(f'Old avatar deleted for user {request.user.username}')  # debug log
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
-            
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
+                                     save=False)
             user_profile.save()
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
             messages.error(request, 'Invalid Image')
+            logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
 
 
