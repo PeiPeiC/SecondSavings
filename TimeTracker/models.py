@@ -23,7 +23,7 @@ class UserProfile(models.Model):
         super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.user.username
+        return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url
 
 
 class Task(models.Model):
@@ -62,9 +62,9 @@ class Record(models.Model):
 class UserSetting(models.Model):
     ALARM_MAX_LENGTH = 10
     ALARM_CHOICES = [
-        ('default', f"{settings.MEDIA_ROOT}alarm/default.mp3"),
-        ('marimba', f"{settings.MEDIA_ROOT}alarm/Marimba.mp3"),
-        ('harp', f"{settings.MEDIA_ROOT}alarm/Harp.mp3")
+        ('default', f"{settings.MEDIA_ROOT}/alarm/default.mp3"),
+        ('marimba', f"{settings.MEDIA_ROOT}/alarm/Marimba.mp3"),
+        ('harp', f"{settings.MEDIA_ROOT}/alarm/Harp.mp3")
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
@@ -72,4 +72,4 @@ class UserSetting(models.Model):
     syncGoogleTask = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        return 'user:' + self.user.username + ' alarm:' + self.alarm

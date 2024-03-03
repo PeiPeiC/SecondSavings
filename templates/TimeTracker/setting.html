@@ -28,8 +28,9 @@
           </button>
           <!-- 下拉菜单的选项 -->
           <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">
-            {% for alarm in alarm_choices %}
-            	<a class="dropdown-item" href="#">alarm</a>
+
+            {% for key, value in alarm_choices %}
+            	<a class="dropdown-item" href={{ value }}>key</a>
             {% endfor %}
             
           </div>
@@ -67,36 +68,13 @@
 </div>
 
    <!-- 引入 jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 <script>
 $(document).ready(function(){
     $('.dropdown-toggle').dropdown();
 });
-
-$(document).ready(function () {
-        $('#syncCheckbox').change(function () {
-            var isChecked = $(this).prop('checked');
-
-            // send post
-            $.ajax({
-                type: 'POST',
-                url: {% url 'TimeTracker:setting' %},
-                data: {
-                    'sync': isChecked ? 1 : 0
-                },
-                success: function (data) {
-                    // 如果需要，可以在成功时执行一些操作
-                    console.log('Update successful');
-                },
-                error: function (error) {
-                    // 如果有错误，可以在此处理
-                    console.error('Update failed', error);
-                }
-            });
-        });
-    });
 </script>
 
 <!-- 引入 Popper.js -->

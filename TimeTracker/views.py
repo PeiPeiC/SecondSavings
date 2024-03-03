@@ -61,20 +61,20 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
-            
+
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
 
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
-            
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
+                                     save=False)
+
             user_profile.save()
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
             messages.error(request, 'Invalid Image')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-
 
 
 def report(request):
@@ -99,31 +99,36 @@ def coin(request):
 
 def setting(request):
     try:
-        user_setting = UserSetting.objects.get_or_create(user=request.user)
+        user_setting, _ = UserSetting.objects.get_or_create(user=request.user)
+        user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     except UserSetting.DoesNotExist:
         messages.error(request, 'Invalid Login')
         user_setting = UserSetting()
+        user_profile = UserProfile()
+
     return render(request, 'TimeTracker/setting.html',
-                  {'user_setting': user_setting, 'alarm_choices': UserSetting.ALARM_CHOICES})
+                  context={'user_setting': user_setting,
+                           'alarm_choices': UserSetting.ALARM_CHOICES,
+                           'user_profile': user_profile})
 
 
 def setting_sync(request):
+    user_setting = UserSetting.objects.get(user=request.user)
+    user_profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
-        print(request)
         data = request.POST
         sync = data.get('sync')
 
-        user_setting = UserSetting.objects.get(user=request.user)
         user_setting.syncGoogleTask = sync
         user_setting.save()
 
         messages.add_message(request, messages.SUCCESS, 'Update Successfully')
         return redirect('TimeTracker:setting')
-    else:
-        user_setting = UserSetting.objects.get(user=request.user)
 
-    return render(request, 'TimeTracker/setting.html', context={'user_setting': user_setting, 'user': request.user})
-
+    return render(request, 'TimeTracker/setting.html',
+                  context={'user_setting': user_setting,
+                           'user': request.user,
+                           'user_profile': user_profile})
 
 
 def badges(request):
