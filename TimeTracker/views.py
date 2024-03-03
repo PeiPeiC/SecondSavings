@@ -116,8 +116,8 @@ def setting_sync(request):
     user_setting = UserSetting.objects.get(user=request.user)
     user_profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
-        data = request.POST
-        sync = data.get('sync')
+        data = json.loads(request.body)
+        sync = data.get('isSync', False)
 
         user_setting.syncGoogleTask = sync
         user_setting.save()

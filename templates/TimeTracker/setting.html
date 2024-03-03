@@ -75,6 +75,23 @@
 $(document).ready(function(){
     $('.dropdown-toggle').dropdown();
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    let checkbox = document.getElementById('syncCheckbox');
+
+    checkbox.addEventListener('change', function () {
+        updateSetting(checkbox.checked);
+    });
+
+    function updateSetting(isSync) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'TimeTracker:setting_sync_google_task' %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        let data = JSON.stringify({ 'isSync': isSync });
+        xhr.send(data);
+    }
+});
 </script>
 
 <!-- 引入 Popper.js -->
