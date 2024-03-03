@@ -28,7 +28,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url
 
-
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
@@ -46,10 +45,11 @@ class Task(models.Model):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
     category = models.CharField(max_length=CATEGORY_MAX_LENGTH)
     status = models.CharField(max_length=CATEGORY_MAX_LENGTH, default='pending', blank=True)
+    totalSeconds = models.IntegerField(default=0)
     badge = models.ImageField(upload_to='badge_images', blank=True)
-    startTime = models.DateTimeField()
-    endTime = models.DateTimeField()
-
+    startTime = models.DateTimeField(null=True, blank=True)
+    endTime = models.DateTimeField(null=True, blank=True)
+    
     def __str__(self):
         return self.title
 
