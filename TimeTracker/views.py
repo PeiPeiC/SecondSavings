@@ -152,10 +152,10 @@ def login_main(request):
 def create_task(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        start_time = request.POST.get('startTime')
-        totalSeconds = request.POST.get('totalSeconds')
+        task_type = request.POST.get('taskType')
+        task_date = request.POST.get('taskDate')
         # 创建并保存任务对象
-        task = Task(user=request.user, title=title, startTime=start_time,totalSeconds=totalSeconds)
+        task = Task(user=request.user, title=title, category = task_type, chosenDate = task_date)
         task.save()
         return JsonResponse({'status': 'success', 'task_id': task.id})
     return JsonResponse({'status': 'error'}, status=400)
@@ -167,6 +167,27 @@ def delete_task(request):
     task.delete()
     return JsonResponse({'status': 'success'})
 
+#点击finish后调用
+def finish_task(request):
+    task_id = request.POST.get('taskId')
+    isCompleted = request.POST.get('isCompleted') == 'true'
+    endTime = request.POST.get('endTime')
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    task.isCompleted = isCompleted
+    task.endTime = endTime
+    task.save()
+    return JsonResponse({'status': 'success'})
+
+def get_task_info(request):
+    task_id = request.GET.get('taskId')
+    task = get_object_or_404(Task, pk=task_id)
+    return JsonResponse({
+        'title': task.title,
+        'category': task.category,
+        'chosenDate': task.chosenDate,
+        'isCompleted': task.isCompleted,
+        'endtime': task.endTime.isoformat() if task.endTime else None
+    })
 
 
 #前端获取用户task，保证每次刷新网页都保留已创建的task
@@ -179,10 +200,11 @@ def get_tasks(request):
 def start_record(request):
     if request.method == 'POST':
         task_id = request.POST.get('taskId')
+        record_type = request.POST.get('recordType', 'task')  # 默认为 'task'
         print(task_id)
         task = get_object_or_404(Task, pk=task_id, user=request.user)
         #task = Task.objects.get(pk=task_id)
-        record = Record.objects.create(task=task, user=request.user, startTime=timezone.now())
+        record = Record.objects.create(task=task, user=request.user, type=record_type, startTime=timezone.now())
         return JsonResponse({'record_id': record.pk})
 
 #pauseTimer()触发后调用，新建对应record

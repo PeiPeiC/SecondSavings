@@ -23,4 +23,6 @@ urlpatterns = [
     path('get_tasks/', views.get_tasks, name='get_tasks'),
     path('start_record/', views.start_record, name='start_record'),
     path('end_record/', views.end_record, name='end_record'),
+    path('finish_task/', views.finish_task, name='finish_task'),
+    path('get_task_info/', views.get_task_info, name='get_task_info'),
 ]

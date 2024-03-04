@@ -58,7 +58,9 @@ class Task(models.Model):
     badge = models.ImageField(upload_to='badge_images', blank=True)
     startTime = models.DateTimeField(null=True, blank=True)
     endTime = models.DateTimeField(null=True, blank=True)
-    
+    isCompleted = models.BooleanField(default=False)        # 新增字段标记任务是否完成
+    chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
+
     def __str__(self):
         return self.title
 
