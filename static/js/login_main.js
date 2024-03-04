@@ -1,41 +1,479 @@
 $('.dropdown-toggle').dropdown();
 
-let timer_ = null;
-let seconds = 0;
-let isRunning_ = false;
-let currentTaskStartTime = null;
-let currentTaskElement = null;
-let startTime;
-let endTime;
-let currentTaskId = null;
-let currentTaskName = "";
+function addTask() {
+
+    const taskContent = document.getElementById('taskName').value;
+    const taskType = document.getElementById('taskType').value;
+    const taskDate = document.getElementById('taskDate').value;
+    
+
+    if (taskContent && taskType && taskDate) { // 确保所有input都已输入
+        // 从cookie中获取CSRF令牌
+        var csrftoken = getCookie('csrftoken');
 
 
-// function startPauseTimer() {
-//     alert("Button clicked!");
-// }
-function startPauseTimer() {
-    if (!isRunning_) {
-        // 如果计时器未运行，则开始或继续计时
-        isRunning_ = true;
-        document.getElementById('startPauseButton').textContent = 'PAUSE';
-        timer_ = setInterval(() => {
-            seconds++;
-            document.getElementById('timer-string').textContent = formatTime(seconds);
-        }, 1000);
-    } else {
-        // 如果计时器正在运行，则暂停
-        isRunning_ = false;
-        document.getElementById('startPauseButton').textContent = 'START';
-        clearInterval(timer_);
+        // 在这里发送 AJAX 请求到后端创建新任务         测试代码**********************************
+        $.ajax({
+            url: '/TimeTracker/create_task/', // 后端 URL，需要在Django的urls.py中定义这个路由
+            type: 'POST',
+            data: {
+                'title': taskContent,
+                'taskType': taskType,
+                'taskDate': taskDate,
+                'csrfmiddlewaretoken': csrftoken  // 添加CSRF令牌
+            },
+            success: function(response) {
+                // 任务创建成功后的操作
+                console.log('Task created successfully.');
+                var taskId = response.task_id; // 假设后端返回了任务的ID
+
+                // 创建任务项和删除按钮
+                var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
+
+                
+                //删除的按钮及功能实现（新版本，同时删除前后端）
+                var deleteBtn = $("<button>").text("Delete").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
+                .click(function () {
+                    // 获取当前task的ID
+                var task_id = $(this).data('task-id');
+                var csrftoken = getCookie('csrftoken'); // 从cookie中获取CSRF令牌
+
+                // 发送 AJAX 请求到后端删除任务
+                $.ajax({
+                    url: '/TimeTracker/delete_task/', // 确保这个URL是正确的
+                    type: 'POST',
+                    data: {
+                        'task_id': task_id,
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                        if(response.status == 'success') {
+                // 如果后端删除成功，也在前端删除任务项
+                            $(this).parent().remove();
+                        }
+                    }.bind(this), // 确保在回调函数中this指向按钮
+                    error: function(error) {
+                        console.error('Error deleting task:', error);
+                    }
+                });
+                });
+
+
+
+
+                // 为每个任务添加开始计时的按钮
+                
+                //var startBtn = $("<button>").text("Start Task").click(function () { 不带有task属性的按钮 老按钮
+
+                var startBtn = $("<button>").text("Start Task").addClass('startButton').data('task-id', taskId).click(function () {
+                    isBreak = false;
+                    currentTaskColumn = $(this).parent();
+                    var taskId = $(this).data('task-id');
+                    if (!isRunning) {
+                        seconds=0;
+                        startTimer(document.getElementById('timer-string'), taskId, 'task'); // 传入任务ID
+                        isRunning = true;
+                        document.getElementById('startButton').textContent = "PAUSE";
+                        $("#currentTask").text("Current Task: " + taskContent);
+                    } else {
+                        alert("A task is already running. Please pause before starting a new task.");
+                    }
+                });
+
+                var breakBtn = $("<button>").text("Start Break").addClass('breakButton').data('task-id', taskId).click(function () {
+                    isBreak = true;
+                    var taskId = $(this).data('task-id');
+                    if (!isRunning) {
+                        seconds=0;
+                        startTimer(document.getElementById('timer-string'), taskId, 'break'); // 传入任务ID
+                        isRunning = true;
+                        document.getElementById('startButton').textContent = "PAUSE";
+                        $("#currentTask").text("Current Task: " + taskContent + "(Status:Breaking)");
+                    } else {
+                        alert("A task is already running. Please pause before break.");
+                    }
+                });
+
+
+                
+
+
+                // 将按钮添加到任务项中
+                taskInfo.append(startBtn).append(breakBtn).append(deleteBtn);
+                $("#taskList").append(taskInfo);
+
+            },
+            error: function(error) {
+                console.error('Error creating task:', error);
+            }
+        });
+
+        // 清空输入框和时间选择器           
+        $("#task").val("");
+        $("#taskDuration").val("");
+
+        //*****************测试代码 *********************/
+
+
+
+
+
+
+
+
+        /*                                                                          源代码
+        // 创建任务项和删除按钮
+        var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDurationInput);
+        var deleteBtn = $("<button>").text("Delete").addClass('deleteButton').click(function () {
+            $(this).parent().remove(); // 删除这个任务项
+        });
+
+        // 为每个任务添加开始计时的按钮（此代码段保持不变）
+        var startBtn = $("<button>").text("Start Task").click(function () {
+            if (!isRunning) {
+                startTimer(totalSeconds, document.getElementById('timer-string'));
+                isRunning = true;
+                document.getElementById('startButton').textContent = "PAUSE";
+                $("#currentTask").text("Current Task: " + taskContent);
+            } else {
+                alert("A task is already running. Please pause or reset before starting a new task.");
+            }
+        });
+
+        // 将按钮添加到任务项中
+        taskInfo.append(startBtn).append(deleteBtn);
+        $("#taskList").append(taskInfo);
+
+        // 清空输入框和时间选择器
+        $("#task").val("");
+        $("#taskDuration").val("");*/
     }
 }
 
+
+
+
+// 用于从cookie中获取CSRF令牌的辅助函数  所有POST的都需要向服务器传令牌 测试用***************************
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+
+$(document).ready(function () {
+    // 获取Task **********************测试代码********************************
+    $.ajax({
+        url: '/TimeTracker/get_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
+        type: 'GET',
+        dataType: 'json',
+        success: function(tasks) {
+            // 使用从后端获取的任务列表来渲染页面
+            tasks.forEach(function(task) {
+                createTaskItem(task.title, task.category, task.id, task.chosenDate, task.isCompleted, task.endTime);
+            });
+        },
+        error: function(error) {
+            console.error('Error getting tasks:', error);
+        }
+    });
+    //***************************测试代码 *******************************
+
+
+
+
+
+    /******************源代码*******************
+    // 实现清除所有任务的功能
+    $("#clearAllTasks").click(function () {
+        $("#taskList").empty(); // 清空任务列表
+    });
+
+    // 假设每个任务项在完成时会添加一个 `.finished` 类
+    // 实现清除已完成任务的功能
+    $("#clearFinishedTasks").click(function () {
+        $("#taskList .finished").remove(); // 移除所有标记为完成的任务
+    }); **************源代码**************/
+});
+
+
+// 渲染已有Task的函数 ******************测试代码*******************
+function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, endTime) {
+    if (isCompleted) {
+        var EndTime = new Date(endTime).toLocaleString(); // 格式化时间
+        var taskInfo = $("<li>").addClass('taskItem').css('background-color', '#d4edda').text(taskContent + " - Finished on: " + EndTime);
+        var finishedLabel = $('<span>').text('Finished').addClass('badge badge-success ml-2');
+        var deleteBtn = $("<button>").text("Delete").addClass('deleteBtn') 
+        .click(function () {$(this).parent().remove();})
+        //taskElement.css('background-color', '#d4edda');
+        taskInfo.append(finishedLabel).append(deleteBtn)
+        $("#taskList").append(taskInfo);
+       
+    }
+    else{
+        // 创建任务项和删除按钮等...
+        // 这里复用你已经有的代码来创建每个任务项
+        // 确保每个任务项都能够关联到它的任务ID
+        // 创建任务项和删除按钮
+        var taskType = category;       //获取任务类别
+        var taskDate = chosenDate;       //获取任务时间
+        //var dateOnly = taskDate.split('T')[0];
+        var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
+        //删除的按钮及功能实现
+        var deleteBtn = $("<button>").text("Delete").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
+        .click(function () {
+            // 获取当前task的ID
+        var task_id = $(this).data('task-id');
+        var csrftoken = getCookie('csrftoken'); // 从cookie中获取CSRF令牌
+
+        // 发送 AJAX 请求到后端删除任务
+        $.ajax({
+            url: '/TimeTracker/delete_task/', // 确保这个URL是正确的
+            type: 'POST',
+            data: {
+                'task_id': task_id,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(response) {
+                if(response.status == 'success') {
+                    // 如果后端删除成功，也在前端删除任务项
+                    $(this).parent().remove();
+                }
+            }.bind(this), // 确保在回调函数中this指向按钮
+            error: function(error) {
+                console.error('Error deleting task:', error);
+            }
+        });
+        });
+
+        // 为每个任务添加开始计时的按钮
+        var startBtn = $("<button>").text("Start Task").addClass('startButton').data('task-id', taskId).click(function () {
+            isBreak = false;
+            currentTaskColumn = $(this).parent();
+            var taskId = $(this).data('task-id');
+        
+            if (!isRunning) {
+                seconds=0;
+                startTimer(document.getElementById('timer-string'), taskId, 'task'); // 传入任务ID
+                isRunning = true;
+                document.getElementById('startButton').textContent = "PAUSE";
+                $("#currentTask").text("Current Task: " + taskContent);
+            } else {
+                alert("A task is already running. Please pause before starting a new task.");
+            }
+        });
+
+        var breakBtn = $("<button>").text("Start Break").addClass('breakButton').data('task-id', taskId).click(function () {
+            isBreak = true;
+            var taskId = $(this).data('task-id');
+            if (!isRunning) {
+                seconds=0;
+                startTimer(document.getElementById('timer-string'), taskId, 'break'); // 传入任务ID
+                isRunning = true;
+                document.getElementById('startButton').textContent = "PAUSE";
+                $("#currentTask").text("Current Task: " + taskContent + "(Status:Breaking)");
+            } else {
+                alert("A task is already running. Please pause before break.");
+            }
+        });
+
+        // 将按钮添加到任务项中
+        taskInfo.append(startBtn).append(breakBtn).append(deleteBtn);
+        $("#taskList").append(taskInfo);
+    }
+    
+}
+
+//*************************************测试代码
+
+
+
+var taskIdTemp = null;                  //保留TaskID
+var recordTemp = null;                  //保留recordID
+var currentTaskColumn = null;
+var isBreak = false;
+var isRunning = false; // 跟踪计时器是否正在运行
+let seconds = 0;
+var timer; // 用于 setInterval 的变量
+
+
+document.getElementById('startButton').addEventListener('click', function () {
+    if (!isRunning) {
+        console.log("TEST4");
+        // 如果计时器未在运行，开始或继续计时
+        var recordType = null;
+        if(isBreak) recordType = 'break';
+        else recordType = 'task'
+        startTimer(document.getElementById('timer-string'), taskIdTemp, recordType);
+        isRunning = true; // 更新状态为正在运行
+        this.textContent = "PAUSE"; // 更新按钮文本为 "PAUSE"
+    } else {
+        // 如果计时器正在运行，暂停计时
+        pauseTimer();
+        isRunning = false; // 更新状态为未运行
+        this.textContent = "START"; // 更新按钮文本为 "START"
+    }
+});//start button
+
+/*                      被finishTask（）代替了
+document.getElementById('resetButton').addEventListener('click', function () {
+    resetTimer();
+    document.getElementById('timer-string').textContent = "25:00"; // 重置计时器显示
+    remainingTime = 25 * 60; // 重置剩余时间为 25 分钟
+    document.getElementById('startButton').textContent = "START"; // 重置开始按钮文本
+    isRunning = false; // 更新计时器状态为未运行
+    document.getElementById('currentTask').textContent = "No task running."; // 重置当前任务显示
+});//reset */
+
+function startTimer(display, taskid, record_type) {
+    console.log("TEST1");
+    if(taskid !== null) {
+        console.log("TEST2");
+        console.log(taskid);
+        taskIdTemp = taskid; // 保存任务ID
+        // 发送 AJAX 请求到后端创建新的记录
+        createRecord(taskid, 'start', record_type);
+    }
+    console.log("TEST3");
+
+
+    timer = setInterval(() => {
+        seconds++;
+        document.getElementById('timer-string').textContent = formatTime(seconds);
+    }, 1000);
+
+}
+
+
+function pauseTimer() {
+    clearInterval(timer); // 停止计时器
+    if(recordTemp !== null) {
+        createRecord(taskIdTemp, 'end'); // 发送 AJAX 请求到后端更新记录
+    }
+}
+
+//初始化
 function resetTimer() {
+    clearInterval(timer); // 停止当前的计时器
+    //初始化
+    taskIdTemp = null;
+    recordTemp = null;
     isRunning_ = false;
+    currentTaskColumn = null;
     seconds = 0;
     document.getElementById('timer-string').textContent = '00:00';
-    document.getElementById('startPauseButton').textContent = 'START';
+    document.getElementById('startButton').textContent = 'START';
+    
+}
+
+
+function finishTask() {
+    if (!taskIdTemp) {
+        alert("No task is currently running.");
+        return;
+    }
+    if (!isRunning) {
+        seconds=0;
+        var taskElement = currentTaskColumn;
+        if (taskElement) {
+            $.ajax({
+                url: '/TimeTracker/get_task_info/',  // 后端 URL
+                type: 'GET',
+                data: { 'taskId': taskIdTemp },
+                success: function(response) {
+                    // 假设 response 包含 title 和 endtime
+                    var taskTitle = response.title;
+                    var endTime = new Date(response.endtime).toLocaleString(); // 格式化时间
+        
+                    // 找到对应的 taskInfo 元素并更新内容
+                    taskElement.text(taskTitle + " - Finished on: " + endTime);
+                    //加入finished 标签
+                    var finishedLabel = $('<span>').text('Finished').addClass('badge badge-success ml-2');
+                    taskElement.append(finishedLabel);
+                    //添加删除按钮
+                    var deleteBtn = $("<button>").text("Delete").addClass('deleteBtn')               //在按钮中设置数据属性
+                    .click(function () {taskElement.remove();})
+                    taskElement.append(deleteBtn);
+                    //调整颜色
+                    taskElement.css('background-color', '#d4edda');
+                },
+                error: function(error) {
+                    console.error('Error fetching task info:', error);
+                }
+            });
+        }
+
+        // 向后端发送完成任务的请求
+        var csrftoken = getCookie('csrftoken');
+        console.log(taskIdTemp);
+        $.ajax({
+            url: '/TimeTracker/finish_task/', // 确保这个URL是正确的
+            type: 'POST',
+            data: {
+                'taskId': taskIdTemp,
+                'isCompleted': true,
+                'endTime': new Date().toISOString(),
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(response) {
+                if (response.status == 'success') {
+                    console.log('Task marked as completed.');
+                }
+            },
+            error: function(error) {
+                console.error('Error finishing task:', error);
+            }
+        });
+
+        // 重置相关变量
+        resetTimer();
+        $("#currentTask").text("No task running.");
+    } else {
+        alert("A task is already running. Please pause before finish task.");
+    }
+
+
+}
+//startTimer()与pauseTimer()触发的create or set record的function
+function createRecord(taskId, action, record_type) {
+    console.log("taskId = " + taskId);         
+    var url = action === 'start' ? '/TimeTracker/start_record/' : '/TimeTracker/end_record/';           //action == "start" → '/start_record/'  action == "end" → '/end_record/'
+    var data = {
+        'taskId': taskId,
+        'recordType': record_type,
+        'csrfmiddlewaretoken': getCookie('csrftoken')
+    };
+
+    if(action === 'end') {
+        data['recordId'] = recordTemp; // 添加记录ID
+    }
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            if(action === 'start') {
+                recordTemp = response.record_id; // 保存记录ID
+            }
+            // 其他处理 ...
+        },
+        error: function(error) {
+            console.error('Error with record action:', error);
+        }
+    });
 }
 
 function formatTime(sec) {
@@ -47,244 +485,3 @@ function formatTime(sec) {
 function pad(number) {
     return number < 10 ? `0${number}` : number;
 }
-
-// 当用户点击“结束”按钮时调用
-// function finishTask() {
-//     clearInterval(timer_);
-//     isRunning_ = false; // 停止计时器
-//     document.getElementById('startPauseButton').textContent = 'START';
-//
-//     if (currentTaskId !== null) {
-//         const endTime = new Date();
-//         const duration = calculateDuration(startTime, endTime);
-//
-//         // 更新任务列表中的当前任务项，添加持续时间信息
-//         if (currentTaskElement) {
-//             currentTaskElement.textContent += ` - Duration: ${duration}`;
-//         }
-//
-//         // 重置“当前任务”显示
-//         document.getElementById('currentTask').textContent = "No Task running";
-//         startTime = null;
-//         currentTaskId = null;
-//         currentTaskElement = null;
-//     }
-//
-//     // 无论是否有任务正在进行，都重置计时器显示
-//     document.getElementById('timer-string').textContent = '00:00';
-//     seconds = 0; // 重置秒数
-// }
-
-// function finishTask() {
-//     if (!currentTaskStartTime || !currentTaskId) {
-//         alert("No task is currently running.");
-//         return;
-//     }
-//     clearInterval(timer_);
-//     isRunning_ = false;
-//     document.getElementById('startPauseButton').textContent = 'START';
-//     const endTime = new Date();
-//     const duration = calculateDuration(currentTaskStartTime, endTime);
-//     const durationElement = document.getElementById(`duration-${currentTaskId}`);
-//     if (durationElement) {
-//         durationElement.textContent = ` - Duration: ${duration}`; // 仅更新持续时间信息
-//     }
-//     resetTimer();
-//     document.getElementById('currentTask').textContent = "No Task running";
-//     currentTaskElement = null;
-//     currentTaskId = null;
-// }
-
-// function finishTask() {
-//     clearInterval(timer_); // 停止计时器
-//     isRunning_ = false; // 更新运行状态
-//     document.getElementById('startPauseButton').textContent = 'START';
-//
-//     // 检查是否有任务正在进行
-//     if (!currentTaskStartTime || !currentTaskId) {
-//         alert("No task is currently running.");
-//         // 重置计时器显示，即使没有任务正在进行
-//         document.getElementById('timer-string').textContent = '00:00';
-//         seconds = 0; // 重置秒数
-//         return;
-//     }
-//
-//     // 如果有任务正在进行，计算持续时间并更新
-//     const endTime = new Date();
-//     const duration = calculateDuration(currentTaskStartTime, endTime);
-//     // 假设之前已经为任务项创建了一个持续时间的元素
-//     const durationElement = document.getElementById(`duration-${currentTaskId}`);
-//     if (durationElement) {
-//         durationElement.textContent = `Duration: ${duration}`; // 仅更新持续时间信息
-//     }
-//
-//     // 重置“当前任务”显示和计时器
-//     resetTimer();
-//     document.getElementById('currentTask').textContent = "No Task running";
-//     currentTaskElement = null;
-//     currentTaskId = null;
-// }//contain startButton
-
-function finishTask() {
-    clearInterval(timer_);
-    isRunning_ = false;
-    document.getElementById('startPauseButton').textContent = 'START';
-
-    if (!currentTaskStartTime || !currentTaskId) {
-        alert("No task is currently running.");
-        resetTimer();
-        return;
-    }
-
-    const endTime = new Date();
-    const duration = calculateDuration(currentTaskStartTime, endTime);
-    const durationElement = document.getElementById(`duration-${currentTaskId}`);
-    if (durationElement) {
-        durationElement.textContent = `Duration: ${duration}`;
-    }
-
-    // Hide the "Start Task" button
-    const startBtn = currentTaskElement.querySelector('.start-task-btn');
-    if (startBtn) {
-        startBtn.style.display = 'none'; // Or startBtn.remove(); if you want to remove it completely
-    }
-
-    resetTimer();
-    document.getElementById('currentTask').textContent = "No Task running";
-    currentTaskElement = null;
-    currentTaskId = null;
-}
-
-// 添加任务到列表
-// 添加任务到列表，包括独立的持续时间显示
-function addTask() {
-    const taskName = document.getElementById('taskName').value;
-    const taskType = document.getElementById('taskType').value;
-    const taskDate = document.getElementById('taskDate').value;
-    const taskId = Date.now(); // 使用当前时间戳作为唯一ID
-
-    const li = document.createElement('li');
-    li.setAttribute('id', `task-${taskId}`);
-
-    // 任务信息
-    const taskNameSpan = document.createElement('span');
-    // taskInfo.textContent = `Task: ${taskName}, Type: ${taskType}, Date: ${taskDate}`;
-    taskNameSpan.textContent = `Task: ${taskName}`;
-    taskNameSpan.className = 'task-name';
-    // li.appendChild(task);
-
-    const taskTypeSpan = document.createElement('span');
-    // taskInfo.textContent = `Task: ${taskName}, Type: ${taskType}, Date: ${taskDate}`;
-    taskTypeSpan.textContent = `Task: ${taskType}`;
-    taskTypeSpan.className = 'task-type';
-
-    const dateSpan = document.createElement('span');
-    dateSpan.textContent = `Date: ${taskDate}`;
-    dateSpan.className = 'task-date';
-
-    // 持续时间信息
-    // const durationInfo = document.createElement('span');
-    // durationInfo.setAttribute('id', `duration-${taskId}`);
-    // li.appendChild(durationInfo);
-
-    const durationSpan = document.createElement('span');
-    durationSpan.setAttribute('id', `duration-${taskId}`);
-    durationSpan.className = 'task-duration';
-
-    const dateDurationContainer = document.createElement('div');
-    dateDurationContainer.className = 'date-duration-container';
-    dateDurationContainer.appendChild(taskNameSpan);
-    dateDurationContainer.appendChild(taskTypeSpan);
-    dateDurationContainer.appendChild(dateSpan);
-    dateDurationContainer.appendChild(durationSpan);
-
-    li.appendChild(dateDurationContainer);
-
-    // 开始任务按钮
-    const startBtn = document.createElement('button');
-    startBtn.textContent = 'Start Task';
-    startBtn.className = 'start-task-btn'; // 添加类名以便后续移除
-    startBtn.onclick = function() {
-        startTask(taskId, taskName, li);
-    };
-    li.appendChild(startBtn);
-
-    // 删除任务按钮
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.onclick = function () {
-        deleteTask(taskId);
-    };
-    li.appendChild(deleteBtn);
-
-    document.getElementById('taskList').appendChild(li);
-}
-
-
-
-// 开始任务
-// function startTask(taskId, taskName) {
-//     if (currentTaskElement) {
-//         alert("Another task is already running. Finish it before starting a new one.");
-//         return;
-//     }
-//
-//     document.getElementById('currentTask').textContent = taskName; // 更新正在进行的任务显示
-//     currentTaskStartTime = new Date(); // 记录任务开始时间
-//     currentTaskElement = document.getElementById(taskId); // 存储当前任务的 DOM 元素引用
-//
-//     // 开始计时
-//     startPauseTimer();
-//
-//     currentTaskElement = document.getElementById(taskId); // 新增行
-//     currentTaskId = taskId; // 确保这行在这里
-//     startTime = new Date();
-// }
-
-function startTask(taskId, taskName, taskLi) {
-    if (isRunning_) {
-        alert("Another task is already running. Finish it before starting a new one.");
-        return;
-    }
-    document.getElementById('currentTask').textContent = taskName; // 显示当前任务名称
-    currentTaskStartTime = new Date(); // 记录任务开始时间
-    currentTaskElement = taskLi; // 存储当前任务的 DOM 元素引用
-    currentTaskId = taskId; // 记录当前任务ID
-
-    // 开始计时
-    startPauseTimer();
-}
-
-// 删除任务
-// function deleteTask(taskId) {
-//     const taskLi = document.getElementById(taskId);
-//     document.getElementById('taskList').removeChild(taskLi);
-//     if (currentTaskId === taskId) {
-//         // 如果删除的是当前正在进行的任务，重置计时器和任务显示
-//         document.getElementById('currentTask').textContent = "No Task running";
-//         startTime = null;
-//         currentTaskId = null;
-//         currentTaskName = "";
-//     }
-// }
-
-function deleteTask(taskId) {
-    const taskLi = document.getElementById(`task-${taskId}`);
-    if (taskLi) {
-        taskLi.remove();
-    }
-    if (currentTaskId === taskId) {
-        resetTimer();
-        document.getElementById('currentTask').textContent = "No Task running";
-        currentTaskId = null;
-    }
-}
-
-// 计算持续时间
-function calculateDuration(start, end) {
-    const difference = end - start; // 时间差（毫秒）
-    const minutes = Math.floor((difference / 1000) / 60);
-    const seconds = Math.floor((difference / 1000) % 60);
-    return `${minutes} minutes, ${seconds} seconds`; // 格式化输出
-}
-

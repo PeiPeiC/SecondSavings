@@ -338,7 +338,7 @@
             <div class="container3">
                 <div id="timer-string" class="time">00:00</div>
                 <div class="container4">
-                    <button id="startPauseButton" class="button" onclick="startPauseTimer()">START</button>
+                    <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause" class="button">START</button>
                     <!-- Finish 按钮 -->
                     <button id="finishButton" class="button" onclick="finishTask()">FINISH</button>
                 </div>
@@ -369,10 +369,8 @@
                     <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
                         <option value="" disabled selected hidden>Select type</option>
                         <option value="work">Work</option>
-                        <option value="personal">Personal</option>
+                        <option value="life">Life</option>
                         <option value="study">Study</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="other">Other</option>
                     </select>
                     <input type="date" id="taskDate" class="form-control" placeholder="Date...">
                     {#                    <input type="time" id="taskTime" class="form-control">#}
@@ -389,7 +387,6 @@
 
 <script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/js/main.js' %}"></script>
 <script src="{% static '/js/login_main.js' %}"></script>
 </body>
 </html>
