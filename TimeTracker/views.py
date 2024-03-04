@@ -14,6 +14,10 @@ from django.views.decorators.csrf import csrf_exempt
 from TimeTracker.models import UserProfile
 import logging
 
+import boto3
+from django.conf import settings
+from botocore.exceptions import NoCredentialsError
+
 logger = logging.getLogger('django')
 
 def main(request):
@@ -50,6 +54,7 @@ def profile_update(request):
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile, 'user': request.user})
 
 
+
 @login_required
 def avatar_update(request):
     if request.method == "POST":
@@ -60,25 +65,37 @@ def avatar_update(request):
         if avatar_data:
             file_data = avatar_data.split(',')[1]  # remove data:image/png;base64,
             image_data_decoded = base64.b64decode(file_data)
-            image = Image.open(BytesIO(image_data_decoded))
-            image_io = BytesIO()
-            image.save(image_io, format='JPEG')
-            
-            if user_profile.avatar:
-                user_profile.avatar.delete()  # delete the old one
-                logger.info(f'Old avatar deleted for user {request.user.username}')#debug log
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
-            logger.info(f'New avatar saved: {request.user.username}_{rand_str}.jpg for user {request.user.username}')
-            user_profile.save()
+            file_name = f'{request.user.username}_{rand_str}.jpg'
 
-            return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
+            if settings.IS_HEROKU_APP:
+                # Heroku环境下的逻辑
+                s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                try:
+                    s3.put_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=f'media/{file_name}',
+                                  Body=image_data_decoded, ContentType='image/jpeg', ACL=settings.AWS_DEFAULT_ACL)
+                    user_profile.avatar = f'{settings.AWS_S3_CUSTOM_DOMAIN}/media/{file_name}'
+                    user_profile.save()
+                    messages.success(request, 'Avatar updated to S3 successfully')
+                except NoCredentialsError:
+                    messages.error(request, 'Error uploading file to S3')
+            else:
+                # 非Heroku环境下的逻辑
+                image = Image.open(BytesIO(image_data_decoded))
+                image_io = BytesIO()
+                image.save(image_io, format='JPEG')
+                if user_profile.avatar:
+                    user_profile.avatar.delete()  # delete the old one
+                user_profile.avatar.save(file_name, ContentFile(image_io.getvalue()), save=False)
+                logger.info(f'New avatar saved: {file_name} for user {request.user.username}')
+                user_profile.save()
+
+            return redirect('TimeTracker:profile')
         else:
             messages.error(request, 'Invalid Image')
-            logger.warning(f'Invalid image data received for user {request.user.username}')
+
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-
-
 
 def report(request):
     if request.method == 'GET':
