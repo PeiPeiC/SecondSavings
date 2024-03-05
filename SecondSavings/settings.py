@@ -84,7 +84,7 @@ DEBUG = True
 if IS_HEROKU_APP:
     ALLOWED_HOSTS = ['.herokuapp.com',]
 else:
-    ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost','second-savings-45733b1b5b8c.herokuapp.com']
+    ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost',]
 
 # Application definition
 SITE_ID = 1
@@ -304,4 +304,4 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
     # 本地开发时使用文件系统存储
-    AVATAR_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    # AVATAR_STORAGE = 'django.core.files.storage.FileSystemStorage'

@@ -64,20 +64,20 @@
                 {% else %}
                     <img src="{% static 'default_avatar.jpg' %}" alt="Default Avatar">
                 {% endif %} {% endcomment %}
-                {% if user_profile.avatar %}
+                {% comment %} {% if user_profile.avatar %}
                 <!-- 如果有 avatar，显示图片 -->
                     <img src="{{ user_profile.avatar.url }}" alt="avatar" style="width: 70px; height: 70px;">
                 {% else %}
                     <!-- 如果没有 avatar，显示 icon -->
                     <i class="bi bi-person-circle" style="font-size: 70px;"></i>
-                {% endif %}
+                {% endif %} {% endcomment %}
             
 
-                {% comment %} {% if user_profile.avatar %}
+                {% if user_profile.avatar %}
                 <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar.url }}" alt="avatar">
                 {% else %}
                 <i class="bi bi-person-circle" style="font-size: 70px"></i>
-                {% endif %}  {% endcomment %}
+                {% endif %}  
             </div>
             {% block content %}
             {% endblock %}

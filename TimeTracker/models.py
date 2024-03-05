@@ -11,7 +11,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
-    avatar = ProcessedImageField(storage=settings.AVATAR_STORAGE,  # 使用 settings 中的存储后端配置
+    avatar = ProcessedImageField(#storage=settings.AVATAR_STORAGE,  # 使用 settings 中的存储后端配置
                                  upload_to='avatar_images',
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
