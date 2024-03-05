@@ -251,9 +251,11 @@ def finish_task(request):
     task_id = request.POST.get('taskId')
     isCompleted = request.POST.get('isCompleted') == 'true'
     endTime = request.POST.get('endTime')
+    print("Received endTime from frontend:", endTime)
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     task.isCompleted = isCompleted
-    task.endTime = endTime
+    #task.endTime = endTime
+    task.endTime = timezone.now()
     task.save()
     return JsonResponse({'status': 'success'})
 
@@ -286,7 +288,7 @@ def start_record(request):
         record = Record.objects.create(task=task, user=request.user, type=record_type, startTime=timezone.now())
         return JsonResponse({'record_id': record.pk})
 
-#pauseTimer()触发后调用，新建对应record
+#pauseTimer()触发后调用
 def end_record(request):
     if request.method == 'POST':
         record_id = request.POST.get('recordId')
