@@ -59,11 +59,25 @@
         <div class="user-info">
             <!-- avatar -->
             <div class="user-icon text-center">
+                {% comment %} {% if user_profile.avatar %}
+                    <img src="{{ user_profile.avatar.url }}" alt="User Avatar">
+                {% else %}
+                    <img src="{% static 'default_avatar.jpg' %}" alt="Default Avatar">
+                {% endif %} {% endcomment %}
                 {% if user_profile.avatar %}
+                <!-- 如果有 avatar，显示图片 -->
+                    <img src="{{ user_profile.avatar.url }}" alt="avatar" style="width: 70px; height: 70px;">
+                {% else %}
+                    <!-- 如果没有 avatar，显示 icon -->
+                    <i class="bi bi-person-circle" style="font-size: 70px;"></i>
+                {% endif %}
+            
+
+                {% comment %} {% if user_profile.avatar %}
                 <img class="bi bi-person-circle" id="avatar" src="{{ user_profile.avatar.url }}" alt="avatar">
                 {% else %}
                 <i class="bi bi-person-circle" style="font-size: 70px"></i>
-                {% endif %}
+                {% endif %}  {% endcomment %}
             </div>
             {% block content %}
             {% endblock %}

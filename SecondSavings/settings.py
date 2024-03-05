@@ -21,6 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # also explicitly exclude CI:
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+env = environ.Env()
+# 读取.env文件
+environ.Env.read_env()
+
+# IS_HEROKU_APP = env.bool('IS_HEROKU_APP', default=False)# only for testing
+env.read_env(os.path.join(BASE_DIR, '.env'))
+
+
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 if not IS_HEROKU_APP:
     env_file = BASE_DIR / '.env'
@@ -28,11 +37,7 @@ if not IS_HEROKU_APP:
     if env_file.is_file():
         environ.Env.read_env(str(env_file))
 
-env = environ.Env()
-# 读取.env文件
-environ.Env.read_env()
 
-SECRET_KEY = env('DJANGO_SECRET_KEY')
 # https://devcenter.heroku.com/articles/config-vars
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.environ.get(
@@ -62,6 +67,8 @@ STATICFILES_DIRS = [
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
+MEDIAFILES_LOCATION = 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -75,12 +82,12 @@ MEDIA_URL = '/media/'
 DEBUG = True
 
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ['.herokuapp.com']
+    ALLOWED_HOSTS = ['.herokuapp.com',]
 else:
     ALLOWED_HOSTS = ['fd2f-109-175-255-155.ngrok-free.app', '127.0.0.1', 'localhost','second-savings-45733b1b5b8c.herokuapp.com']
 
 # Application definition
-SITE_ID = 3
+SITE_ID = 1
 
 INSTALLED_APPS = [
     # Use WhiteNoise's runserver implementation instead of the Django default, for dev-prod parity.
@@ -96,7 +103,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
-
+    'storages',
     'imagekit',
     "TimeTracker",
 ]
@@ -198,14 +205,14 @@ USE_TZ = True
 
 
 
-if IS_HEROKU_APP:
-    STORAGES = {
-        # Enable WhiteNoise's GZip and Brotli compression of static assets:
-        # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
+# if IS_HEROKU_APP:
+#     STORAGES = {
+#         # Enable WhiteNoise's GZip and Brotli compression of static assets:
+#         # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+#         "staticfiles": {
+#             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#         },
+#     }
 
 # Don't store the original (un-hashed filename) version of static files, to reduce slug size:
 # https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_KEEP_ONLY_HASHED_FILES
@@ -263,28 +270,38 @@ LOGGING = {
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+# 默认使用 Django 的文件系统存储
+AVATAR_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-
-# Add these settings to the bottom of your settings.py
-
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_DEFAULT_ACL = 'private'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-# s3 static settings
-STATIC_LOCATION = 'static'
-STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# s3 public media settings
-PUBLIC_MEDIA_LOCATION = 'media'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
-DEFAULT_FILE_STORAGE = 'second-saving.storage_backends.MediaStorage'
-
-
-IS_HEROKU_APP = env.bool('IS_HEROKU_APP', default=False)
 if IS_HEROKU_APP:
+    
+    # Add these settings to the bottom of your settings.py
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_DEFAULT_ACL = 'private'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+        
+    # s3 static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    DEFAULT_FILE_STORAGE = 'your_project_name.storage_backends.MediaStorage'
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    # DEFAULT_FILE_STORAGE = 'storage_backends.ConditionalStorage'
+    DEFAULT_FILE_STORAGE = 'storage_backends.MediaStorage'
+
+    # Heroku 上使用 S3 存储
+    AVATAR_STORAGE = 'storage_backends.AvatarStorage'
+    # Secure proxy settings for Heroku
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
 else:
+    # Local development static and media files handling
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    # 本地开发时使用文件系统存储
+    AVATAR_STORAGE = 'django.core.files.storage.FileSystemStorage'
