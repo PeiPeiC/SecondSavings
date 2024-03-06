@@ -39,11 +39,12 @@ urlpatterns = [
     path('Coin/', views.coin, name='coin'),
     path('Settings/', views.setting, name='setting'),
     path('Badges/', views.badges, name='badges'),
-]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+]
     # Include your app's urls here
     
 # Static and media files in development
 
 # 确保在开发环境中也能正确服务静态文件
-if settings.DEBUG:
+if not settings.IS_HEROKU_APP:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
