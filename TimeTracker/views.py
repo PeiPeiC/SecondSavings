@@ -22,12 +22,7 @@ def main(request):
 
 @login_required
 def profile(request):
-    try:
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    except UserProfile.DoesNotExist:
-        messages.error(request, 'Invalid Login')
-        user_profile = UserProfile()
-        # return redirect('/accounts/login/')
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     return render(request, 'TimeTracker/userInfo.html', {'user_profile': user_profile})
 
 
@@ -108,15 +103,6 @@ def setting(request):
 def badges(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/badges.html')
-
-
-def report(request):
-    return render(request, 'TimeTracker/report.html')
-
-
-def main(request):
-    return render(request, 'TimeTracker/main.html')
-
 
 @login_required
 def login_main(request):
