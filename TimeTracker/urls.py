@@ -18,7 +18,7 @@ urlpatterns = [
     path('setting/sync_google_task', views.setting_sync, name='setting_sync_google_task'),
     path('setting/update_alarm', views.alarm_update, name='setting_update_alarm'),
 
-                  path('report/', views.report, name='report'),
+    path('report/', views.report, name='report'),
     path('Group/', views.table, name='table'),
     path('MusicList/', views.music, name='music'),
     path('Coin/', views.coin, name='coin'),

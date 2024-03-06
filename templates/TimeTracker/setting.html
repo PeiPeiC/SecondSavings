@@ -53,12 +53,15 @@
     <input type="range" id="volume-control" min="0" max="100" value="50">
   </div>
 </div>
-        <!-- 下拉菜单：报警声音选择 -->
-          <select class="form-select" aria-label="Default select example">
-  <option selected> {{ user_setting.alarm }}</option>
-              {% for key, value in alarm_choices %}
-                  <option href={{ value }}>{{ key }}</option>
-            {% endfor %}
+          <!-- 下拉菜单：报警声音选择 -->
+<select class="form-select" id="alarm-select" aria-label="Default select example">
+  {% for key, value in alarm_choices %}
+    {% if key == user_setting.alarm %}
+      <option value="{{ value }}" selected>{{ key }}</option>
+    {% else %}
+      <option value="{{ value }}">{{ key }}</option>
+    {% endif %}
+  {% endfor %}
 </select>
 {#        <div class="dropdown">#}
 {#          <!-- 触发下拉菜单的按钮 -->#}
