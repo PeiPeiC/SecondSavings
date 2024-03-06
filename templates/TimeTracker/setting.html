@@ -53,6 +53,13 @@
     <input type="range" id="volume-control" min="0" max="100" value="50">
   </div>
 </div>
+        <!-- 下拉菜单：报警声音选择 -->
+          <select class="form-select" aria-label="Default select example">
+  <option selected> {{ user_setting.alarm }}</option>
+              {% for key, value in alarm_choices %}
+                  <option href={{ value }}>{{ key }}</option>
+            {% endfor %}
+</select>
 {#        <div class="dropdown">#}
 {#          <!-- 触发下拉菜单的按钮 -->#}
 {#          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
@@ -68,22 +75,6 @@
 {#            #}
 {#          </div>#}
 {#        </div>#}
-        <!-- 下拉菜单：报警声音选择 -->
-        <div class="dropdown">
-          <!-- 触发下拉菜单的按钮 -->
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <!-- 按钮显示的文字 -->
-            {{ user_setting.alarm }}
-          </button>
-          <!-- 下拉菜单的选项 -->
-          <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">
-
-            {% for key, value in alarm_choices %}
-            	<a class="dropdown-item" href={{ value }}>{{ key }}</a>
-            {% endfor %}
-            
-          </div>
-        </div>
       </div>
     </div>
     <!-- 右侧列，占据6个网格 -->
