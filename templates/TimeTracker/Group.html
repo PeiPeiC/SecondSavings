@@ -1,11 +1,14 @@
 {% extends 'TimeTracker/base.html' %}
+{% load static %}
 {% block css %}
-    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/table.css">
-    <link rel="stylesheet " href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet " href="{% static 'css/style.css' %}">
 {% endblock %}
 {% block content %}
     <form>
-        <input type="text" class="form-control" placeholder="Search">
+        <label>
+            <input type="text" class="form-control" placeholder="Search">
+        </label>
     </form>
     <form>
         <button type="submit" class="btn btn-secondary" style="margin-bottom: 5px">Add</button>

@@ -1,7 +1,8 @@
 <!-- profile default page（account) -->
 {% extends 'TimeTracker/base.html' %}
+{% load static %}
 {% block css %}
-    <link rel="stylesheet " href="/static/css/style.css">
+    <link rel="stylesheet " href="{% static 'css/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
     .nav-link.active{
