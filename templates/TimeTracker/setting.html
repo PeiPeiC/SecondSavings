@@ -1,9 +1,33 @@
 {% extends 'TimeTracker/base.html' %}
 
+
 {% block css %}
     <!-- 导入样式表 -->
-    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/setting.css">
-    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+    <link rel="stylesheet" href="/static/css/setting.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+    .nav-link.active{
+    background-color: #D2B48C; /* 土黄色 */
+    color: #fff;
+}
+    .volume-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+   .volume-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    #volume-slider {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 0;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -19,22 +43,39 @@
       <div class="form-group">
         <!-- 标签：报警声音 -->
         <label for="alarmSound">Alarm Sound</label>
-        <!-- 下拉菜单：报警声音选择 -->
-        <div class="dropdown">
-          <!-- 触发下拉菜单的按钮 -->
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <!-- 按钮显示的文字 -->
-            {{ user_setting.alarm }}
-          </button>
-          <!-- 下拉菜单的选项 -->
-          <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">
+ <div class="volume-container">
 
-            {% for key, value in alarm_choices %}
-            	<a class="dropdown-item" href={{ value }}>key</a>
+  <button class="volume-button" onclick="toggleVolumeSlider()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-volume-down-fill" viewBox="0 0 16 16">
+      <path d="M9 4a.5.5 0 0 0-.812-.39L5.825 5.5H3.5A.5.5 0 0 0 3 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 9 12zm3.025 4a4.5 4.5 0 0 1-1.318 3.182L10 10.475A3.5 3.5 0 0 0 11.025 8 3.5 3.5 0 0 0 10 5.525l.707-.707A4.5 4.5 0 0 1 12.025 8"/>
+    </svg>
+  </button>
+  <div id="volume-slider">
+    <input type="range" id="volume-control" min="0" max="100" value="50">
+  </div>
+</div>
+        <!-- 下拉菜单：报警声音选择 -->
+          <select class="form-select" aria-label="Default select example">
+  <option selected> {{ user_setting.alarm }}</option>
+              {% for key, value in alarm_choices %}
+                  <option href={{ value }}>key</option>
             {% endfor %}
-            
-          </div>
-        </div>
+</select>
+{#        <div class="dropdown">#}
+{#          <!-- 触发下拉菜单的按钮 -->#}
+{#          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#            <!-- 按钮显示的文字 -->#}
+{#            {{ user_setting.alarm }}#}
+{#          </button>#}
+{#          <!-- 下拉菜单的选项 -->#}
+{#          <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">#}
+{##}
+{#            {% for key, value in alarm_choices %}#}
+{#            	<a class="dropdown-item" href={{ value }}>key</a>#}
+{#            {% endfor %}#}
+{#            #}
+{#          </div>#}
+{#        </div>#}
       </div>
     </div>
     <!-- 右侧列，占据6个网格 -->
@@ -46,7 +87,7 @@
 {#        <input type="range" class="form-control-range" id="volumeControl">#}
 {#      </div>#}
 {#    </div>#}
-{#  </div>#}
+  </div>
   <!-- 一些空行，如果需要的话 -->
   <br><br><br>
   <!-- 设置标题为“同步” -->
@@ -124,6 +165,17 @@ $(document).ready(function () {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
 <!-- 引入 Bootstrap JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+  // 切换音量滑块的显示和隐藏
+  function toggleVolumeSlider() {
+    var slider = document.getElementById("volume-slider");
+    if (slider.style.display === "none") {
+      slider.style.display = "block";
+    } else {
+      slider.style.display = "none";
+    }
+  }
+</script>
 
 
 {% endblock %}
