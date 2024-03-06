@@ -40,9 +40,6 @@ urlpatterns = [
     path('Settings/', views.setting, name='setting'),
     path('Badges/', views.badges, name='badges'),
 ]
-  
-# Static and media files in development
-
 # 确保在开发环境中也能正确服务静态文件
 if not settings.IS_HEROKU_APP:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

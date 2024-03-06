@@ -63,7 +63,7 @@ AWS_S3_URL_PROTOCOL = 'https'
 AWS_S3_USE_SSL = True
 AWS_S3_VERIFY = True
 # 默认使用 Django 的文件系统存储
-AVATAR_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 if IS_HEROKU_APP:
     
