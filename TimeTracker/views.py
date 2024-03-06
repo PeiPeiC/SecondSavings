@@ -27,16 +27,11 @@ def main(request):
 @login_required
 def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user) #因為get_or_create它要么獲取現有的異常塊UserProfile，要么創建一個新的異常塊（如果它不存在）。UserProfile.DoesNotExist因此，可以刪除的異常處理。
-        # return redirect('/accounts/login/')
-        # 检查 user_profile.avatar 是不是字符串类型
-    if isinstance(user_profile.avatar, str):
-        print("user_profile.avatar is a string:", user_profile.avatar)
-        # 这里可以设置 user_profile.avatar 为 None 或者正确处理为期望的文件/图像对象
-        # 例如: user_profile.avatar = None 或者适当的默认图像
-        user_profile.avatar = None
+        # 打印 user_profile.avatar 的 URL
+    if user_profile.avatar:
+        print("Avatar URL:", user_profile.avatar.url)
     else:
-        print("Avatar field value:", user_profile.avatar)
-        print("Avatar field type:", type(user_profile.avatar))
+        print("No avatar set for this user.")
     return render(request, 'TimeTracker/userInfo.html', {'user_profile': user_profile})
 
 

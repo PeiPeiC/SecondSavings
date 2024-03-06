@@ -40,8 +40,7 @@ urlpatterns = [
     path('Settings/', views.setting, name='setting'),
     path('Badges/', views.badges, name='badges'),
 ]
-    # Include your app's urls here
-    
+  
 # Static and media files in development
 
 # 确保在开发环境中也能正确服务静态文件
