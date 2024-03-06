@@ -36,3 +36,15 @@ class SettingViewTestCase(TestCase):
         # Check if the user_setting is updated
         updated_user_setting = UserSetting.objects.get(user=self.user)
         self.assertEqual(updated_user_setting.syncGoogleTask, True)
+
+    def test_alarm_update(self):
+        self.client.force_login(self.user)
+        url = reverse('TimeTracker:setting_update_alarm')
+
+        data = {'alarmSelected': '/media/alarm/Marimba.mp3'}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+        # Check if the user_setting is updated
+        updated_user_setting = UserSetting.objects.get(user=self.user)
+        self.assertEqual(updated_user_setting.alarm, 'marimba')
