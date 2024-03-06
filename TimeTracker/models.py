@@ -62,9 +62,9 @@ class Record(models.Model):
 class UserSetting(models.Model):
     ALARM_MAX_LENGTH = 10
     ALARM_CHOICES = [
-        ('default', f"{settings.MEDIA_ROOT}/alarm/default.mp3"),
-        ('marimba', f"{settings.MEDIA_ROOT}/alarm/Marimba.mp3"),
-        ('harp', f"{settings.MEDIA_ROOT}/alarm/Harp.mp3")
+        ('default', f"{settings.MEDIA_URL}alarm/default.mp3"),
+        ('marimba', f"{settings.MEDIA_URL}alarm/Marimba.mp3"),
+        ('harp', f"{settings.MEDIA_URL}alarm/Harp.mp3")
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
@@ -73,3 +73,15 @@ class UserSetting(models.Model):
 
     def __str__(self):
         return 'user:' + self.user.username + ' alarm:' + self.alarm
+
+    def get_url(self):
+        for key, value in self.ALARM_CHOICES:
+            if self.alarm == key:
+                return value
+        return None  # Return None if the key is not found
+
+    def get_alarm(self, url):
+        for key, value in self.ALARM_CHOICES:
+            if url == value:
+                return key
+        return None

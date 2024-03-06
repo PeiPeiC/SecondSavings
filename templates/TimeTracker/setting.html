@@ -54,12 +54,15 @@
     <input type="range" id="volume-control" min="0" max="100" value="50">
   </div>
 </div>
-        <!-- 下拉菜单：报警声音选择 -->
-          <select class="form-select" aria-label="Default select example">
-  <option selected> {{ user_setting.alarm }}</option>
-              {% for key, value in alarm_choices %}
-                  <option href={{ value }}>key</option>
-            {% endfor %}
+          <!-- 下拉菜单：报警声音选择 -->
+<select class="form-select" id="alarm-select" aria-label="Default select example">
+  {% for key, value in alarm_choices %}
+    {% if key == user_setting.alarm %}
+      <option value="{{ value }}" selected>{{ key }}</option>
+    {% else %}
+      <option value="{{ value }}">{{ key }}</option>
+    {% endif %}
+  {% endfor %}
 </select>
 {#        <div class="dropdown">#}
 {#          <!-- 触发下拉菜单的按钮 -->#}
@@ -118,7 +121,6 @@ $(document).ready(function(){
     $('.dropdown-toggle').dropdown();
 });
 
-<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function () {
     let checkbox = document.getElementById('syncCheckbox');
 
@@ -135,30 +137,24 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send(data);
     }
 });
-=======
-$(document).ready(function () {
-        $('#syncCheckbox').change(function () {
-            var isChecked = $(this).prop('checked');
 
-            // send post
-            $.ajax({
-                type: 'POST',
-                url: {% url 'TimeTracker:setting' %},  // 请将此替换为您的后端处理URL
-                data: {
-                    'sync': isChecked ? 1 : 0
-                },
-                success: function (data) {
-                    // 如果需要，可以在成功时执行一些操作
-                    console.log('Update successful');
-                },
-                error: function (error) {
-                    // 如果有错误，可以在此处理
-                    console.error('Update failed', error);
-                }
-            });
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    let selectbox = document.getElementById('alarm-select');
+
+    selectbox.addEventListener('change', function () {
+        console.log(selectbox.value)
+        updateSetting(selectbox.value);
     });
->>>>>>> 65151d9 (setting page)
+
+    function updateSetting(value) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'TimeTracker:setting_update_alarm' %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        let data = JSON.stringify({ 'alarmSelected': value });
+        xhr.send(data);
+    }
+});
 </script>
 
 <!-- 引入 Popper.js -->
@@ -174,6 +170,11 @@ $(document).ready(function () {
     } else {
       slider.style.display = "none";
     }
+
+    const selectedAlarm = document.querySelector(".form-select").value;
+    console.log(selectedAlarm)
+    var audio = new Audio(selectedAlarm);
+    audio.play();
   }
 </script>
 

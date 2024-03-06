@@ -65,8 +65,9 @@ def avatar_update(request):
                 user_profile.avatar.delete()  # delete the old one
 
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
-            
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
+                                     save=False)
+
             user_profile.save()
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
@@ -126,7 +127,25 @@ def setting_sync(request):
     return render(request, 'TimeTracker/setting.html',
                   context={'user_setting': user_setting,
                            'user': request.user,
-                           'user_profile': user_profile})
+                           'user_profile': user_profile,
+                           'alarm_url': user_setting.get_url()})
+
+
+def alarm_update(request):
+    user_setting = UserSetting.objects.get(user=request.user)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        url = data.get('alarmSelected', None)
+        alarm = user_setting.get_alarm(url)
+        if alarm:
+            if alarm != user_setting.alarm:
+                user_setting.alarm = alarm
+                user_setting.save()
+
+    return render(request, 'TimeTracker/setting.html',
+                  context={'user_setting': user_setting,
+                           'user': request.user,
+                           'alarm_url': user_setting.get_url()})
 
 
 def badges(request):
