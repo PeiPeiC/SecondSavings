@@ -24,7 +24,6 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from TimeTracker.forms import LoginForm, ResetPasswordForm, SignUpForm
 from TimeTracker.models import Group, UserProfile
 from TimeTracker.models import Group, UserProfile, Task, Record
 from django.views.decorators.csrf import csrf_exempt
