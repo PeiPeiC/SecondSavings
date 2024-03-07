@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
