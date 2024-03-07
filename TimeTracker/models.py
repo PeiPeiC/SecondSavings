@@ -18,6 +18,10 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     nickName = models.CharField(max_length=NICK_NAME_MAX_LENGTH)
+
+    study_time = models.TimeField(default="00:00:00")  # learning time
+    work_time = models.TimeField(default="00:00:00")  # learning time
+    life_time = models.TimeField(default="00:00:00")  # learning time
     avatar = ProcessedImageField(upload_to='avatar_images',
                                  processors=[ResizeToFill(100, 100)],
                                  format='JPEG',
@@ -58,6 +62,8 @@ class Task(models.Model):
     endTime = models.DateTimeField(null=True, blank=True)
     isCompleted = models.BooleanField(default=False)        # 新增字段标记任务是否完成
     chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
+    totalTaskTime = models.TimeField(default="00:00:00")    #新增总学习时间
+    totalBreakTime = models.TimeField(default="00:00:00")   #新增总休息时间
 
     def __str__(self):
         return self.title
