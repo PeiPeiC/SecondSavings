@@ -348,7 +348,7 @@
             <div class="text">Time to focus!</div>
         </div>
         <div class="container5">
-            <div class="container6">
+            <!-- <div class="container6">
                 <span class="task">Tasks</span>
                 <button role="presentation" class="dropdown button4">
                     <div id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -361,6 +361,10 @@
                         <li><a href="#" id="clearAllTasks">Clear all tasks</a></li>
                     </ul>
                 </button>
+            </div> -->
+            <div class="container6">
+                <button class="button" id="clearAllTasksButton" onclick="clearAllTasks()">Clear all tasks</button>
+                <button class="button" id="finishedTasksButton" onclick="finishiedTasks()">Finished Tasks</button>
             </div>
             <div class="marg"></div>
             <div class="col-lg-6 input-area">
@@ -368,9 +372,9 @@
                     <input type="text" id="taskName" class="form-control" placeholder="Input your task...">
                     <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
                         <option value="" disabled selected hidden>Select type</option>
-                        <option value="work">Work</option>
-                        <option value="life">Life</option>
-                        <option value="study">Study</option>
+                        <option value="Work">Work</option>
+                        <option value="Life">Life</option>
+                        <option value="Study">Study</option>
                     </select>
                     <input type="date" id="taskDate" class="form-control" placeholder="Date...">
                     {#                    <input type="time" id="taskTime" class="form-control">#}

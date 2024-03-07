@@ -236,7 +236,7 @@ def create_task(request):
         # 创建并保存任务对象
         task = Task(user=request.user, title=title, category = task_type, chosenDate = task_date)
         task.save()
-        return JsonResponse({'status': 'success', 'task_id': task.id})
+        return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime':task.totalTaskTime, 'TotalBreakTime':task.totalBreakTime, 'chosenDate':task.chosenDate})
     return JsonResponse({'status': 'error'}, status=400)
 
 #点击delete后删除task
@@ -245,6 +245,14 @@ def delete_task(request):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     task.delete()
     return JsonResponse({'status': 'success'})
+
+def delete_incomplete_tasks(request):
+    if request.method == 'POST':
+        # 删除当前登录用户的所有未完成任务
+        Task.objects.filter(user=request.user, isCompleted=False).delete()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 #点击finish后调用
 def finish_task(request):
@@ -267,7 +275,9 @@ def get_task_info(request):
         'category': task.category,
         'chosenDate': task.chosenDate,
         'isCompleted': task.isCompleted,
-        'endtime': task.endTime.isoformat() if task.endTime else None
+        'endtime': task.endTime.isoformat() if task.endTime else None,
+        'TotalTaskTime': task.totalTaskTime,
+        'TotalBreakTime': task.totalBreakTime,
     })
 
 
@@ -297,17 +307,39 @@ def end_record(request):
         record.save()
         # 这里可以计算study_time并更新UserProfile 还没实现
         # 计算学习时间
-        study_time_delta = record.endTime - record.startTime
+        time_delta = record.endTime - record.startTime
 
-        # 获取当前的累积学习时间
         user_profile = UserProfile.objects.get(user=record.user)
-        current_study_time = user_profile.study_time
+        task = record.task
+        # 更新UserProfile里的study_time\work_time\life_time  task中的totalTaskTime
+        if(record.type == 'task'):
+            # 获取当前的累积学习时间
+            current_user_study_time = user_profile.study_time
+            current_task_task_time = task.totalTaskTime
+            # 将 timedelta 转换为时间
+            new_user_task_type_time = (datetime.combine(date.min, current_user_study_time) + time_delta).time()
+            new_task_task_time = (datetime.combine(date.min, current_task_task_time) + time_delta).time() 
 
-        # 将 timedelta 转换为时间
-        new_study_time = (datetime.combine(date.min, current_study_time) + study_time_delta).time()
+            task_type = task.category
+            if task_type == "Work":
+                user_profile.work_time = new_user_task_type_time
+                record.task.totalTaskTime = new_task_task_time
+            elif task_type =="Study":
+                user_profile.study_time = new_user_task_type_time
+                record.task.totalTaskTime = new_task_task_time    
+            else:
+                user_profile.life_time = new_user_task_type_time
+                record.task.totalTaskTime = new_task_task_time
 
-        # 更新UserProfile里的study_time
-        user_profile.study_time = new_study_time
+
+        else:
+            # 更新task的totalBreakTime
+            current_task_break_time = task.totalBreakTime
+            # 将 timedelta 转换为时间
+            new_task_break_time = (datetime.combine(date.min, current_task_break_time) + time_delta).time() 
+            task.totalBreakTime = new_task_break_time
+
         user_profile.save()
-
+        task.save()
+        
         return JsonResponse({'status': 'success'})

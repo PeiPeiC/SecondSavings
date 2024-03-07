@@ -40,6 +40,7 @@ urlpatterns = [
 
     path('create_task/', views.create_task, name='create_task'),
     path('delete_task/', views.delete_task, name='delete_task'),
+    path('delete_incomplete_tasks/', views.delete_incomplete_tasks, name='delete_incomplete_tasks'),
     path('get_tasks/', views.get_tasks, name='get_tasks'),
     path('start_record/', views.start_record, name='start_record'),
     path('end_record/', views.end_record, name='end_record'),
