@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from TimeTracker.models import Group, UserProfile, Task, Record, Group
+from TimeTracker.models import Group, UserProfile, Task, Record
 from django.views.decorators.csrf import csrf_exempt
 
 from TimeTracker.models import UserProfile, UserSetting, Group

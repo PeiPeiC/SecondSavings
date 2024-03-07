@@ -28,16 +28,8 @@ urlpatterns = [
     path('groupStudy/', views.group_study, name='group_study'),
     path('topStudyTimes', views.top_study_times, name='top_study_times'),
     
-    path('',views.main,name='mian'),
-    # profile
-    path('profile/',views.profile, name='profile'),
-    path('profile/update/', views.profile_update, name='profile_update'),
-    path('profile/avater_update/', views.avatar_update, name='avatar_update'),
 
-
-
-
-
+ 
     path('create_task/', views.create_task, name='create_task'),
     path('delete_task/', views.delete_task, name='delete_task'),
     path('delete_incomplete_tasks/', views.delete_incomplete_tasks, name='delete_incomplete_tasks'),
