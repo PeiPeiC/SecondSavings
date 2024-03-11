@@ -34,7 +34,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
-    path('TimeTracker/', include('TimeTracker.urls')),
 
 
 

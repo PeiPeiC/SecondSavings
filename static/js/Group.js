@@ -15,7 +15,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
     formData.append('key', groupKey);  // 将密码加入表单数据
 
     // 发送AJAX请求到后端创建组的视图
-    fetch('/TimeTracker/create_group/', {
+    fetch('/secondSavings/create_group/', {
         method: 'POST',
         body: formData,
         headers: {
@@ -32,7 +32,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
 
             var tdName = document.createElement('td');
             var link = document.createElement('a');
-            link.setAttribute('href', '/TimeTracker/groupStudy/' + data.groupId);   
+            link.setAttribute('href', '/secondSavings/groupStudy/' + data.groupId);   
             link.textContent = data.groupName;
             tdName.appendChild(link);
 
@@ -78,7 +78,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
 function deleteGroup(groupId, rowElement) {
     var isConfirmed = confirm("Are you sure you want to delete this group? This action cannot be undone.");
     if (isConfirmed){
-        fetch('/TimeTracker/delete_group/' + groupId + '/', {
+        fetch('/secondSavings/delete_group/' + groupId + '/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCookie('csrftoken'), // 从cookie中获取CSRF token
@@ -115,7 +115,7 @@ document.getElementById('search-button').addEventListener('click', function(even
     event.preventDefault();
     var groupName = document.getElementById('group-name').value;
     console.log("1")
-    fetch('/TimeTracker/search_group/', {
+    fetch('/secondSavings/search_group/', {
         method: 'POST',
         body: JSON.stringify({ 'groupName': groupName }),
         headers: {
@@ -171,7 +171,7 @@ function searchGroupList(groups) {
 //method of join btn
 function joinGroup(groupId, groupKey) {
     console.log(groupKey)
-    fetch('/TimeTracker/join_group/' + groupId + '/', {
+    fetch('/secondSavings/join_group/' + groupId + '/', {
         method: 'POST',
         body: JSON.stringify({ 'key': groupKey }),
         headers: {
@@ -196,7 +196,7 @@ function joinGroup(groupId, groupKey) {
 
 $(document).ready(function() {
     $.ajax({
-        url: '/TimeTracker/get_user_groups/',  // 替换成后端视图的URL
+        url: '/secondSavings/get_user_groups/',  // 替换成后端视图的URL
         method: 'GET',
         success: function(data) {
             updateGroupList(data.groups);
@@ -210,7 +210,7 @@ $(document).ready(function() {
 
 //method to reset button
 document.getElementById('reset-button').addEventListener('click', function() {
-    fetch('/TimeTracker/get_user_groups/', {
+    fetch('/secondSavings/get_user_groups/', {
         method: 'GET',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
@@ -235,7 +235,7 @@ function updateGroupList(groups) {
 
         var tdName = document.createElement('td');
         var link = document.createElement('a');
-        link.setAttribute('href', '/TimeTracker/groupStudy/' + group.id +'/');   
+        link.setAttribute('href', '/secondSavings/groupStudy/' + group.id +'/');   
         link.textContent = group.name;
         tdName.appendChild(link);
         //tdName.textContent = group.name;
@@ -277,7 +277,7 @@ function updateGroupList(groups) {
 
 
 function quitGroup(groupId, rowElement) {
-    fetch('/TimeTracker/quit_group/' + groupId + '/', {
+    fetch('/secondSavings/quit_group/' + groupId + '/', {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
