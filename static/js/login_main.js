@@ -14,7 +14,7 @@ function addTask() {
 
         // 在这里发送 AJAX 请求到后端创建新任务         测试代码**********************************
         $.ajax({
-            url: '/TimeTracker/create_task/', // 后端 URL，需要在Django的urls.py中定义这个路由
+            url: '/secondSavings/create_task/', // 后端 URL，需要在Django的urls.py中定义这个路由
             type: 'POST',
             data: {
                 'title': taskContent,
@@ -50,7 +50,7 @@ function addTask() {
 
                         // 发送 AJAX 请求到后端删除任务
                         $.ajax({
-                            url: '/TimeTracker/delete_task/', // 确保这个URL是正确的
+                            url: '/secondSavings/delete_task/', // 确保这个URL是正确的
                             type: 'POST',
                             data: {
                                 'task_id': task_id,
@@ -143,7 +143,7 @@ function addTask() {
                     // 发送 AJAX 请求到后端更新日期
                     var csrftoken = getCookie('csrftoken');
                     $.ajax({
-                      url: '/TimeTracker/update_task_date/', // 后端更新日期的 URL
+                      url: '/secondSavings/update_task_date/', // 后端更新日期的 URL
                       type: 'POST',
                       data: {
                         'task_id': taskId,
@@ -211,7 +211,7 @@ function getCookie(name) {
 $(document).ready(function () {
     // 获取Task **********************测试代码********************************
     $.ajax({
-        url: '/TimeTracker/get_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
+        url: '/secondSavings/get_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
         type: 'GET',
         dataType: 'json',
         success: function(tasks) {
@@ -239,7 +239,7 @@ function clearAllTasks(){
         var csrftoken = getCookie('csrftoken'); // 获取 CSRF 令牌
 
         $.ajax({
-            url: '/TimeTracker/delete_incomplete_tasks/', // Django 视图的 URL
+            url: '/secondSavings/delete_incomplete_tasks/', // Django 视图的 URL
             type: 'POST',
             data: {
                 'csrfmiddlewaretoken': csrftoken
@@ -277,7 +277,7 @@ function finishiedTasks(){
         finishTasksShowed = false;
     }else{
         $.ajax({
-            url: '/TimeTracker/get_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
+            url: '/secondSavings/get_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
             type: 'GET',
             dataType: 'json',
             success: function(tasks) {
@@ -338,7 +338,7 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
 
                 // 发送 AJAX 请求到后端删除任务
                 $.ajax({
-                    url: '/TimeTracker/delete_task/', // 确保这个URL是正确的
+                    url: '/secondSavings/delete_task/', // 确保这个URL是正确的
                     type: 'POST',
                     data: {
                         'task_id': task_id,
@@ -424,7 +424,7 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
                 // 发送 AJAX 请求到后端更新日期
                 var csrftoken = getCookie('csrftoken');
                 $.ajax({
-                    url: '/TimeTracker/update_task_date/', // 后端更新日期的 URL
+                    url: '/secondSavings/update_task_date/', // 后端更新日期的 URL
                     type: 'POST',
                     data: {
                     'task_id': taskId,
@@ -557,7 +557,7 @@ function finishTask() {
     console.log(taskIdTemp);
     console.log(new Date().toISOString())
     $.ajax({
-        url: '/TimeTracker/finish_task/', // 确保这个URL是正确的
+        url: '/secondSavings/finish_task/', // 确保这个URL是正确的
         type: 'POST',
         data: {
             'taskId': taskIdTemp,
@@ -580,7 +580,7 @@ function finishTask() {
 //startTimer()与pauseTimer()触发的create or set record的function
 function createRecord(taskId, action, record_type, currentTaskColumn) {
     console.log("taskId = " + taskId);         
-    var url = action === 'start' ? '/TimeTracker/start_record/' : '/TimeTracker/end_record/';           //action == "start" → '/start_record/'  action == "end" → '/end_record/'
+    var url = action === 'start' ? '/secondSavings/start_record/' : '/secondSavings/end_record/';           //action == "start" → '/start_record/'  action == "end" → '/end_record/'
     var data = {
         'taskId': taskId,
         'recordType': record_type,
@@ -603,7 +603,7 @@ function createRecord(taskId, action, record_type, currentTaskColumn) {
             // 其他处理 ...
             else if(action === 'end'){
                 $.ajax({
-                    url: '/TimeTracker/get_task_info/',  // 后端 URL
+                    url: '/secondSavings/get_task_info/',  // 后端 URL
                     type: 'GET',
                     data: { 'taskId': taskId },
                     success: function(response) {
