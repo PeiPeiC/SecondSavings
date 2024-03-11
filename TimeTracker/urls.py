@@ -7,17 +7,32 @@ urlpatterns = [
     path('', views.main, name='main'),
     path("main/", views.main, name='main'),
      # profile
+    path('report/', views.report, name='report'),
+    #path('Group/', views.table, name='table')
+
+    path('MusicList/', views.music, name='music'),
+    path('Coin/', views.coin, name='coin'),
+    path('Settings/', views.setting, name='setting'),
+    path('Badges/', views.badges, name='badges'),
     path('profile/',views.profile, name='profile'),
     path('profile/update/', views.profile_update, name='profile_update'),
     path('profile/avater_update/', views.avatar_update, name='avatar_update'),
     path("login_main/", views.login_main, name='login_main'),
-
-    path('groupStudy/', views.group_study, name='group_study'),
+    
+    path('Group/', views.group, name='group'),
+    path('get_user_groups/', views.get_user_groups, name='get_user_groups'),
+    path('create_group/', views.create_group, name='create_group'),
+    path('delete_group/<int:group_id>/', views.delete_group, name='delete_group'),
+    path('quit_group/<int:group_id>/', views.quit_group, name='quit_group'),
+    path('search_group/', views.search_group, name='search_group'),
+    path('join_group/<int:group_id>/', views.join_group, name='join_group'),
+    path('groupStudy/<int:group_id>/', views.group_study, name='group_study'),
     path('topStudyTimes', views.top_study_times, name='top_study_times'),
     
 
  
     path('create_task/', views.create_task, name='create_task'),
+    path('update_task_date/', views.update_task_date, name='update_task_date'),
     path('delete_task/', views.delete_task, name='delete_task'),
     path('delete_incomplete_tasks/', views.delete_incomplete_tasks, name='delete_incomplete_tasks'),
     path('get_tasks/', views.get_tasks, name='get_tasks'),

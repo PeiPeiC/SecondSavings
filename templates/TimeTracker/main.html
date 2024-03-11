@@ -103,7 +103,29 @@
             margin-bottom: 20px;
             width: 100%;
         }
+        .page-switch-buttons {
+            display: inline-flex;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
+        .page-switch-buttons a {
+            display: block;
+            background-color: white;
+            color: #A98B73;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            transition: background-color 0.3s, opacity 0.3s;
+            opacity: 0.7;
+        }
+
+        .page-switch-buttons a:hover, .page-switch-buttons a.active {
+            opacity: 1.0;
+            background-color: #f8f9fa;
+        }
         .time {
             font-size: 120px;
             font-weight: bold;
@@ -324,6 +346,10 @@
         </div>
         <div class="container2">
             <div class="container3">
+                <div class="page-switch-buttons">
+                    <a href="/main" class="button">Countdown</a>
+                    <a href="/login_main" class="button">Countup</a>
+                </div>
                 <div id="timer-string" class="time">25:00</div>
                 <div class="container4">
                     <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause"

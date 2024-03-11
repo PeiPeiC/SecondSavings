@@ -11,7 +11,7 @@
 <body>
     <div id="group-study-container">
     <header>
-        <button onclick="location.href='{% url 'main' %}'">Main Page</button>        
+        <button onclick="location.href='{% url 'login_main' %}'">Main Page</button>        
         <!-- The second button is not implemented -->
         <button id="show-top-users">Show Top Users</button>
     </header>
@@ -87,7 +87,7 @@
         $(document).ready(function() {
             function updateGroupStudy() {
                 $.ajax({
-                    url: "{% url 'TimeTracker:group_study' %}",
+                    url: "{% url 'TimeTracker:group_study' group.id %}",
             
                     success: function(data) {
                         $('#group-study-container').html(''); // clear all elements in contianer
