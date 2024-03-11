@@ -35,7 +35,6 @@ class UserProfile(models.Model):
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
-    study_time = models.TimeField(default="00:00:00")  # learning time
 
 
     def __str__(self):
