@@ -2,6 +2,14 @@
 
 from django.db import migrations, models
 
+def convert_float_to_time(apps, schema_editor):
+    UserProfile = apps.get_model('TimeTracker', 'UserProfile')
+    for profile in UserProfile.objects.all():
+        hours = int(profile.study_time)
+        minutes = (profile.study_time - hours) * 60
+        # Create a time string; assumes `study_time` was storing hours as floats
+        profile.study_time_temp = '{:02d}:{:02d}:00'.format(hours, int(minutes))
+        profile.save()
 
 class Migration(migrations.Migration):
 
@@ -10,6 +18,21 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='userprofile',
+            name='study_time_temp',
+            field=models.CharField(default='00:00:00', max_length=8),
+        ),
+        migrations.RunPython(convert_float_to_time),
+        migrations.RemoveField(
+            model_name='userprofile',
+            name='study_time',
+        ),
+        migrations.RenameField(
+            model_name='userprofile',
+            old_name='study_time_temp',
+            new_name='study_time',
+        ),
         migrations.AlterField(
             model_name='userprofile',
             name='study_time',
