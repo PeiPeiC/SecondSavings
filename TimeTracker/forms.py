@@ -1,5 +1,5 @@
 from django import forms
-
+from .models import Group
 from TimeTracker.models import Task, Record, UserProfile
 
 
@@ -51,3 +51,12 @@ class RecordForm(forms.ModelForm):
                 self.add_error('endTime', ValueError)
 
         return self.cleaned_data
+
+    # forms.py
+
+
+
+class GroupCreateForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name']

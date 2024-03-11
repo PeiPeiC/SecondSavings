@@ -28,14 +28,21 @@ function addTask() {
                 var taskId = response.task_id; // 假设后端返回了任务的ID
 
                 // 创建任务项和删除按钮
-                var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
+
+                // 创建任务内容元素
+                var taskContentSpan = $('<span>').addClass('task-content').text(taskContent);
+
+                // 创建任务日期元素
+                var taskDateSpan = $('<span>').addClass('task-date').text('Set time:\n'+taskDate);
+                var taskInfo = $("<li>").addClass('taskItem');
+                //var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
 
                 
                 //删除的按钮及功能实现（新版本，同时删除前后端）
                 var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
                 .click(function () {
                     // 弹出确认对话框
-                    var isConfirmed = confirm("Are you sure you want to delete all incomplete tasks? This action cannot be undone.");
+                    var isConfirmed = confirm("Are you sure you want to delete this incomplete tasks? This action cannot be undone.");
                     if (isConfirmed) {
                         // 获取当前task的ID
                         var task_id = $(this).data('task-id');
@@ -115,16 +122,53 @@ function addTask() {
                 });
 
                 // 创建任务时间标记
-                var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + response.TotalTaskTime);
+                var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(response.TotalTaskTime));
 
                 // 创建休息时间标记
-                var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + response.TotalBreakTime);
+                var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(response.TotalBreakTime));
 
-                
+                //日期选择器更改时间
+                var dateInput = $('<input>').attr({
+                    type: 'date',
+                    class: 'task-date-input',
+                    value: taskDate // 设置为任务的当前日期
+                  }).data('task-id', taskId) // 存储任务ID以便稍后使用
+                  .data('taskTitle', taskContent)
+                  .change(function() {
+                    // 获取新的日期值和任务ID
+                    var taskContent = $(this).data('taskTitle');
+                    var newDate = $(this).val();
+                    var taskId = $(this).data('task-id');
+                    var taskInfo = $(this).parent();
+                    // 发送 AJAX 请求到后端更新日期
+                    var csrftoken = getCookie('csrftoken');
+                    $.ajax({
+                      url: '/TimeTracker/update_task_date/', // 后端更新日期的 URL
+                      type: 'POST',
+                      data: {
+                        'task_id': taskId,
+                        'new_date': newDate,
+                        'csrfmiddlewaretoken': csrftoken
+                      },
+                      success: function(response) {
+                        alert('Task date updated successfully.');
+                        console.log(taskInfo.find('.startButton').data('chosenDate'));
+                        // 更新按钮的 data('chosenDate')
+
+                        taskInfo.find('.startButton').data('chosenDate', newDate);
+                        taskInfo.find('.breakButton').data('chosenDate', newDate);
+                        taskInfo.find('.task-date').text('Set time:\n'+newDate);
+                        //$("#taskList").append(taskInfo);
+                      },
+                      error: function(error) {
+                        console.error('Error updating task date:', error);
+                      }
+                    });
+                  });
 
 
                 // 将按钮添加到任务项中
-                taskInfo.append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel);
+                taskInfo.append(taskContentSpan).append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel).append(taskDateSpan).append(dateInput);
                 $("#taskList").append(taskInfo);
 
             },
@@ -245,8 +289,10 @@ function finishiedTasks(){
                         var finishedLabel = $('<span>').text('Finished').addClass('badge badge-success ml-2');
                         var deleteBtn = $("<button>").text("Delete").addClass('deleteBtn') 
                         .click(function () {$(this).parent().remove();})
+                        var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(task.totalTaskTime));
+                        var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(task.totalBreakTime));
                         //taskElement.css('background-color', '#d4edda');
-                        taskInfo.append(finishedLabel).append(deleteBtn)
+                        taskInfo.append(finishedLabel).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel);
                         $("#taskList").append(taskInfo);
                         finishTasksShowed = true;
                     }
@@ -272,13 +318,19 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
         // 创建任务项和删除按钮
         var taskType = category;       //获取任务类别
         var taskDate = chosenDate;       //获取任务时间
-        //var dateOnly = taskDate.split('T')[0];
-        var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
+
+        // 创建任务内容元素
+        var taskContentSpan = $('<span>').addClass('task-content').text(taskContent + "-");
+
+        // 创建任务日期元素
+        var taskDateSpan = $('<span>').addClass('task-date').text('Set time- '+'\n' +taskDate);
+        var taskInfo = $("<li>").addClass('taskItem');
+        //var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
         //删除的按钮及功能实现
         var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
         .click(function () {
             // 弹出确认对话框
-            var isConfirmed = confirm("Are you sure you want to delete all incomplete tasks? This action cannot be undone.");
+            var isConfirmed = confirm("Are you sure you want to delete this incomplete tasks? This action cannot be undone.");
             if (isConfirmed){
                 // 获取当前task的ID
                 var task_id = $(this).data('task-id');
@@ -356,14 +408,53 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
 
         });
 
+                //日期选择器更改时间
+        var dateInput = $('<input>').attr({
+            type: 'date',
+            class: 'task-date-input',
+            value: taskDate // 设置为任务的当前日期
+            }).data('task-id', taskId) // 存储任务ID以便稍后使用
+            .data('taskTitle', taskContent)
+            .change(function() {
+                // 获取新的日期值和任务ID
+                var taskContent = $(this).data('taskTitle');
+                var newDate = $(this).val();
+                var taskId = $(this).data('task-id');
+                var taskInfo = $(this).parent();
+                // 发送 AJAX 请求到后端更新日期
+                var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: '/TimeTracker/update_task_date/', // 后端更新日期的 URL
+                    type: 'POST',
+                    data: {
+                    'task_id': taskId,
+                    'new_date': newDate,
+                    'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                    alert('Task date updated successfully.');
+                    console.log(taskInfo.find('.startButton').data('chosenDate'));
+                    // 更新按钮的 data('chosenDate')
+
+                    taskInfo.find('.startButton').data('chosenDate', newDate);
+                    taskInfo.find('.breakButton').data('chosenDate', newDate);
+                    taskInfo.find('.task-date').text('Set time:\n'+newDate);
+                    //$("#taskList").append(taskInfo);
+                    },
+                    error: function(error) {
+                    console.error('Error updating task date:', error);
+                    }
+                });
+            });
+
         // 创建任务时间标记
-        var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + TotalTaskTime);
+        var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(TotalTaskTime));
 
         // 创建休息时间标记
-        var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + TotalBreakTime);
+        var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(TotalBreakTime));
 
         // 将按钮添加到任务项中
-        taskInfo.append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel);
+        taskInfo.append(taskContentSpan).append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel).append(taskDateSpan).append(dateInput);
         $("#taskList").append(taskInfo);
     }
     
@@ -516,10 +607,10 @@ function createRecord(taskId, action, record_type, currentTaskColumn) {
                     type: 'GET',
                     data: { 'taskId': taskId },
                     success: function(response) {
-                        currentTaskColumn.find('.task-time-label').text("Task Time: " + response.TotalTaskTime);
+                        currentTaskColumn.find('.task-time-label').text("Task Time: " + cancelMilliseconds(response.TotalTaskTime));
                         console.log(response.TotalTaskTime);
                         console.log(response.title);
-                        currentTaskColumn.find('.break-time-label').text("Break Time: " + response.TotalBreakTime);
+                        currentTaskColumn.find('.break-time-label').text("Break Time: " + cancelMilliseconds(response.TotalBreakTime));
                     },
                     error: function(error) {
                         console.error('Error fetching task info:', error);
@@ -541,4 +632,13 @@ function formatTime(sec) {
 
 function pad(number) {
     return number < 10 ? `0${number}` : number;
+}
+
+function cancelMilliseconds(timeString) {
+    var parts = timeString.split('.');
+    if (parts.length >= 1) {
+        return parts.slice(0, 1).join('.'); // Return to first three parts (hours, minutes, seconds)
+    }
+    console.log("wrong");
+    return timeString; // If the format does not match, return the original string
 }

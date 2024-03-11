@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
 from django.template.defaultfilters import slugify
+from SecondSavings import settings
 
 from SecondSavings import settings
 from imagekit.models import ProcessedImageField
@@ -35,7 +36,8 @@ class UserProfile(models.Model):
 class Group(models.Model):
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(User, related_name='group_memberships')
-
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    key = models.CharField(max_length=64, default='00000000')
     def __str__(self):
         return self.name
 

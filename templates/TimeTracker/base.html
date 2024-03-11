@@ -41,21 +41,21 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/report/' %}active{% endif %}" href="{% url 'report' %}">Report</a>
+                    <a class="nav-link" href="{% url 'TimeTracker:report' %}">Report</a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link {% if request.path == '/Group/' %}active{% endif %}" href="{% url 'table' %}">Group</a>
+                <li class="nav-item {% if request.path == '/Group/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'TimeTracker:group' %}">Group</a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link {% if request.path == '/MusicList/' %}active{% endif %}" href="{% url 'music' %}">Music List</a>
+                <li class="nav-item {% if request.path == '/MusicList/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'TimeTracker:music' %}">Music List</a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link {% if request.path == '/Coin/' %}active{% endif %}" href="{% url 'coin' %}">Coin</a>
-                <li class="nav-item ">
-                    <a class="nav-link {% if request.path == '/Badges/' %}active{% endif %}" href="{% url 'badges' %}">Badges</a>
+                <li class="nav-item {% if request.path == '/Coin/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'TimeTracker:coin' %}">Coin</a>
+                <li class="nav-item {% if request.path == '/Badges/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'TimeTracker:badges' %}">Badges</a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link {% if request.path == '/secondSavings/setting/' %}active{% endif %}" href="{% url 'TimeTracker:setting' %}">Setting</a>
+                <li class="nav-item {% if request.path == '/Setting/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'TimeTracker:setting' %}">Setting</a>
                 </li>
 
             </ul>

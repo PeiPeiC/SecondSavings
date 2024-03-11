@@ -5,26 +5,40 @@
     <link rel="stylesheet " href="{% static 'css/style.css' %}">
 {% endblock %}
 {% block content %}
-    <form>
-        <label>
-            <input type="text" class="form-control" placeholder="Search">
-        </label>
-    </form>
-    <form>
-        <button type="submit" class="btn btn-secondary" style="margin-bottom: 5px">Add</button>
+
+    <form id="create-group-form">
+        <input type="text" id="group-name" class="form-control" placeholder="Group Name" required>
+        <button type="button" id="search-button" class="btn btn-secondary" style="margin-bottom: 5px">Search Group</button>
+        <button type="button" id="create-group-button"class="btn btn-secondary" style="margin-bottom: 5px">Create Group</button>
+        <button type="button" id="reset-button"class="btn btn-secondary" style="margin-bottom: 5px">Reset</button>
     </form>
     <form></form>
     <table class="table table-bordered">
         <thead>
         <tr>
             <th scope="col">Group Name</th>
-            <th scope="col">Access</th>
+            <th scope="col">Creator</th>
 
         </tr>
         </thead>
         <tbody>
+        {% for group in groups %}
         <tr>
-            <td>Project A</td>
+<!--             <td>
+                <a href="{% url 'TimeTracker:group_study' group.id %}">{{ group.name }}</a>
+            </td>
+            <td>{{ group.creator }}</td>
+            <td>
+                <a class="btn btn-secondary delete-group-button" href="TimeTracker:delete_group" data-group-id="{{ group.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
+                    </svg>
+                </a>
+            </td>  -->
+                <!-- Your delete button -->
+            </td>
+            <!-- <td>Project A</td>
             <td>Otto</td>
             <td>
                 <a class="btn btn-secondary" href="#">
@@ -45,8 +59,13 @@
                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
                     </svg>
                 </a>
-            </td>
+            </td> -->
         </tr>
+        {% endfor %}
         </tbody>
     </table>
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static '/js/Group.js' %}"></script>
 {% endblock %}
+
+

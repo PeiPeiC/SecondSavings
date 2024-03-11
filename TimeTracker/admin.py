@@ -39,7 +39,7 @@ class UserProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin):
     #TaskInline, RecordInline new
-    inlines = (UserProfileInline, TaskInline, RecordInline)
+    inlines = (UserProfileInline, TaskInline, RecordInline,)
 
     def get_inline_instances(self, request, obj=None):
         if not obj:
