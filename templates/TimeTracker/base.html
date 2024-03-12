@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/secondSavings/report/' %}active{% endif %}" href="{% url 'TimeTracker:report' 'week' %}">Report</a>
+                    <a class="nav-link {% if '/secondSavings/report/' in request.path %}active{% endif %}" href="{% url 'TimeTracker:report' 'week' %}">Report</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/Group/' %}active{% endif %}" href="{% url 'TimeTracker:group' %}">Group</a>

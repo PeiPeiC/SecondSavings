@@ -137,10 +137,15 @@ def report(request, time_range):
             break_time_totals[month_start] = break_time_totals.get(month_start, 0) + breaks_time
 
     logger.info(f'{task_time_totals}, {break_time_totals}, {labels}')
+    task_total_time_list = [(date.strftime('%Y-%m-%d'), int(total_time)) for date, total_time in
+                            task_time_totals.items()]
+    break_total_time_list = [(date.strftime('%Y-%m-%d'), int(total_time)) for date, total_time in
+                             break_time_totals.items()]
+
     return render(request, 'TimeTracker/report.html',
                   {'user_profile': user_profile,
-                   'task_total_time': task_time_totals,
-                   'break_total_time': break_time_totals,
+                   'task_total_time': task_total_time_list,
+                   'break_total_time': break_total_time_list,
                    'labels': labels})
 
 
