@@ -316,7 +316,7 @@
 <div class="header">
     <div class="header-container">
         <div class="menu">
-            <a style="color: white; text-decoration: none;" href={% url 'login_main' %} >
+            <a href="/main" style="color: white; text-decoration: none;">
                 <i class="fa fa-clock-o" aria-hidden="true" style="vertical-align: middle;"></i>
                 <span style="vertical-align: middle;">SecondSavings</span>
             </a>
@@ -338,7 +338,7 @@
                         <i class="fa fa-bar-chart-o" aria-hidden="true"></i>Report
                     </a></li>
                 <li>
-                    <a class="dropdown-item" href={% url 'TimeTracker:setting' %}>
+                    <a class="dropdown-item" href="/setting">
                         <i class="fa fa-cog" aria-hidden="true"></i>Setting
                     </a>
                 </li>
@@ -364,11 +364,11 @@
                     <a  href="/login_main_count_down" class="button" >Countdown</a>
                     <a  href="/login_main" class="button" >Countup</a>
                 </div>
-                <div id="timer-string" class="time">00:00</div>
+                <div id="timer-string" class="time">25:00</div>
                 <div class="container4">
                     <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause" class="button">START</button>
                     <!-- Finish 按钮 -->
-                    <button id="finishButton" class="button" onclick="finishTask()">FINISH</button>
+                    <button id="finishButton" class="button" onclick="resetTimer()">Reset</button>
                 </div>
                 <div id="currentTask">No task running.</div>
                 {#                <div id="finalTime">Final Time: --:--</div>#}
@@ -398,6 +398,7 @@
             <div class="col-lg-6 input-area">
                 <div class="input-group">
                     <input type="text" id="taskName" class="form-control" placeholder="Input your task...">
+                    <input type="text" id="taskDuration" class="form-control" placeholder="Input your task Duration">
                     <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
                         <option value="" disabled selected hidden>Select type</option>
                         <option value="Work">Work</option>
@@ -419,6 +420,6 @@
 
 <script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/js/login_main.js' %}"></script>
+<script src="{% static '/js/login_main_count_down.js' %}"></script>
 </body>
 </html>

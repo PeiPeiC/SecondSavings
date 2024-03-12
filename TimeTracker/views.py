@@ -164,6 +164,12 @@ def badges(request):
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
 
+def login_main_count_down(request):
+    return render(request, 'TimeTracker/login_main_count_down.html')
+
+def group(request):
+    groups = Group.objects.filter(members=request.user)  
+    return render(request, 'TimeTracker/Group.html', {'groups': groups})
 
 @login_required
 def group(request):
@@ -279,10 +285,11 @@ def group_study(request, group_id):
     }
     return render(request, 'TimeTracker/group_study.html', context)
 
-
-# Study Time Ranking Popup
-def top_study_times(request):
-    top_users = UserProfile.objects.all().order_by('-study_time')[:3]
+#Study Time Ranking Popup 
+def top_study_times(request, group_id):                         
+    group = get_object_or_404(Group, id=group_id)                                              
+    #top_users = UserProfile.objects.all().order_by('-study_time')[:3]
+    top_users = UserProfile.objects.filter(user__in=group.members.all()).order_by('-study_time')[:3]
     data = {
         'top_users': [
             {'username': profile.user.username, 'study_time': profile.study_time}
@@ -330,11 +337,10 @@ def delete_task(request):
     task.delete()
     return JsonResponse({'status': 'success'})
 
-
-def delete_incomplete_tasks(request):
+def delete_incomplete_count_up_tasks(request):
     if request.method == 'POST':
         # 删除当前登录用户的所有未完成任务
-        Task.objects.filter(user=request.user, isCompleted=False).delete()
+        Task.objects.filter(user=request.user, isCompleted=False, isCountDown=False).delete()
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
@@ -365,12 +371,14 @@ def get_task_info(request):
         'endtime': task.endTime.isoformat() if task.endTime else None,
         'TotalTaskTime': task.totalTaskTime,
         'TotalBreakTime': task.totalBreakTime,
+        'TotalSeconds': task.totalSeconds,
     })
 
 
-# 前端获取用户task，保证每次刷新网页都保留已创建的task
-def get_tasks(request):
-    tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
+#前端获取用户task，保证每次刷新网页都保留已创建的task
+def get_count_up_tasks(request):
+    #tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
+    tasks = Task.objects.filter(user=request.user, isCountDown=False).values()
     return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回
 
 
@@ -409,6 +417,11 @@ def end_record(request):
         user_profile = UserProfile.objects.get(user=record.user)
         task = record.task
 
+        #if task.isCountDown == True:
+            #time_delta_seconds = time_delta.total_seconds()
+            #task.totalSeconds = task.totalSeconds - time_delta_seconds
+
+
         if record.type == 'task':
             task_type = task.category
 
@@ -425,12 +438,26 @@ def end_record(request):
         else:
             task.totalBreakTime = add_timedelta_to_time(task.totalBreakTime, time_delta)
 
+        if task.isCountDown == True and record.type == 'task':
+            total_task_time = task.totalTaskTime
+            # 将时间转换为秒
+            total_seconds = (total_task_time.hour * 3600) + (total_task_time.minute * 60) + total_task_time.second
+            print("test")
+            task.totalSeconds = task.Duration - total_seconds
+
+
         user_profile.save()
         task.save()
+        
+        return JsonResponse({'status': 'success'}) 
 
+def delete_incomplete_count_down_tasks(request):
+    if request.method == 'POST':
+        # 删除当前登录用户的所有未完成任务
+        Task.objects.filter(user=request.user, isCompleted=False, isCountDown=True).delete()
         return JsonResponse({'status': 'success'})
-
-
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 """  #pauseTimer()触发后调用
 def end_record(request): 
     if request.method == 'POST':
@@ -475,5 +502,24 @@ def end_record(request):
         user_profile.save()
         task.save()
         
-
         return JsonResponse({'status': 'success'})  """
+
+
+#点击submit后创建count down task
+def create_count_down_task(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        task_type = request.POST.get('taskType')
+        task_date = request.POST.get('taskDate')
+        taskDuration = request.POST.get('taskDuration')
+        countDown = True
+        # 创建并保存任务对象
+        task = Task(user=request.user, title=title, category = task_type, chosenDate = task_date, Duration = taskDuration, totalSeconds = taskDuration, isCountDown = countDown)
+        task.save()
+        return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime':task.totalTaskTime, 'TotalBreakTime':task.totalBreakTime, 'chosenDate':task.chosenDate, 'TotalSeconds': task.totalSeconds})
+    return JsonResponse({'status': 'error'}, status=400)
+
+def get_count_down_tasks(request):
+    #tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
+    tasks = Task.objects.filter(user=request.user, isCountDown=True).values()
+    return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回

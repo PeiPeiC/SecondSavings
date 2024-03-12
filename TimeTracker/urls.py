@@ -30,15 +30,23 @@ urlpatterns = [
     path('search_group/', views.search_group, name='search_group'),
     path('join_group/<int:group_id>/', views.join_group, name='join_group'),
     path('groupStudy/<int:group_id>/', views.group_study, name='group_study'),
-    path('topStudyTimes', views.top_study_times, name='top_study_times'),
-
+    path('top_study_times/<int:group_id>/', views.top_study_times, name='top_study_times'),
+    
+   
+ 
     path('create_task/', views.create_task, name='create_task'),
     path('update_task_date/', views.update_task_date, name='update_task_date'),
     path('delete_task/', views.delete_task, name='delete_task'),
-    path('delete_incomplete_tasks/', views.delete_incomplete_tasks, name='delete_incomplete_tasks'),
-    path('get_tasks/', views.get_tasks, name='get_tasks'),
+    path('delete_incomplete_count_up_tasks/', views.delete_incomplete_count_up_tasks, name='delete_incomplete_count_up_tasks'),
+    path('get_count_up_tasks/', views.get_count_up_tasks, name='get_count_up_tasks'),
     path('start_record/', views.start_record, name='start_record'),
     path('end_record/', views.end_record, name='end_record'),
     path('finish_task/', views.finish_task, name='finish_task'),
     path('get_task_info/', views.get_task_info, name='get_task_info'),
+
+
+    path('create_count_down_task/', views.create_count_down_task, name='create_count_down_task'),
+    path('get_count_down_tasks/', views.get_count_down_tasks, name='get_count_down_tasks'),
+    path('delete_incomplete_count_down_tasks/', views.delete_incomplete_count_down_tasks, name='delete_incomplete_count_down_tasks'),
+
 ]

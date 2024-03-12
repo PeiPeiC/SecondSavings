@@ -53,11 +53,13 @@ class Task(models.Model):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
     category = models.CharField(max_length=CATEGORY_MAX_LENGTH)
     status = models.CharField(max_length=CATEGORY_MAX_LENGTH, default='pending', blank=True)
+    Duration = models.IntegerField(default=0)
     totalSeconds = models.IntegerField(default=0)
     badge = models.ImageField(upload_to='badge_images', blank=True)
     startTime = models.DateTimeField(null=True, blank=True)
     endTime = models.DateTimeField(null=True, blank=True)
-    isCompleted = models.BooleanField(default=False)  # 新增字段标记任务是否完成
+    isCompleted = models.BooleanField(default=False)        # 新增字段标记任务是否完成
+    isCountDown = models.BooleanField(default=False)        #新增字段判斷task是否為count down
     chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
     totalTaskTime = models.TimeField(default="00:00:00")  # 新增总学习时间
     totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间

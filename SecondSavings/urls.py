@@ -30,6 +30,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path("login_main/", views.login_main, name='login_main'),
+    path("login_main_count_down", views.login_main_count_down, name='login_main_count_down'),
     # Django admin
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
