@@ -23,23 +23,6 @@ from django.conf.urls.static import static
 from django.urls import re_path
 
 urlpatterns = [
-<<<<<<< HEAD
-    
-    path('',views.main,name='main'),
-    path("main/", views.main, name='main'),
-    # path('login/', views.user_login, name='user_login'),
-    path('accounts/', include('allauth.urls')),
-
-    path("login_main/", views.login_main, name='login_main'),
-    # Django admin
-    path("admin/", admin.site.urls),
-    # Django-allauth routes for authentication
-    path('secondSavings/', include('TimeTracker.urls')),
-
-]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-    # Include your app's urls here
-    
-=======
 
                   path('', views.main, name='main'),
                   path("main/", views.main, name='main'),
@@ -61,7 +44,6 @@ urlpatterns = [
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Include your app's urls here
 
->>>>>>> 862e582 (add privacy page)
 # Static and media files in development
 
 # 确保在开发环境中也能正确服务静态文件
