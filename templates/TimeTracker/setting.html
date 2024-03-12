@@ -160,13 +160,6 @@ document.addEventListener('DOMContentLoaded', function () {
     <script>
   // 切换音量滑块的显示和隐藏
   function toggleVolumeSlider() {
-    var slider = document.getElementById("volume-slider");
-    if (slider.style.display === "none") {
-      slider.style.display = "block";
-    } else {
-      slider.style.display = "none";
-    }
-
     const selectedAlarm = document.querySelector(".form-select").value;
     console.log(selectedAlarm)
     var audio = new Audio(selectedAlarm);
