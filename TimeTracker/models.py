@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.utils import timezone
 
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
@@ -63,7 +65,20 @@ class Task(models.Model):
     totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间
 
     def __str__(self):
-        return self.title
+        return f"{self.title}, date:{self.chosenDate}"
+
+    def total_seconds(self):
+        # 将 TimeField 转换为 timedelta
+        task_timedelta_value = datetime.strptime(str(self.totalTaskTime), '%H:%M:%S') - datetime.strptime('00:00:00',
+                                                                                                     '%H:%M:%S')
+        break_timedelta_value = datetime.strptime(str(self.totalBreakTime), '%H:%M:%S') - datetime.strptime('00:00:00',
+                                                                                                          '%H:%M:%S')
+
+        # 计算总秒数
+        total_task_seconds = task_timedelta_value.total_seconds()
+        total_break_seconds = break_timedelta_value.total_seconds()
+
+        return total_task_seconds,total_break_seconds
 
 
 RECORD_TYPE_CHOICES = (('break', 'BREAK'), ('task', 'TASK'))
@@ -108,3 +123,12 @@ class UserSetting(models.Model):
             if url == value:
                 return key
         return None
+
+
+class ReportItem:
+    def __init__(self, label, seconds):
+        self.label = label
+        self.seconds = seconds
+
+    def __str__(self):
+        return f"label={self.label}, seconds={self.seconds}"

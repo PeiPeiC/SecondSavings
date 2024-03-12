@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/secondSavings/report/' %}active{% endif %}" href="{% url 'TimeTracker:report' %}">Report</a>
+                    <a class="nav-link {% if request.path == '/secondSavings/report/' %}active{% endif %}" href="{% url 'TimeTracker:report' 'week' %}">Report</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/Group/' %}active{% endif %}" href="{% url 'TimeTracker:group' %}">Group</a>
@@ -57,7 +57,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/secondSavings/logout/' %}active{% endif %}" href="{% url 'TimeTracker:logout' %}">
+                    <a class="nav-link {% if request.path == '/secondSavings/logout/' %}active{% endif %}" href="{% url 'account_logout' %}">
                         Log Out
                     </a>
                 </li>

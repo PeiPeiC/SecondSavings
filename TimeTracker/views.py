@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from TimeTracker.forms import GroupCreateForm
-from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting
+from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, ReportItem
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
@@ -85,9 +85,48 @@ def avatar_update(request):
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
 
 
-def report(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/report.html')
+@login_required
+def report(request, range):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if created:
+        logger.info(f'user {request.user} create profile')
+
+    if range == 'week':
+        left_time = datetime.now() - timedelta(days=7)
+    elif range == 'month':
+        left_time = datetime.now() - timedelta(days=30)
+    elif range == 'year':
+        left_time = datetime.now() - timedelta(days=365)
+    else:  # default week
+        left_time = datetime.now() - timedelta(days=7)
+
+    all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
+        'chosenDate')
+    logger.info(all_tasks)
+    if len(all_tasks) == 0:
+        return render(request, 'TimeTracker/report.html',
+                      {'user_profile': user_profile,
+                       'data': None})
+
+    dates = {}
+    for task in all_tasks:
+        if task.chosenDate in dates:
+            data = dates[task.chosenDate]
+            for item in data:
+                task_times, break_times = task.total_seconds()
+                if item.label == 'task':
+                    item.seconds += task_times
+                if item.label == 'break':
+                    item.seconds += break_times
+                else:
+                    continue
+        else:
+            task_times, break_times = task.total_seconds()
+            dates[task.chosenDate] = [ReportItem('task', task_times), ReportItem('break', break_times)]
+
+    return render(request, 'TimeTracker/report.html',
+                  {'user_profile': user_profile,
+                   'data': dates})
 
 
 def table(request):
