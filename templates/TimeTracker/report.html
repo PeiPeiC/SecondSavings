@@ -9,6 +9,14 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>  {# 导入ECharts库 #}
 
 <body style="height: 100%; margin: 0">
+    <div>
+{#        labels: 标签#}
+{#        task_total_time: 每天的任务时间#}
+{#        break_total_time: 每天的休息时间#}
+        {{ labels }}
+        {{ task_total_time }}
+        {{ break_total_time }}
+    </div>
     <div class="btn-group" role="group" aria-label="Basic example">  {# 定义按钮组 #}
         <div class="sananniu">  {# 使用样式sananniu #}
         <button type="button" class="btn btn-primary weekbtn" id="weekBtn">
@@ -21,6 +29,7 @@
             <a href="{% url 'TimeTracker:report' 'year' %}">Year</a>
         </button>  {# 按钮：Year #}
         </div>
+
         <div id="container" style="height: 100%;margin-top: 30px;"></div>  {# 定义容器 #}
     </div>
 

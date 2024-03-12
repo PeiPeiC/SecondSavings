@@ -93,7 +93,7 @@ def report(request, time_range):
 
     now = datetime.now()
     if time_range == 'week':
-        left_time = now - timedelta(days=7)
+        left_time = now - timedelta(days=6)
         labels = [(left_time + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
 
     elif time_range == 'month':
@@ -112,7 +112,6 @@ def report(request, time_range):
 
     all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
         'chosenDate')
-    logger.info(labels)
     if len(all_tasks) == 0:
         return render(request, 'TimeTracker/report.html',
                       {'user_profile': user_profile,
@@ -123,23 +122,21 @@ def report(request, time_range):
     for task in all_tasks:
         task_date = task.chosenDate
         tasks_time, breaks_time = task.total_seconds()
+        if time_range == 'week':
+            task_time_totals[task.chosenDate] = task_time_totals.get(task.chosenDate, 0) + tasks_time
+            break_time_totals[task.chosenDate] = break_time_totals.get(task.chosenDate, 0) + breaks_time
 
-        if range == 'week':
-            if task.chosenDate in labels:
-                task_time_totals[task.chosenDate] = task_time_totals.get(task.chosenDate, 0) + tasks_time
-                break_time_totals[task.chosenDate] = break_time_totals.get(task.chosenDate, 0) + breaks_time
-
-        elif range == 'month':
+        elif time_range == 'month':
             week_start = task_date - timedelta(days=task_date.day - 1)
             task_time_totals[week_start] = task_time_totals.get(week_start, 0) + tasks_time
             break_time_totals[week_start] = break_time_totals.get(week_start, 0) + breaks_time
 
-        elif range == 'year':
+        elif time_range == 'year':
             month_start = datetime(task_date.year, task_date.month, 1)
             task_time_totals[month_start] = task_time_totals.get(month_start, 0) + tasks_time
             break_time_totals[month_start] = break_time_totals.get(month_start, 0) + breaks_time
 
-    logger.info(f'{task_time_totals}, {break_time_totals}')
+    logger.info(f'{task_time_totals}, {break_time_totals}, {labels}')
     return render(request, 'TimeTracker/report.html',
                   {'user_profile': user_profile,
                    'task_total_time': task_time_totals,
