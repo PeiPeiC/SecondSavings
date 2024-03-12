@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger('django')
 
+
 def main(request):
     return render(request, 'TimeTracker/main.html')
 
@@ -58,12 +59,13 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
-            
+
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
-                logger.info(f'Old avatar deleted for user {request.user.username}')#debug log
+                logger.info(f'Old avatar deleted for user {request.user.username}')  # debug log
             rand_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()), save=False)
+            user_profile.avatar.save(f'{request.user.username}_{rand_str}.jpg', ContentFile(image_io.getvalue()),
+                                     save=False)
             logger.info(f'New avatar saved: {request.user.username}_{rand_str}.jpg for user {request.user.username}')
             user_profile.save()
 
@@ -72,7 +74,6 @@ def avatar_update(request):
             messages.error(request, 'Invalid Image')
             logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
-
 
 
 def report(request):
@@ -104,6 +105,15 @@ def badges(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/badges.html')
 
+
 @login_required
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
+
+
+def privacy_policy(request):
+    return render(request, 'TimeTracker/privacy_policy.html')
+
+
+def terms_of_service(request):
+    return render(request, 'TimeTracker/terms_of_service.html')
