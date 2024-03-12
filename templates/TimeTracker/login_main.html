@@ -104,6 +104,30 @@
             width: 100%;
         }
 
+        .page-switch-buttons {
+            display: inline-flex;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-switch-buttons a {
+            display: block;
+            background-color: white;
+            color: #A98B73;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            transition: background-color 0.3s, opacity 0.3s;
+            opacity: 0.7;
+        }
+
+        .page-switch-buttons a:hover, .page-switch-buttons a.active {
+            opacity: 1.0;
+            background-color: #f8f9fa;
+        }
+
         .time {
             font-size: 120px;
             font-weight: bold;
@@ -336,9 +360,13 @@
         </div>
         <div class="container2">
             <div class="container3">
+                <div class="page-switch-buttons">
+                    <a  href="/main" class="button" >Countdown</a>
+                    <a  href="/login_main" class="button" >Countup</a>
+                </div>
                 <div id="timer-string" class="time">00:00</div>
                 <div class="container4">
-                    <button id="startPauseButton" class="button" onclick="startPauseTimer()">START</button>
+                    <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause" class="button">START</button>
                     <!-- Finish 按钮 -->
                     <button id="finishButton" class="button" onclick="finishTask()">FINISH</button>
                 </div>
@@ -348,7 +376,7 @@
             <div class="text">Time to focus!</div>
         </div>
         <div class="container5">
-            <div class="container6">
+            <!-- <div class="container6">
                 <span class="task">Tasks</span>
                 <button role="presentation" class="dropdown button4">
                     <div id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -361,6 +389,10 @@
                         <li><a href="#" id="clearAllTasks">Clear all tasks</a></li>
                     </ul>
                 </button>
+            </div> -->
+            <div class="container6">
+                <button class="button" id="clearAllTasksButton" onclick="clearAllTasks()">Clear all tasks</button>
+                <button class="button" id="finishedTasksButton" onclick="finishiedTasks()">Finished Tasks</button>
             </div>
             <div class="marg"></div>
             <div class="col-lg-6 input-area">
@@ -368,11 +400,9 @@
                     <input type="text" id="taskName" class="form-control" placeholder="Input your task...">
                     <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
                         <option value="" disabled selected hidden>Select type</option>
-                        <option value="work">Work</option>
-                        <option value="personal">Personal</option>
-                        <option value="study">Study</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="other">Other</option>
+                        <option value="Work">Work</option>
+                        <option value="Life">Life</option>
+                        <option value="Study">Study</option>
                     </select>
                     <input type="date" id="taskDate" class="form-control" placeholder="Date...">
                     {#                    <input type="time" id="taskTime" class="form-control">#}
@@ -389,7 +419,6 @@
 
 <script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/js/main.js' %}"></script>
 <script src="{% static '/js/login_main.js' %}"></script>
 </body>
 </html>
