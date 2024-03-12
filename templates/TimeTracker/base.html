@@ -56,6 +56,11 @@
                         Setting
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/logout/' %}active{% endif %}" href="{% url 'TimeTracker:logout' %}">
+                        Log Out
+                    </a>
+                </li>
 
             </ul>
         </div>
