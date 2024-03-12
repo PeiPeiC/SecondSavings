@@ -21,7 +21,7 @@ logger = logging.getLogger('django')
 
 
 def main(request):
-    if request.user:
+    if request.user.is_authenticated:
         user_setting, created = UserSetting.objects.get_or_create(user=request.user)
         if created:
             logger.info(f"user {request.user} setting created.")
