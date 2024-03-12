@@ -316,7 +316,8 @@
 <div class="header">
     <div class="header-container">
         <div class="menu">
-            <a href="/main" style="color: white; text-decoration: none;">
+<!--             <a href="/main" style="color: white; text-decoration: none;"> -->
+            <a  style="color: white; text-decoration: none;">
                 <i class="fa fa-clock-o" aria-hidden="true" style="vertical-align: middle;"></i>
                 <span style="vertical-align: middle;">SecondSavings</span>
             </a>
@@ -334,11 +335,11 @@
                     </a>
                 </li> <!-- 新增的 Profile 链接 -->
                 <li>
-                    <a class="dropdown-item" href="/report">
+                    <a class="dropdown-item" href={% url 'TimeTracker:report' %}>
                         <i class="fa fa-bar-chart-o" aria-hidden="true"></i>Report
                     </a></li>
                 <li>
-                    <a class="dropdown-item" href="/setting">
+                    <a class="dropdown-item" href={% url 'TimeTracker:setting' %}>
                         <i class="fa fa-cog" aria-hidden="true"></i>Setting
                     </a>
                 </li>
@@ -347,7 +348,11 @@
                         <i class="fa fa-user" aria-hidden="true"></i>Logout
                     </a>
                 </li>
-
+                <li>
+                    <a class="dropdown-item" href={% url 'TimeTracker:group' %}>
+                        <i class="fa fa-group" aria-hidden="true"></i>Group
+                    </a >
+                </li>
             </ul>
         </div>
         <div style="clear: both;"></div>

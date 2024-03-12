@@ -104,6 +104,12 @@ def coin(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/coin.html')
 
+def privacy_policy(request):
+    return render(request, 'TimeTracker/privacy_policy.html')
+
+
+def terms_of_service(request):
+    return render(request, 'TimeTracker/terms_of_service.html')
 
 def setting(request):
     user_setting, created = UserSetting.objects.get_or_create(user=request.user)

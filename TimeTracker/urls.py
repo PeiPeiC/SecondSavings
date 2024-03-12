@@ -22,6 +22,11 @@ urlpatterns = [
     path('Coin/', views.coin, name='coin'),
     path('Badges/', views.badges, name='badges'),
 
+    #privacy policy
+    path("privacy_policy/", views.privacy_policy, name='privacy_policy'),
+    path("terms_of_service/", views.terms_of_service, name='terms_of_service'),
+    
+    #Group 
     path('Group/', views.group, name='group'),
     path('get_user_groups/', views.get_user_groups, name='get_user_groups'),
     path('create_group/', views.create_group, name='create_group'),
