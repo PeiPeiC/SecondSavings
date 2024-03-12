@@ -1,5 +1,7 @@
 from django.utils import timezone
+
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
+
 from django.db import models
 from django.template.defaultfilters import slugify
 from SecondSavings import settings
@@ -9,7 +11,12 @@ from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 
+
+
+
 class UserProfile(models.Model):
+
+
     NICK_NAME_MAX_LENGTH = 30
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
@@ -30,6 +37,8 @@ class UserProfile(models.Model):
             self.nickName = self.user.username
         super(UserProfile, self).save(*args, **kwargs)
 
+
+
     def __str__(self):
         return 'nickname:' + self.nickName + ' avatar:' + self.avatar.url
 
@@ -43,6 +52,14 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+    members = models.ManyToManyField(User, related_name='group_memberships')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    key = models.CharField(max_length=64, default='00000000')
+    def __str__(self):
+        return self.name
+    
 
 class Task(models.Model):
     TITLE_MAX_LENGTH = 120
@@ -57,10 +74,10 @@ class Task(models.Model):
     badge = models.ImageField(upload_to='badge_images', blank=True)
     startTime = models.DateTimeField(null=True, blank=True)
     endTime = models.DateTimeField(null=True, blank=True)
-    isCompleted = models.BooleanField(default=False)  # 新增字段标记任务是否完成
+    isCompleted = models.BooleanField(default=False)        # 新增字段标记任务是否完成
     chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
-    totalTaskTime = models.TimeField(default="00:00:00")  # 新增总学习时间
-    totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间
+    totalTaskTime = models.TimeField(default="00:00:00")    #新增总学习时间
+    totalBreakTime = models.TimeField(default="00:00:00")   #新增总休息时间
 
     def __str__(self):
         return self.title
