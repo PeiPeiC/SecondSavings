@@ -32,7 +32,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
 
             var tdName = document.createElement('td');
             var link = document.createElement('a');
-            link.setAttribute('href', '/secondSavings/groupStudy/' + data.groupId);   
+            link.setAttribute('href', '/secondSavings/groupStudy/' + data.groupId); 
             link.textContent = data.groupName;
             tdName.appendChild(link);
 

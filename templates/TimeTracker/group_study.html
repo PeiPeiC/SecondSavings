@@ -22,7 +22,7 @@
         <div class="members-list">
             {% for member in members %}
                 <div class="member">
-                    <img src="{{ member.userprofile.picture.url }}" alt="{{ member.username }}">
+                    <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
                     <p>{{ member.userprofile.user.username }}</p>
                     <p>{{ member.userprofile.study_time|time:"H:i:s" }}</p>
                 </div>

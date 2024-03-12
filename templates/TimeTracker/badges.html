@@ -1,16 +1,18 @@
 {% extends 'TimeTracker/base.html' %}
+{% load static %}
 {% block css %}
-    <link rel="stylesheet" href="/statics/css/badges.css">
-    <link rel="stylesheet " href="/statics/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/badges.css' %}">
+    <link rel="stylesheet " href="{% static 'css/style.css' %}">
 {% endblock %}
+
 {% block content %}
     <div class="container mt-3">
         <div class="row" id="badgesRow">
             <div class="col-auto">
-                <img src="static/img/sdd.png">
+                <img src="{% static 'img/sdd.png' %}" alt="">
             </div>
             <div class="col-auto">
-                <img src="static/img/we.png">
+                <img src="{% static 'img/we.png' %}" alt="">
             </div>
         </div>
         <button id="addBadgeBtn" class="btn btn-primary mt-2">Add New Badge</button>
