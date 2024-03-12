@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,13 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <style>
+        .nav-link.active{
+    background-color: #D2B48C; /* 土黄色 */
+    color: #fff;
+}
+
+    </style>
     {% block css %}
     {% endblock %}
 </head>
@@ -28,26 +36,25 @@
             <ul class="nav flex-column">
                 <!-- Sidebar link -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'TimeTracker:profile' %}">
+                    <a class="nav-link {% if request.path == '/secondSavings/profile/' %}active{% endif %}" href="{% url 'TimeTracker:profile' %}">
                         Account
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'TimeTracker:report' %}">Report</a>
+                    <a class="nav-link {% if request.path == '/secondSavings/report/' %}active{% endif %}" href="{% url 'TimeTracker:report' %}">Report</a>
                 </li>
-                <li class="nav-item {% if request.path == '/Group/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'TimeTracker:group' %}">Group</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/Group/' %}active{% endif %}" href="{% url 'TimeTracker:group' %}">Group</a>
                 </li>
-                <li class="nav-item {% if request.path == '/MusicList/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'TimeTracker:music' %}">Music List</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/Coin/' %}active{% endif %}" href="{% url 'TimeTracker:coin' %}">Coin</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/Badges/' %}active{% endif %}" href="{% url 'TimeTracker:badges' %}">Badges</a>
                 </li>
-                <li class="nav-item {% if request.path == '/Coin/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'TimeTracker:coin' %}">Coin</a>
-                <li class="nav-item {% if request.path == '/Badges/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'TimeTracker:badges' %}">Badges</a>
-                </li>
-                <li class="nav-item {% if request.path == '/Setting/' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'TimeTracker:setting' %}">Setting</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/setting/' %}active{% endif %}" href="{% url 'TimeTracker:setting' %}">
+                        Setting
+                    </a>
                 </li>
 
             </ul>

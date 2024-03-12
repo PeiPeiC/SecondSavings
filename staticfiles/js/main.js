@@ -83,6 +83,8 @@ function startTimer(duration, display) {
     timer = setInterval(function () {
         var minutes = parseInt(secondsLeft / 60, 10);
         var seconds = parseInt(secondsLeft % 60, 10);
+        var audioPlayer = document.getElementById('audioPlayer');
+
 
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -92,6 +94,8 @@ function startTimer(duration, display) {
         if (--secondsLeft < 0) {
             clearInterval(timer);
             display.textContent = "TIME UP!";
+            console.log(audioPlayer)
+            audioPlayer.play();
             document.getElementById('startButton').textContent = "START"; // 重置开始按钮文本
             isRunning = false; // 更新计时器状态为未运行
             $("#currentTask").text("No task running."); // 清除当前任务显示

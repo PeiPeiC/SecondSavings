@@ -10,10 +10,10 @@
     border-radius: 0;
 }
 
-/* Style for active navigation link */
-.nav-link.active {
-    color: #fff; /* White text */
-    background-color: #343a40; /* Dark gray background */
+
+.nav-link.active{
+    background-color: #D2B48C; /* 土黄色 */
+    color: #fff;
 }
 
 .user-info {
@@ -56,9 +56,8 @@
 .sidebar a[href="{% url 'TimeTracker:mian' %}"] .bi-house-door-fill {
     color: #000; /* 设置为默认颜色 */
 }
-
-/* 导航栏按钮被选中时的样式 */
-.nav-link.active {
-    color: #fff; /* 白色文本 */
-    background-color: #333; /* 深灰色背景 */
+.nav-link.active{
+    background-color: #D2B48C; /* 土黄色 */
+    color: #fff;
 }
+

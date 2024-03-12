@@ -1,12 +1,16 @@
 {% extends 'TimeTracker/base.html' %}
+{% load static %}
 {% block css %}
-    <link rel="stylesheet" href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/coin.css">
-    <link rel="stylesheet " href="jetbrains://pycharm/navigate/reference?project=profile&path=static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/coin.css' %}">
+    <link rel="stylesheet " href="{% static 'css/style.css' %}">
 {% endblock %}
 {% block content %}
   <div class="container mt-3">
   <h2>coin</h2>
-  <p>Every hour of use equals <span class="highlight"><input style="width: 30px;"></span> saved</p>
+  <p>Every hour of use equals <span class="highlight"><label>
+<input style="width: 30px;">
+</label>
+  </span> saved</p>
   <div class="table-responsive">
     <table class="table">
       <thead>
