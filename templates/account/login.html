@@ -103,6 +103,11 @@
             text-align: center;
         }
 
+
+        .small-link {
+            font-size: 0.75rem;
+        }
+
         .alert-custom {
             color: red;
         }
@@ -219,7 +224,7 @@
         <div class="login-links">
             <a href="{% url 'main' %}">Visiting</a>
         </div>
-        <div class="login-links">
+        <div class="login-links small-link">
             <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
             <a href="{% url 'terms_of_service' %}">Terms of Service</a>
         </div>
