@@ -11,14 +11,17 @@
             justify-content: center;
             align-items: center
         }
+
         .container {
             width: 300px;
             justify-content: center;
             align-items: center;
         }
+
         .google-btn, .or-separator, h2, h5 {
             text-align: center;
         }
+
         .google-btn {
             background: #4285F4;
             color: white;
@@ -28,10 +31,12 @@
             cursor: pointer;
             width: 100%; /* Match the width of form inputs */
         }
+
         .or-separator {
             margin: 20px 0;
             position: relative;
         }
+
         .or-separator::before, .or-separator::after {
             content: "";
             display: block;
@@ -40,12 +45,15 @@
             width: 40%;
             top: 50%;
         }
+
         .or-separator::before {
             left: 0;
         }
+
         .or-separator::after {
             right: 0;
         }
+
         .or-text {
             display: inline-block;
             background: white;
@@ -53,6 +61,7 @@
             position: relative;
             z-index: 1;
         }
+
         input[type=email], input[type=password] {
             width: 100%;
             padding: 10px;
@@ -60,6 +69,7 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }
+
         .submit-btn {
             background: black;
             color: white;
@@ -69,12 +79,14 @@
             cursor: pointer;
             margin-top: 20px; /* Move the button down a bit */
         }
+
         .login-links {
             margin-top: 5px;
             display: flex;
             justify-content: space-around;
             align-items: center;
         }
+
         .login-links a {
             color: #4285F4;
             text-decoration: none;
@@ -92,29 +104,33 @@
         <span class="or-text">—or—</span>
     </div>
     <form method="post" action="{% url 'account_signup' %}">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="form-field">
-                    {{ field.errors }}
-                    {{ field.label_tag }}{{ field }}
-                </div>
-            {% endfor %}
-            {% if messages %}
-                {% comment %} <div class="alert {{ messages.0.tags }}" style="color: red;">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-field">
+                {{ field.errors }}
+                {{ field.label_tag }}{{ field }}
+            </div>
+        {% endfor %}
+        {% if messages %}
+            {% comment %} <div class="alert {{ messages.0.tags }}" style="color: red;">
                     {{ messages.0 }}
                 </div> {% endcomment %}
 
-                {% for message in messages %}
-                    <div style="color: red;">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            <button type="submit" class="submit-btn">Sign up with Email</button>
+            {% for message in messages %}
+                <div style="color: red;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <button type="submit" class="submit-btn">Sign up with Email</button>
     </form>
     <div class="login-links">
         <h5>Already have an account?</h5>
     </div>
     <div class="login-links">
         <a href="{% url 'account_login' %}">Log in</a>
+    </div>
+    <div class="login-links">
+        <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+        <a href="{% url 'terms_of_service' %}">Terms of Service</a>
     </div>
 
 </div>

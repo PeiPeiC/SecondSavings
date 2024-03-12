@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/update/', views.profile_update, name='profile_update'),
     path('profile/avater_update/', views.avatar_update, name='avatar_update'),
+<<<<<<< HEAD
 
     # setting
     path('setting/', views.setting, name='setting'),
@@ -41,4 +42,9 @@ urlpatterns = [
     path('end_record/', views.end_record, name='end_record'),
     path('finish_task/', views.finish_task, name='finish_task'),
     path('get_task_info/', views.get_task_info, name='get_task_info'),
+=======
+    path("login_main/", views.login_main, name='login_main'),
+    # path("privacy_policy/", views.privacy_policy, name='privacy_policy'),
+    # path("terms_of_service/", views.terms_of_service, name='terms_of_service'),
+>>>>>>> 862e582 (add privacy page)
 ]

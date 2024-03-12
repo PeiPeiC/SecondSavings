@@ -69,6 +69,10 @@ def avatar_update(request):
             image = Image.open(BytesIO(image_data_decoded))
             image_io = BytesIO()
             image.save(image_io, format='JPEG')
+<<<<<<< HEAD
+=======
+
+>>>>>>> 862e582 (add privacy page)
             if user_profile.avatar:
                 user_profile.avatar.delete()  # delete the old one
                 logger.info(f'Old avatar deleted for user {request.user.username}')  # debug log
@@ -165,6 +169,7 @@ def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
 
 
+<<<<<<< HEAD
 @login_required
 def group(request):
     groups = Group.objects.filter(members=request.user)
@@ -477,3 +482,11 @@ def end_record(request):
         
 
         return JsonResponse({'status': 'success'})  """
+=======
+def privacy_policy(request):
+    return render(request, 'TimeTracker/privacy_policy.html')
+
+
+def terms_of_service(request):
+    return render(request, 'TimeTracker/terms_of_service.html')
+>>>>>>> 862e582 (add privacy page)

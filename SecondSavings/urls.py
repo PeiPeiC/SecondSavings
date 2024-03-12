@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from SecondSavings import settings
 from TimeTracker import views
-from django.urls import path,include
+from django.urls import path, include
 from django.conf.urls.static import static
 
 from django.urls import re_path
 
 urlpatterns = [
+<<<<<<< HEAD
     
     path('',views.main,name='main'),
     path("main/", views.main, name='main'),
@@ -38,6 +39,29 @@ urlpatterns = [
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
     
+=======
+
+                  path('', views.main, name='main'),
+                  path("main/", views.main, name='main'),
+                  # path('login/', views.user_login, name='user_login'),
+                  path("login_main/", views.login_main, name='login_main'),
+                  # Django admin
+                  path("admin/", admin.site.urls),
+                  # Django-allauth routes for authentication
+                  path('accounts/', include('allauth.urls')),
+                  path('secondSavings/', include('TimeTracker.urls')),
+                  path('report/', views.report, name='report'),
+                  path('Group/', views.table, name='table'),
+                  path('MusicList/', views.music, name='music'),
+                  path('Coin/', views.coin, name='coin'),
+                  path('Settings/', views.setting, name='setting'),
+                  path('Badges/', views.badges, name='badges'),
+                  path("privacy_policy/", views.privacy_policy, name='privacy_policy'),
+                  path("terms_of_service/", views.terms_of_service, name='terms_of_service'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Include your app's urls here
+
+>>>>>>> 862e582 (add privacy page)
 # Static and media files in development
 
 # 确保在开发环境中也能正确服务静态文件
