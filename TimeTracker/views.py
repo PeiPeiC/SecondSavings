@@ -1,6 +1,6 @@
 from django.utils import timezone
 from datetime import datetime, timedelta
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import base64
 import json
 import random
@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from TimeTracker.forms import GroupCreateForm
-from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, ReportItem
+from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, TaskTableItem
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
@@ -86,47 +86,65 @@ def avatar_update(request):
 
 
 @login_required
-def report(request, range):
+def report(request, time_range):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     if created:
         logger.info(f'user {request.user} create profile')
 
-    if range == 'week':
-        left_time = datetime.now() - timedelta(days=7)
-    elif range == 'month':
-        left_time = datetime.now() - timedelta(days=30)
-    elif range == 'year':
-        left_time = datetime.now() - timedelta(days=365)
+    now = datetime.now()
+    if time_range == 'week':
+        left_time = now - timedelta(days=7)
+        labels = [(left_time + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
+
+    elif time_range == 'month':
+        left_time = now - timedelta(days=30)
+        week_start = now - timedelta(days=now.day - 1)
+        labels = [(week_start + timedelta(weeks=i)).strftime('%Y-%m-%d') for i in range(5)]
+
+    elif time_range == 'year':
+        left_time = now - timedelta(days=365)
+        month_start = datetime(now.year, now.month, 1)
+        labels = [(month_start + timedelta(days=i * 30)).strftime('%Y-%m') for i in range(12)]
+
     else:  # default week
         left_time = datetime.now() - timedelta(days=7)
+        labels = [(left_time + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
 
     all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
         'chosenDate')
-    logger.info(all_tasks)
+    logger.info(labels)
     if len(all_tasks) == 0:
         return render(request, 'TimeTracker/report.html',
                       {'user_profile': user_profile,
                        'data': None})
 
-    dates = {}
+    task_time_totals = {}
+    break_time_totals = {}
     for task in all_tasks:
-        if task.chosenDate in dates:
-            data = dates[task.chosenDate]
-            for item in data:
-                task_times, break_times = task.total_seconds()
-                if item.label == 'task':
-                    item.seconds += task_times
-                if item.label == 'break':
-                    item.seconds += break_times
-                else:
-                    continue
-        else:
-            task_times, break_times = task.total_seconds()
-            dates[task.chosenDate] = [ReportItem('task', task_times), ReportItem('break', break_times)]
+        task_date = task.chosenDate
+        tasks_time, breaks_time = task.total_seconds()
 
+        if range == 'week':
+            if task.chosenDate in labels:
+                task_time_totals[task.chosenDate] = task_time_totals.get(task.chosenDate, 0) + tasks_time
+                break_time_totals[task.chosenDate] = break_time_totals.get(task.chosenDate, 0) + breaks_time
+
+        elif range == 'month':
+            week_start = task_date - timedelta(days=task_date.day - 1)
+            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + tasks_time
+            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + breaks_time
+
+        elif range == 'year':
+            month_start = datetime(task_date.year, task_date.month, 1)
+            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + tasks_time
+            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + breaks_time
+
+    logger.info(f'{task_time_totals}, {break_time_totals}')
     return render(request, 'TimeTracker/report.html',
                   {'user_profile': user_profile,
-                   'data': dates})
+                   'task_total_time': task_time_totals,
+                   'break_total_time': break_time_totals,
+                   'labels': labels})
 
 
 def table(request):
@@ -139,9 +157,38 @@ def music(request):
         return render(request, 'TimeTracker/music.html')
 
 
+@login_required
 def coin(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/coin.html')
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+    tasks = Task.objects.filter(user=request.user).order_by('chosenDate')
+    all_tasks = []
+    total_hours = 0
+    total_amount = 0
+    for task in tasks:
+        item = TaskTableItem(task, user_setting)
+        all_tasks.append(item)
+        total_amount += item.amount
+        total_hours += item.task_hours
+
+    return render(request, 'TimeTracker/coin.html',
+                  {'user_profile': user_profile,
+                   'user_setting': user_setting,
+                   'tasks': all_tasks,
+                   'total_hours': total_hours,
+                   'total_amount': total_amount})
+
+
+@login_required
+def coin_update(request):
+    if request.method == 'POST':
+        user_setting = UserSetting.objects.get(user=request.user)
+        coin_value = request.POST.get('coin', 1)
+        user_setting.coin = coin_value
+        user_setting.save()
+        return redirect('TimeTracker:coin')
+    else:
+        return HttpResponse('Invalid request method')
 
 
 def setting(request):

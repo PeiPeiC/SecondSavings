@@ -69,9 +69,9 @@ class Task(models.Model):
 
     def total_seconds(self):
         # 将 TimeField 转换为 timedelta
-        task_timedelta_value = datetime.strptime(str(self.totalTaskTime), '%H:%M:%S') - datetime.strptime('00:00:00',
+        task_timedelta_value = datetime.strptime(str(self.totalTaskTime).split('.')[0], '%H:%M:%S') - datetime.strptime('00:00:00',
                                                                                                      '%H:%M:%S')
-        break_timedelta_value = datetime.strptime(str(self.totalBreakTime), '%H:%M:%S') - datetime.strptime('00:00:00',
+        break_timedelta_value = datetime.strptime(str(self.totalBreakTime).split('.')[0], '%H:%M:%S') - datetime.strptime('00:00:00',
                                                                                                           '%H:%M:%S')
 
         # 计算总秒数
@@ -108,6 +108,7 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
     syncGoogleTask = models.BooleanField(default=False)
+    coin = models.IntegerField(default=1)
 
     def __str__(self):
         return 'user:' + self.user.username + ' alarm:' + self.alarm
@@ -125,10 +126,10 @@ class UserSetting(models.Model):
         return None
 
 
-class ReportItem:
-    def __init__(self, label, seconds):
-        self.label = label
-        self.seconds = seconds
-
-    def __str__(self):
-        return f"label={self.label}, seconds={self.seconds}"
+class TaskTableItem:
+    def __init__(self, task, user_setting):
+        self.task = task
+        task_seconds, break_seconds = task.total_seconds()
+        self.task_hours = task_seconds / 3600
+        self.break_hours = break_seconds / 3600
+        self.amount = self.task_hours * user_setting.coin

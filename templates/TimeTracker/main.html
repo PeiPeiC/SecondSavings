@@ -331,7 +331,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li><a class="dropdown-item" href={%  url 'TimeTracker:profile' %}>Profile</a></li> <!-- 新增的 Profile 链接 -->
-                <li><a class="dropdown-item" href="/report">Report</a></li>
+                <li><a class="dropdown-item" href={% url 'TimeTracker:report' 'week' %}>Report</a></li>
                 <li><a class="dropdown-item" href={% url 'TimeTracker:setting' %}>Setting</a></li>
                 <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a> </li>
             </ul>

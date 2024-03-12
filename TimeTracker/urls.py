@@ -19,9 +19,12 @@ urlpatterns = [
     path('setting/update_alarm/', views.alarm_update, name='setting_update_alarm'),
 
     # report
-    path('report/<str:range>', views.report, name='report'),
+    path('report/<str:time_range>', views.report, name='report'),
 
+    # coin
     path('Coin/', views.coin, name='coin'),
+    path('coin/update', views.coin_update, name='coin_update'),
+
     path('Badges/', views.badges, name='badges'),
 
     path('Group/', views.group, name='group'),

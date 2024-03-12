@@ -11,9 +11,15 @@
 <body style="height: 100%; margin: 0">
     <div class="btn-group" role="group" aria-label="Basic example">  {# 定义按钮组 #}
         <div class="sananniu">  {# 使用样式sananniu #}
-        <button type="button" class="btn btn-primary weekbtn" id="weekBtn">Week</button>  {# 按钮：Week #}
-        <button type="button" class="btn btn-primary weekbtn" id="monthBtn">Month</button>  {# 按钮：Month #}
-        <button type="button" class="btn btn-primary weekbtn" id="yearBtn">Year</button>  {# 按钮：Year #}
+        <button type="button" class="btn btn-primary weekbtn" id="weekBtn">
+            <a href="{% url 'TimeTracker:report' 'week' %}">Week</a>
+        </button>  {# 按钮：Week #}
+        <button type="button" class="btn btn-primary weekbtn" id="monthBtn">
+            <a href="{% url 'TimeTracker:report' 'month' %}">Month</a>
+        </button>  {# 按钮：Month #}
+        <button type="button" class="btn btn-primary weekbtn" id="yearBtn">
+            <a href="{% url 'TimeTracker:report' 'year' %}">Year</a>
+        </button>  {# 按钮：Year #}
         </div>
         <div id="container" style="height: 100%;margin-top: 30px;"></div>  {# 定义容器 #}
     </div>
