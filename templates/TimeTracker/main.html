@@ -308,6 +308,9 @@
             max-width: 600px; /* 最大宽度，根据需要调整 */
             transition: all 0.3s ease-in-out; /* 平滑过渡效果 */
         }
+        #audioPlayer {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -356,7 +359,12 @@
                             class="button">START
                     </button>
                     <button id="resetButton" class="button">RESET</button>
+                    <audio id="audioPlayer" controls>
+                        <source src="{{ alarm_url }}" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
                 </div>
+
                 <div id="currentTask">No task running.</div>
             </div>
             <div class="text">Time to focus!</div>

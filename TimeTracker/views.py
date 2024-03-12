@@ -21,7 +21,14 @@ logger = logging.getLogger('django')
 
 
 def main(request):
-    return render(request, 'TimeTracker/main.html')
+    if request.user:
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f"user {request.user} setting created.")
+    else:
+        user_setting = UserSetting()
+
+    return render(request, 'TimeTracker/main.html', context={'alarm_url': user_setting.get_url()})
 
 
 @login_required
@@ -288,11 +295,6 @@ def top_study_times(request):
 def index(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/userInfo.html')
-
-
-@login_required
-def login_main(request):
-    return render(request, 'TimeTracker/login_main.html')
 
 
 # 点击submit后创建task
