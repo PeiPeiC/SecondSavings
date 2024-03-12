@@ -2,15 +2,26 @@
 {% load static %}
 {% block css %}
     <link rel="stylesheet " href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/report.css' %}">
 {% endblock %}
-{% block content %}
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">Week</button>
-        <button type="button" class="btn btn-primary">Month</button>
-        <button type="button" class="btn btn-primary">Year</button>
-    </div>
-    <div id="main"></div>
 
+{% block content %}  {# 定义内容块 #}
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>  {# 导入ECharts库 #}
+
+<body style="height: 100%; margin: 0">
+    <div class="btn-group" role="group" aria-label="Basic example">  {# 定义按钮组 #}
+        <div class="sananniu">  {# 使用样式sananniu #}
+        <button type="button" class="btn btn-primary weekbtn" id="weekBtn">Week</button>  {# 按钮：Week #}
+        <button type="button" class="btn btn-primary weekbtn" id="monthBtn">Month</button>  {# 按钮：Month #}
+        <button type="button" class="btn btn-primary weekbtn" id="yearBtn">Year</button>  {# 按钮：Year #}
+        </div>
+        <div id="container" style="height: 100%;margin-top: 30px;"></div>  {# 定义容器 #}
+    </div>
+
+    <script type="text/javascript">
+
+    </script>
+</body>
+<script src="{% static 'js/bar_chart.js' %}"></script>  {# 导入柱状图bar_chart.js文件 #}
 
 {% endblock %}

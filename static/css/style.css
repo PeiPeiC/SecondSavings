@@ -61,3 +61,27 @@
     color: #fff;
 }
 
+.sananniu {
+    max-width: 100%;
+    height: 50px;
+    padding-left: 1150px; /* 左边距为1150像素 */
+}
+
+.weekbtn {
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+    border: 0;
+    background-color: #e4e000; /* 背景色为浅黄色 */
+    font-weight: 600; /* 字体加粗 */
+    font-size: 20px; /* 字体大小为20像素 */
+    transition: color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; /* 过渡效果 */
+    margin-right: 10px; /* 右外边距为10像素 */
+    margin-top: 20px; /* 上外边距为20像素 */
+}
+
+.weekbtn:hover {
+    transform: scale(1.02); /* 缩放为原来的1.02倍 */
+    box-shadow: 0 1px 10px 0 #8a8a8a; /* 添加阴影 */
+    color: green; /* 文字颜色为绿色 */
+}
