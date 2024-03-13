@@ -25,6 +25,7 @@ def main(request):
         user_setting, created = UserSetting.objects.get_or_create(user=request.user)
         if created:
             logger.info(f"user {request.user} setting created.")
+        return redirect('login_main')  
     else:
         user_setting = UserSetting()
 
@@ -84,7 +85,7 @@ def avatar_update(request):
             logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
 
-
+    
 def report(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/report.html')

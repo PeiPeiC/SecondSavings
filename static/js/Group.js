@@ -1,15 +1,15 @@
-console.log("1111");
+//Create btn eventListener
 document.getElementById('create-group-button').addEventListener('click', function() {
 
     var groupName = document.getElementById('group-name').value;
-    // 让用户输入小组密码
+    // Let users enter group passwords
     var groupKey = prompt("Please enter a key for the group:");
     if (groupKey === null || groupKey === "") {
         alert('You must enter a key for the group.');
-        return;  // 如果没有输入密码，终止操作
+        return;  // If no password is entered, terminate the operation
     }
     
-    // 构造表单数据
+    // form
     var formData = new FormData();
     formData.append('name', groupName);
     formData.append('key', groupKey);  // 将密码加入表单数据
