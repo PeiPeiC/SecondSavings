@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 label: 'completed',
                 data: JSON.parse(completedCnt),
                 fill: false,
-                borderColor: 'rgba(75, 192, 192, 1)',
+                borderColor: 'rgba(157, 117, 83, 0.5)',
                 tension: 0.1
             }]
         },

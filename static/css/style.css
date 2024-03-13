@@ -90,3 +90,45 @@
     background-color: #9D7553; /* 土黄色 */
     color: #fff;
 }
+
+#charts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 使图表和按钮水平居中 */
+    width: 100%; /* 根据需要调整宽度 */
+}
+
+.btn-group {
+    display: flex;
+    width: 20%;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    background-color: #9D7553;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.btn {
+    width: 100px;
+    background-color: #9D7553;
+    border-color: #9D7553;
+}
+
+.btn.active{
+    background-color: #816744;
+    border-color: #725D3D;
+}
+
+.btn:hover {
+    background-color:  rgba(157, 117, 83, 0.8);
+    border-color: #ffffff;
+}
+
+.active {
+    background-color: #9D7553; /* 按钮激活时的背景色 */
+    color: #ffffff; /* 按钮激活时的文字颜色 */
+}
