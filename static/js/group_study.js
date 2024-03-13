@@ -15,7 +15,7 @@ document.getElementById('show-top-users').addEventListener('click', function () 
         success: function(data) {
             let modalContent = '<ul>';
             data.top_users.forEach(function(user) {
-                modalContent += '<li>' + user.username + ' - ' + user.study_time + '</li>';
+                modalContent += '<li>' + user.nickName + ' - ' + user.study_time + '</li>';
             });
             modalContent += '</ul>';
             $('#top-users-modal').html(modalContent).show();
