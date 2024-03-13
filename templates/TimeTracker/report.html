@@ -2,14 +2,29 @@
 {% load static %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* 定位图表和按钮的容器 */
+        #chart-and-buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* 将内容对齐到右边 */
+            margin-top: 30px;
+        }
+
+        /* 按钮组样式调整 */
+        .btn-group {
+            margin-bottom: 20px; /* 在按钮组和图表之间添加一些间距 */
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <body style="height: 100%; margin: 0">
-    <div style="position: relative; width: 100%; height: 100%;">
-        <div class="btn-group" style="position: absolute; right: 15px; top: 15px; z-index: 1000;">
+    <div id="chart-and-buttons-container" style="position: relative; height: 100%;">
+        <!-- 按钮组 -->
+        <div class="btn-group" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-primary" id="weekBtn">
                 <a href="{% url 'TimeTracker:report' 'week' %}">Week</a>
             </button>
@@ -21,13 +36,16 @@
             </button>
         </div>
 
-        <div id="charts-container" style="margin-top: 50px;">
-            <canvas id="time_bar" width="400" height="200"></canvas>
-            <canvas id="category_bar" width="400" height="200"></canvas>
-            <canvas id="completed_line" width="400" height="200"></canvas>
-            <!-- Hidden data divs -->
-        </div>
+        <!-- 图表 -->
+        <canvas id="time_bar" width="400" height="200"></canvas>
+        <canvas id="category_bar" width="400" height="200"></canvas>
+        <canvas id="completed_line" width="400" height="200"></canvas>
     </div>
-    <script src="{% static 'js/chart.js' %}"></script>
+
+    <!-- 隐藏的数据容器 -->
+    <div id="time_bar_data" data-labels="{{ time_bar.labels|safe }}" data-task-total-time="{{ time_bar.total_task_time|safe }}" data-break-total-time="{{ time_bar.total_break_time|safe }}" style="display: none;"></div>
+    <div id="category_bar_data" data-labels="{{ category_bar.labels|safe }}" data-task-work="{{ category_bar.work_count|safe }}" data-task-study="{{ category_bar.study_count|safe }}" data-task-life="{{ category_bar.life_count|safe }}" style="display: none;"></div>
+    <div id="completed_line_data" data-labels="{{ completed_line.labels|safe }}" data-count="{{ completed_line.count|safe }}" style="display: none;"></div>
 </body>
+<script src="{% static 'js/chart.js' %}"></script>
 {% endblock %}
