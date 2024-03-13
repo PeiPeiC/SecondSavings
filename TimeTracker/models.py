@@ -63,6 +63,9 @@ class Task(models.Model):
     chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
     totalTaskTime = models.TimeField(default="00:00:00")  # 新增总学习时间
     totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间
+    google_task_id = models.CharField(max_length=255, blank=True, null=True)
+    google_tasklist_id = models.CharField(max_length=255, blank=True, null=True)
+    
 
     def __str__(self):
         return self.title
@@ -95,6 +98,9 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
     syncGoogleTask = models.BooleanField(default=False)
+    # google task
+    google_access_token = models.CharField(max_length=255, null=True, blank=True)
+    google_refresh_token = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return 'user:' + self.user.username + ' alarm:' + self.alarm

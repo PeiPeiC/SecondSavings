@@ -82,7 +82,9 @@ else:
 # Application definition
 SITE_ID = 1
 
-INSTALLED_APPS = [
+FIRST_PARTY_APPS = ["TimeTracker",]
+
+INSTALLED_APPS = FIRST_PARTY_APPS + [
     # Use WhiteNoise's runserver implementation instead of the Django default, for dev-prod parity.
     "whitenoise.runserver_nostatic",
     "django.contrib.admin",
@@ -96,9 +98,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
+    'django_linear_migrations',
 
     'imagekit',
-    "TimeTracker",
 ]
 
 MIDDLEWARE = [
@@ -226,6 +228,24 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/tasks',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
+REDIRECT_URI = env("REDIRECT_URI")
+
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True

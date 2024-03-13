@@ -106,14 +106,14 @@
                 </div>
             {% endfor %}
 
-            {% if messages %}
+            {% comment %} {% if messages %} {% endcomment %}
                 {% comment %} <div class="alert {{ messages.0.tags }}" style="color: red;">
                     {{ messages.0 }}
                 </div> {% endcomment %}
 
-                {% for message in messages %}
+                {% comment %} {% for message in messages %}
                     <div style="color: red;">{{ message }}</div>
-                {% endfor %}
+                {% endfor %} {% endcomment %}
             {% endif %}
 
             <button type="submit" class="login-btn">Log in with Email</button>

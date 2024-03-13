@@ -6,7 +6,7 @@ import json
 import random
 import string
 from io import BytesIO
-
+import requests
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
@@ -16,6 +16,12 @@ from TimeTracker.forms import GroupCreateForm
 from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from google_auth_oauthlib.flow import Flow
+from google.oauth2.credentials import Credentials
+from django.conf import settings
+from urllib.parse import urlencode
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 logger = logging.getLogger('django')
 
@@ -49,7 +55,7 @@ def profile_update(request):
         user_profile.nickName = nick_name
         user_profile.save()
 
-        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        # messages.add_message(request, messages.SUCCESS, 'Update Successfully')
         return redirect('TimeTracker:profile')
     else:
         user_profile = UserProfile()
@@ -81,7 +87,7 @@ def avatar_update(request):
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
-            messages.error(request, 'Invalid Image')
+            # messages.error(request, 'Invalid Image')
             logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
 
@@ -135,7 +141,7 @@ def setting_sync(request):
         user_setting.syncGoogleTask = sync
         user_setting.save()
 
-        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        # messages.add_message(request, messages.SUCCESS, 'Update Successfully')
         return redirect('TimeTracker:setting')
 
     return render(request, 'TimeTracker/setting.html',
@@ -315,6 +321,48 @@ def index(request):
     if request.method == 'GET':
         return render(request, 'TimeTracker/userInfo.html')
 
+def get_google_tasks_service(user):
+    user_settings = UserSetting.objects.get(user=user)
+    credentials = Credentials(
+        token=user_settings.google_access_token,
+        refresh_token=user_settings.google_refresh_token,
+        client_id=settings.GOOGLE_CLIENT_ID,
+        client_secret=settings.GOOGLE_CLIENT_SECRET,
+        token_uri='https://oauth2.googleapis.com/token'
+    )
+    service = build('tasks', 'v1', credentials=credentials)
+    return service
+
+def ensure_work_list_exists(service, title):
+    page_token = None
+ #   print(f"Checking for Task list with title: {title}")
+    while True:
+        response = service.tasklists().list(maxResults=100, pageToken=page_token).execute()
+        for item in response.get('items', []):
+        #    print(f"Found Task list: {item['title']}")
+            if item['title'].lower() == title.lower():
+                return item['id']
+
+        page_token = response.get('nextPageToken')
+        if not page_token:
+            break
+
+    # 如果没有找到，创建一个新的工作列表
+    tasklist = service.tasklists().insert(body={'title': title}).execute()
+    return tasklist['id']
+
+def add_task_to_tasklist(service, tasklist_id, task_title):
+    task = {'title': task_title}
+    result = service.tasks().insert(tasklist=tasklist_id, body=task).execute()
+    return result['id']  # 返回新创建的任务的ID
+
+def add_task_to_google_tasks(user, tasklist_id, task_title):
+    service = get_google_tasks_service(user)
+    task = {'title': task_title}
+    result = service.tasks().insert(tasklist=tasklist_id, body=task).execute()
+    return result['id']  # 返回新创建的Google Tasks任务的ID
+
+
 
 # 点击submit后创建task
 def create_task(request):
@@ -324,6 +372,16 @@ def create_task(request):
         task_date = request.POST.get('taskDate')
         # 创建并保存任务对象
         task = Task(user=request.user, title=title, category=task_type, chosenDate=task_date)
+        # 检查并更新Google Tasks
+        try:
+            service = get_google_tasks_service(request.user)
+            tasklist_id = ensure_work_list_exists(service, task_type)  # 使用任务类型作为工作列表标题
+            google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # 添加任务到工作列表
+            task.google_tasklist_id = tasklist_id
+            task.google_task_id = google_task_id
+            task.save()  # 保存任务，包括Google Tasks信息
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
         task.save()
         return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime': task.totalTaskTime,
                              'TotalBreakTime': task.totalBreakTime, 'chosenDate': task.chosenDate})
@@ -341,18 +399,42 @@ def update_task_date(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
+def delete_google_task(service, tasklist_id, task_id):
+    try:
+        # 直接使用任务ID来删除Google Tasks中的任务
+        service.tasks().delete(tasklist=tasklist_id, task=task_id).execute()
+    except Exception as e:
+        # 处理可能出现的错误
+        print(f"Error deleting task from Google Tasks: {e}")
 
 # 点击delete后删除task
 def delete_task(request):
-    task_id = request.POST.get('task_id')
-    task = get_object_or_404(Task, pk=task_id, user=request.user)
-    task.delete()
-    return JsonResponse({'status': 'success'})
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+
+        service = get_google_tasks_service(request.user)
+
+        # 从Google Tasks中删除任务
+        if task.google_tasklist_id and task.google_task_id:
+            delete_google_task(service, task.google_tasklist_id, task.google_task_id)
+
+        task.delete()
+        return JsonResponse({'status': 'success'})
 
 def delete_incomplete_count_up_tasks(request):
     if request.method == 'POST':
         # 删除当前登录用户的所有未完成任务
-        Task.objects.filter(user=request.user, isCompleted=False, isCountDown=False).delete()
+        tasks_to_delete = Task.objects.filter(user=request.user, isCompleted=False, isCountDown=False)
+        service = get_google_tasks_service(request.user)
+                # Iterate over the tasks to delete each from Google Tasks if applicable       
+        
+        for task in tasks_to_delete:
+            if task.google_tasklist_id and task.google_task_id:
+                delete_google_task(service, task.google_tasklist_id, task.google_task_id)
+        # Now delete the tasks from the database
+        tasks_to_delete.delete()
+
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
@@ -466,56 +548,18 @@ def end_record(request):
 def delete_incomplete_count_down_tasks(request):
     if request.method == 'POST':
         # 删除当前登录用户的所有未完成任务
-        Task.objects.filter(user=request.user, isCompleted=False, isCountDown=True).delete()
+        tasks_to_delete = Task.objects.filter(user=request.user, isCompleted=False, isCountDown=True)
+        service = get_google_tasks_service(request.user)
+
+        for task in tasks_to_delete:
+            if task.google_tasklist_id and task.google_task_id:
+                delete_google_task(service, task.google_tasklist_id, task.google_task_id)
+                # Now delete the tasks from the database
+        tasks_to_delete.delete()
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
-"""  #pauseTimer()触发后调用
-def end_record(request): 
-    if request.method == 'POST':
-        record_id = request.POST.get('recordId')
-        record = Record.objects.get(pk=record_id)
-        record.endTime = timezone.now()
-        record.save()
-        # 这里可以计算study_time并更新UserProfile 还没实现
-        # 计算学习时间
-        
-        time_delta = record.endTime - record.startTime
-
-        user_profile = UserProfile.objects.get(user=record.user)
-        task = record.task
-        # 更新UserProfile里的study_time\work_time\life_time  task中的totalTaskTime
-        if(record.type == 'task'):
-            # 获取当前的累积学习时间
-            current_user_study_time = user_profile.study_time
-            current_task_task_time = task.totalTaskTime
-            # 将 timedelta 转换为时间
-            new_user_task_type_time = (datetime.combine(date.min, current_user_study_time) + time_delta).time()
-            new_task_task_time = (datetime.combine(date.min, current_task_task_time) + time_delta).time() 
-
-            task_type = task.category
-            if task_type == "Work":
-                user_profile.work_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time
-            elif task_type =="Study":
-                user_profile.study_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time    
-            else:
-                user_profile.life_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time
-
-        else:
-            # 更新task的totalBreakTime
-            current_task_break_time = task.totalBreakTime
-            # 将 timedelta 转换为时间
-            new_task_break_time = (datetime.combine(date.min, current_task_break_time) + time_delta).time() 
-            task.totalBreakTime = new_task_break_time
-
-        user_profile.save()
-        task.save()
-        
-        return JsonResponse({'status': 'success'})  """
-
+    
 
 #点击submit后创建count down task
 def create_count_down_task(request):
@@ -527,6 +571,16 @@ def create_count_down_task(request):
         countDown = True
         # 创建并保存任务对象
         task = Task(user=request.user, title=title, category = task_type, chosenDate = task_date, Duration = taskDuration, totalSeconds = taskDuration, isCountDown = countDown)
+        # 检查并更新Google Tasks
+        try:
+            service = get_google_tasks_service(request.user)
+            tasklist_id = ensure_work_list_exists(service, task_type)  # 使用任务类型作为工作列表标题
+            google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # 添加任务到工作列表
+            task.google_tasklist_id = tasklist_id
+            task.google_task_id = google_task_id
+            task.save()  # 保存任务，包括Google Tasks信息
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
         task.save()
         return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime':task.totalTaskTime, 'TotalBreakTime':task.totalBreakTime, 'chosenDate':task.chosenDate, 'TotalSeconds': task.totalSeconds})
     return JsonResponse({'status': 'error'}, status=400)
@@ -535,3 +589,74 @@ def get_count_down_tasks(request):
     #tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
     tasks = Task.objects.filter(user=request.user, isCountDown=True).values()
     return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回
+
+
+@login_required
+def initiate_oauth2_process(request):
+    # 定义授权URL和所需的参数
+    base_url = 'https://accounts.google.com/o/oauth2/v2/auth?'
+    params = {
+        'response_type': 'code',
+        'client_id': settings.GOOGLE_CLIENT_ID,
+        'redirect_uri': settings.REDIRECT_URI,
+        'scope': 'https://www.googleapis.com/auth/tasks',
+        'access_type': 'offline',  # 用于获取refresh token
+        'prompt': 'consent',
+    }
+
+    # 构建完整的授权URL
+    auth_url = f"{base_url}{urlencode(params)}"
+
+    # 重定向到授权URL
+    return JsonResponse({'redirectUrl': auth_url})
+
+@login_required
+@csrf_exempt
+def update_sync_settings(request):
+    if request.method == "POST":
+        syncGoogleTask = request.POST.get('syncGoogleTask') == 'true'
+        user_setting, _ = UserSetting.objects.get_or_create(user=request.user)
+        user_setting.syncGoogleTask = syncGoogleTask
+        user_setting.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+@login_required
+def oauth2callback(request):
+    code = request.GET.get('code')
+    if code:
+        # 准备请求访问令牌所需的数据
+        data = {
+            'code': code,
+            'client_id': settings.GOOGLE_CLIENT_ID,
+            'client_secret': settings.GOOGLE_CLIENT_SECRET,
+            'redirect_uri': settings.REDIRECT_URI,
+            'grant_type': 'authorization_code',
+        }
+
+        # 使用授权码获取访问令牌
+        token_response = requests.post('https://oauth2.googleapis.com/token', data=data)
+
+        # 检查响应是否成功
+        if token_response.status_code == 200:
+            token_json = token_response.json()
+            access_token = token_json.get('access_token')
+            refresh_token = token_json.get('refresh_token')
+
+            # 存储访问令牌和刷新令牌到数据库
+            user_setting, _ = UserSetting.objects.get_or_create(user=request.user)
+            user_setting.google_access_token = access_token
+            user_setting.google_refresh_token = refresh_token
+            user_setting.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Google Tasks integration enabled.')
+            return redirect('TimeTracker:setting')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to retrieve access token.')
+            return redirect('TimeTracker:profile')
+    else:
+        # 处理没有授权码的情况
+        messages.add_message(request, messages.ERROR, 'Authorization failed or cancelled by user.')
+        return redirect('TimeTracker:profile')    
