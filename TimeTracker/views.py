@@ -373,15 +373,16 @@ def create_task(request):
         # 创建并保存任务对象
         task = Task(user=request.user, title=title, category=task_type, chosenDate=task_date)
         # 检查并更新Google Tasks
-        try:
-            service = get_google_tasks_service(request.user)
-            tasklist_id = ensure_work_list_exists(service, task_type)  # 使用任务类型作为工作列表标题
-            google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # 添加任务到工作列表
-            task.google_tasklist_id = tasklist_id
-            task.google_task_id = google_task_id
-            task.save()  # 保存任务，包括Google Tasks信息
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        if request.user.user_setting.syncGoogleTask:
+            try:
+                service = get_google_tasks_service(request.user)
+                tasklist_id = ensure_work_list_exists(service, task_type)  # 使用任务类型作为工作列表标题
+                google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # 添加任务到工作列表
+                task.google_tasklist_id = tasklist_id
+                task.google_task_id = google_task_id
+                task.save()  # 保存任务，包括Google Tasks信息
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
         task.save()
         return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime': task.totalTaskTime,
                              'TotalBreakTime': task.totalBreakTime, 'chosenDate': task.chosenDate})
@@ -412,15 +413,15 @@ def delete_task(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
         task = get_object_or_404(Task, pk=task_id, user=request.user)
-
+    if request.user.user_setting.syncGoogleTask:
         service = get_google_tasks_service(request.user)
 
         # 从Google Tasks中删除任务
         if task.google_tasklist_id and task.google_task_id:
             delete_google_task(service, task.google_tasklist_id, task.google_task_id)
 
-        task.delete()
-        return JsonResponse({'status': 'success'})
+    task.delete()
+    return JsonResponse({'status': 'success'})
 
 def delete_incomplete_count_up_tasks(request):
     if request.method == 'POST':
