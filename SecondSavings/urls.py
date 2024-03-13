@@ -19,7 +19,7 @@ from SecondSavings import settings
 from TimeTracker import views
 from django.urls import path,include
 from django.conf.urls.static import static
-
+from TimeTracker.views import oauth2callback
 from django.urls import re_path
 
 urlpatterns = [
@@ -35,6 +35,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
+    path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
+    path('oauth2/initiate/', views.initiate_oauth2_process, name='initiate_oauth2_process'),
+    path('', views.update_sync_settings, name='update_sync_settings'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
