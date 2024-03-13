@@ -468,13 +468,19 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
     timer = setInterval(() => {
 
         display.textContent = formatSecondsToMinutes(remainingTime);
+        var audioPlayer = document.getElementById('audioPlayer');
+        if(audioPlayer.null){
+            console.log("NULLL")
+        }
 
         if (remainingTime-- < 0) {
             currentTaskColumn.remove();
             createRecord(taskIdTemp, 'end',null,currentTaskColumn)
             clearInterval(timer);
+            
             if(taskIdTemp && !isBreak){
                 display.textContent = "TIME UP!";
+
                 var csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: '/secondSavings/finish_task/', 
@@ -487,6 +493,9 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
                     },
                     success: function(response) {
                         alert('Task finished.');
+                        // audioPlayer.style.display = 'block';
+                        console.log(audioPlayer)
+                        audioPlayer.play();
                     },
                     error: function(error) {
                     console.error('Error finish task.', error);
@@ -497,6 +506,8 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
 
             }else if(isBreak){
                 display.textContent = "End of break";
+                console.log(audioPlayer)
+                audioPlayer.play();
                 alert("Break finished.");
             }
             else display.textContent = "TIME UP!";
