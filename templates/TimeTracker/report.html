@@ -11,13 +11,22 @@
 
 
 <body style="height: 100%; margin: 0">
-    <canvas id="myChart" width="400" height="200"></canvas>
-    <div id="data"
-         data-labels="{{ labels|safe }}"
-         data-task-total-time="{{ task_total_time|safe }}"
-         data-break-total-time="{{ break_total_time|safe }}"
+    <canvas id="time_bar" width="400" height="200"></canvas>
+    <canvas id="category_bar" width="400" height="200"></canvas>
+    <div id="time_bar_data"
+         data-labels="{{ time_bar.labels|safe }}"
+         data-task-total-time="{{ time_bar.total_task_time|safe }}"
+         data-break-total-time="{{ time_bar.total_break_time|safe }}"
          style="display: none;">
     </div>
+    <div id="category_bar_data"
+         data-labels="{{ category_bar.labels|safe }}"
+         data-task-work="{{ category_bar.work_count|safe }}"
+         data-task-study="{{ category_bar.study_count|safe }}"
+         data-task-life="{{ category_bar.life_count|safe }}"
+         style="display: none;">
+    </div>
+
     <div class="btn-group" role="group" aria-label="Basic example">  {# 定义按钮组 #}
         <div class="sananniu">  {# 使用样式sananniu #}
         <button type="button" class="btn btn-primary weekbtn" id="weekBtn">

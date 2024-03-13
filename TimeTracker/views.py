@@ -13,7 +13,8 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from TimeTracker.forms import GroupCreateForm
-from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, TaskTableItem
+from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, TaskTableItem, TimeReportResp, \
+    TaskCategoryReportResp
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
@@ -111,10 +112,56 @@ def report(request, time_range):
     all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
         'chosenDate')
     if len(all_tasks) == 0:
-        return render(request, 'TimeTracker/report.html',
-                      {'user_profile': user_profile,
-                       'data': None})
+        return None
 
+    times_bar_data = time_bar(all_tasks, labels, time_range)
+    tasks_category_bar_data = tasks_category_bar(all_tasks, labels, time_range)
+
+    return render(request, 'TimeTracker/report.html',
+                  {'time_range': time_range,
+                   'user_profile': user_profile,
+                   'time_bar': times_bar_data,
+                   'category_bar': tasks_category_bar_data,
+                   })
+
+
+def tasks_category_bar(tasks, labels, time_range):
+    work_tasks = {}
+    life_tasks = {}
+    study_tasks = {}
+    for label in labels:
+        work_tasks[label] = 0
+        life_tasks[label] = 0
+        study_tasks[label] = 0
+
+    for task in tasks:
+        task_date = task.chosenDate
+        if time_range == 'week':
+            key = task_date.strftime('%Y-%m-%d')
+        elif time_range == 'month':
+            key = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+        elif time_range == 'year':
+            key = task_date.replace(day=1).strftime('%Y-%m-%d')
+        else:
+            key = task_date.strftime('%Y-%m-%d')
+
+        if task.category == 'Work':
+            work_tasks[key] = work_tasks.get(key, 0) + 1
+        elif task.category == 'Study':
+            study_tasks[key] = study_tasks.get(key, 0) + 1
+        elif task.category == 'Life':
+            life_tasks[key] = life_tasks.get(key, 0) + 1
+        else:
+            continue
+
+    logger.info(f'{work_tasks}, {life_tasks}, {study_tasks}, {labels}')
+    work_tasks = [(int(count)) for date, count in work_tasks.items()]
+    life_tasks = [(int(count)) for date, count in life_tasks.items()]
+    study_tasks = [(int(count)) for date, count in study_tasks.items()]
+    return TaskCategoryReportResp(labels, work_tasks, life_tasks, study_tasks)
+
+
+def time_bar(tasks, labels, time_range):
     task_time_totals = {}
     break_time_totals = {}
     # init
@@ -122,33 +169,29 @@ def report(request, time_range):
         task_time_totals[label] = 0
         break_time_totals[label] = 0
 
-    for task in all_tasks:
+    for task in tasks:
         task_date = task.chosenDate
         tasks_time, breaks_time = task.total_seconds()
         if time_range == 'week':
             key = task_date.strftime('%Y-%m-%d')
-            task_time_totals[key] = task_time_totals.get(key, 0) + int(tasks_time/60) # mins
-            break_time_totals[key] = break_time_totals.get(key, 0) + int(breaks_time/60)
+            task_time_totals[key] = task_time_totals.get(key, 0) + int(tasks_time / 60)  # mins
+            break_time_totals[key] = break_time_totals.get(key, 0) + int(breaks_time / 60)
 
         elif time_range == 'month':
             week_start = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
-            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + int(tasks_time/60)
-            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + int(breaks_time/60)
+            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + int(tasks_time / 60)
+            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + int(breaks_time / 60)
 
         elif time_range == 'year':
             month_start = task_date.replace(day=1).strftime('%Y-%m-%d')
-            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + int(tasks_time/60)
-            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + int(breaks_time/60)
+            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + int(tasks_time / 60)
+            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + int(breaks_time / 60)
 
     logger.info(f'{task_time_totals}, {break_time_totals}, {labels}')
     task_total_time_list = [(int(total_time)) for date, total_time in task_time_totals.items()]
     break_total_time_list = [(int(total_time)) for date, total_time in break_time_totals.items()]
 
-    return render(request, 'TimeTracker/report.html',
-                  {'user_profile': user_profile,
-                   'task_total_time': task_total_time_list,
-                   'break_total_time': break_total_time_list,
-                   'labels': labels})
+    return TimeReportResp(labels, task_total_time_list, break_total_time_list)
 
 
 def get_previous_four_weeks_start_dates():
