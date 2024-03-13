@@ -36,7 +36,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
             tdName.appendChild(link);
 
             var tdAccess = document.createElement('td');
-            tdAccess.textContent = data.creatorName;
+            tdAccess.textContent = data.creatorNickName;
 
             // adding a delete button
             var tdDelete = document.createElement('td');
@@ -239,7 +239,7 @@ function updateGroupList(groups) {
         tr.appendChild(tdName);
 
         var tdAccess = document.createElement('td');
-        tdAccess.textContent = group.creator;
+        tdAccess.textContent = group.creatorNickName;
         tr.appendChild(tdAccess);
 
         var tdAction = document.createElement('td');

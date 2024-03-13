@@ -191,14 +191,16 @@ def group(request):
 def get_user_groups(request):
     if request.user.is_authenticated:
         groups = request.user.group_memberships.all().values(
-            'id', 'name', 'creator__username'
+            'id', 'name', 'creator__username', 'creator__userprofile__nickName'
         )
         groups_data = [
             {
                 'id': group['id'],
                 'name': group['name'],
                 'creator': group['creator__username'],
+                'creatorNickName': group['creator__userprofile__nickName'],
                 'is_creator': request.user.username == group['creator__username']
+                
             }
             for group in groups
         ]
@@ -219,10 +221,12 @@ def create_group(request):
         form.save_m2m()
         # 返回成功响应
 
+        user_profile = request.user.userprofile
         return JsonResponse({
             'success': True,
             'groupName': new_group.name,
             'creatorName': new_group.creator.username,
+            'creatorNickName': user_profile.nickName,
             'groupId': new_group.id  # 新组的ID，用于创建链接
         })
 
@@ -300,7 +304,7 @@ def top_study_times(request, group_id):
     top_users = UserProfile.objects.filter(user__in=group.members.all()).order_by('-study_time')[:3]
     data = {
         'top_users': [
-            {'username': profile.user.username, 'study_time': profile.study_time}
+            {'nickName': profile.nickName, 'study_time': profile.study_time}
             for profile in top_users
         ]
     }
