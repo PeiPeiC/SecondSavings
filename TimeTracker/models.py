@@ -93,6 +93,9 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
     syncGoogleTask = models.BooleanField(default=False)
+    # google task
+    google_access_token = models.CharField(max_length=255, null=True, blank=True)
+    google_refresh_token = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return 'user:' + self.user.username + ' alarm:' + self.alarm

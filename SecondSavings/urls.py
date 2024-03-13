@@ -21,6 +21,7 @@ from django.urls import path,include
 from django.conf.urls.static import static
 
 from django.urls import re_path
+from TimeTracker.views import oauth2callback
 
 urlpatterns = [
     
@@ -34,6 +35,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
+    
+    path('oauth2callback/', oauth2callback, name='oauth2callback'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here

@@ -17,6 +17,10 @@ from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
+from google_auth_oauthlib.flow import Flow
+from google.oauth2.credentials import Credentials
+from django.conf import settings
+
 logger = logging.getLogger('django')
 
 
@@ -430,6 +434,34 @@ def end_record(request):
 
         return JsonResponse({'status': 'success'})
 
+
+def oauth2callback(request):
+    code = request.GET.get('code')
+    if code:
+        # 使用授权码获取访问令牌的逻辑
+        token_response = request.post('https://oauth2.googleapis.com/token', data={
+            'code': code,
+            'client_id': settings.GOOGLE_OAUTH2_CLIENT_ID,
+            'client_secret': settings.GOOGLE_CLIENT_SECRET,
+            'redirect_uri': settings.GOOGLE_OAUTH2_REDIRECT_URI,
+            'grant_type': settings.REDIRECT_URI,
+        })
+        token_json = token_response.json()
+        access_token = token_json.get('access_token')
+        refresh_token = token_json.get('refresh_token')
+
+        # 存储访问令牌和刷新令牌到数据库
+        user_setting = UserSetting.objects.get(user=request.user)
+        user_setting.google_access_token = access_token
+        user_setting.google_refresh_token = refresh_token
+        user_setting.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Google Tasks integration enabled.')
+        return redirect('TimeTracker:setting')
+    else:
+        # 错误处理
+        messages.add_message(request, messages.ERROR, 'Failed to enable Google Tasks integration.')
+        return redirect('TimeTracker:profile')
 
 """  #pauseTimer()触发后调用
 def end_record(request): 
