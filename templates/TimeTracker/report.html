@@ -2,33 +2,50 @@
 {% load static %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        #charts-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 使图表和按钮水平居中 */
+            width: 100%; /* 根据需要调整宽度 */
+        }
+
+        .btn-group {
+            margin-bottom: 20px; /* 在按钮组和图表之间添加间距 */
+            {#align-self: flex-end; /* 如果需要按钮组靠右对齐 */#}
+        }
+
+        .btn-group a {
+            color: white; /* 确保按钮内链接的颜色为白色，根据实际情况调整 */
+            text-decoration: none; /* 移除链接下划线 */
+        }
+
+        /* 其他样式 */
+    </style>
 {% endblock %}
 
 {% block content %}
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<body style="height: 100%; margin: 0">
-    <div style="position: relative; width: 100%; height: 100%;">
-        <div class="btn-group" style="position: absolute; right: 15px; top: 15px; z-index: 1000;">
-            <button type="button" class="btn btn-primary" id="weekBtn">
-                <a href="{% url 'TimeTracker:report' 'week' %}">Week</a>
-            </button>
-            <button type="button" class="btn btn-primary" id="monthBtn">
-                <a href="{% url 'TimeTracker:report' 'month' %}">Month</a>
-            </button>
-            <button type="button" class="btn btn-primary" id="yearBtn">
-                <a href="{% url 'TimeTracker:report' 'year' %}">Year</a>
-            </button>
-        </div>
-
-        <div id="charts-container" style="margin-top: 50px;">
-            <canvas id="time_bar" width="400" height="200"></canvas>
-            <canvas id="category_bar" width="400" height="200"></canvas>
-            <canvas id="completed_line" width="400" height="200"></canvas>
-            <!-- Hidden data divs -->
-        </div>
+<div id="charts-container">
+    <!-- 按钮组 -->
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" id="weekBtn">
+            <a href="{% url 'TimeTracker:report' 'week' %}">Week</a>
+        </button>
+        <button type="button" class="btn btn-primary" id="monthBtn">
+            <a href="{% url 'TimeTracker:report' 'month' %}">Month</a>
+        </button>
+        <button type="button" class="btn btn-primary" id="yearBtn">
+            <a href="{% url 'TimeTracker:report' 'year' %}">Year</a>
+        </button>
     </div>
-    <script src="{% static 'js/chart.js' %}"></script>
-</body>
+
+    <!-- 图表 -->
+    <canvas id="time_bar" width="400" height="200"></canvas>
+    <canvas id="category_bar" width="400" height="200"></canvas>
+    <canvas id="completed_line" width="400" height="200"></canvas>
+</div>
+
+<script src="{% static 'js/chart.js' %}"></script>
 {% endblock %}
