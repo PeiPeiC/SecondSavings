@@ -25,8 +25,6 @@ urlpatterns = [
     path('Coin/', views.coin, name='coin'),
     path('coin/update', views.coin_update, name='coin_update'),
 
-    path('Badges/', views.badges, name='badges'),
-
     path('Group/', views.group, name='group'),
     path('get_user_groups/', views.get_user_groups, name='get_user_groups'),
     path('create_group/', views.create_group, name='create_group'),
