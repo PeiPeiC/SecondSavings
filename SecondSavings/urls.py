@@ -35,9 +35,6 @@ urlpatterns = [
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
 
-
-
-
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
     
