@@ -119,7 +119,10 @@ def report(request, time_range):
     all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
         'chosenDate')
     if len(all_tasks) == 0:
-        return None
+        return render(request, 'TimeTracker/report.html',
+                  {'time_range': time_range,
+                   'user_profile': user_profile,
+                   })
 
     times_bar_data = time_bar(all_tasks, labels, time_range)
     tasks_category_bar_data = tasks_category_bar(all_tasks, labels, time_range)
