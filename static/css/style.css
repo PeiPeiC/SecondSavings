@@ -132,3 +132,8 @@
     background-color: #9D7553;
     color: #ffffff;
 }
+
+button, .btn {
+    white-space: nowrap;
+    width: auto;
+}
