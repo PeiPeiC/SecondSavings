@@ -98,13 +98,11 @@ def report(request, time_range):
 
     elif time_range == 'month':
         left_time = now - timedelta(days=30)
-        week_start = now - timedelta(days=now.day - 1)
-        labels = [(week_start + timedelta(weeks=i)).strftime('%Y-%m-%d') for i in range(5)]
+        labels = get_previous_four_weeks_start_dates()
 
     elif time_range == 'year':
         left_time = now - timedelta(days=365)
-        month_start = datetime(now.year, now.month, 1)
-        labels = [(month_start + timedelta(days=i * 30)).strftime('%Y-%m') for i in range(12)]
+        labels = get_previous_year_month_start_dates()
 
     else:  # default week
         left_time = datetime.now() - timedelta(days=7)
@@ -119,34 +117,78 @@ def report(request, time_range):
 
     task_time_totals = {}
     break_time_totals = {}
+    # init
+    for label in labels:
+        task_time_totals[label] = 0
+        break_time_totals[label] = 0
+
     for task in all_tasks:
         task_date = task.chosenDate
         tasks_time, breaks_time = task.total_seconds()
         if time_range == 'week':
-            task_time_totals[task.chosenDate] = task_time_totals.get(task.chosenDate, 0) + tasks_time
-            break_time_totals[task.chosenDate] = break_time_totals.get(task.chosenDate, 0) + breaks_time
+            key = task_date.strftime('%Y-%m-%d')
+            task_time_totals[key] = task_time_totals.get(key, 0) + int(tasks_time/60) # mins
+            break_time_totals[key] = break_time_totals.get(key, 0) + int(breaks_time/60)
 
         elif time_range == 'month':
-            week_start = task_date - timedelta(days=task_date.day - 1)
-            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + tasks_time
-            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + breaks_time
+            week_start = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + int(tasks_time/60)
+            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + int(breaks_time/60)
 
         elif time_range == 'year':
-            month_start = datetime(task_date.year, task_date.month, 1)
-            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + tasks_time
-            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + breaks_time
+            month_start = task_date.replace(day=1).strftime('%Y-%m-%d')
+            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + int(tasks_time/60)
+            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + int(breaks_time/60)
 
     logger.info(f'{task_time_totals}, {break_time_totals}, {labels}')
-    task_total_time_list = [(date.strftime('%Y-%m-%d'), int(total_time)) for date, total_time in
-                            task_time_totals.items()]
-    break_total_time_list = [(date.strftime('%Y-%m-%d'), int(total_time)) for date, total_time in
-                             break_time_totals.items()]
+    task_total_time_list = [(int(total_time)) for date, total_time in task_time_totals.items()]
+    break_total_time_list = [(int(total_time)) for date, total_time in break_time_totals.items()]
 
     return render(request, 'TimeTracker/report.html',
                   {'user_profile': user_profile,
                    'task_total_time': task_total_time_list,
                    'break_total_time': break_total_time_list,
                    'labels': labels})
+
+
+def get_previous_four_weeks_start_dates():
+    # 获取今天的日期
+    today = datetime.now()
+
+    # 计算今天所在周的起始日期（周一）
+    start_of_current_week = today - timedelta(days=today.weekday())
+
+    # 初始化存储结果的列表
+    start_dates = []
+
+    # 逐步减去七天，直到获得四个周的起始日期
+    for _ in range(4):
+        start_dates.append(start_of_current_week.strftime('%Y-%m-%d'))
+        start_of_current_week -= timedelta(days=7)
+
+    start_dates.reverse()
+    # 返回前四周的起始日期
+    return start_dates
+
+
+def get_previous_year_month_start_dates():
+    # 获取今天的日期
+    today = datetime.now()
+
+    # 获取今天所在月的第一天的日期
+    start_of_current_month = today.replace(day=1)
+
+    # 初始化存储结果的列表
+    start_dates = []
+
+    # 逐步减去一个月，直到获得前一年的每月起始日期
+    while start_of_current_month.year == today.year:
+        start_dates.append(start_of_current_month.strftime('%Y-%m-%d'))
+        # 获取上一个月的起始日期
+        start_of_current_month = start_of_current_month - timedelta(days=start_of_current_month.day)
+
+    start_dates.reverse()
+    return start_dates
 
 
 def table(request):
