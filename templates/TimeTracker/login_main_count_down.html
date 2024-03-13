@@ -7,7 +7,7 @@
     <title>SecondSavings</title>
     <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1-dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static '/plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login_main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_main_count_down.css' %}">
 
     <style>
     </style>
@@ -16,8 +16,8 @@
 <div class="header">
     <div class="header-container">
         <div class="menu">
-            <a style="color: white; text-decoration: none;"  >
-            <!-- <a style="color: white; text-decoration: none;" href={% url 'login_main' %} > -->
+<!--             <a href="/main" style="color: white; text-decoration: none;"> -->
+            <a  style="color: white; text-decoration: none;">
                 <i class="fa fa-clock-o" aria-hidden="true" style="vertical-align: middle;"></i>
                 <span style="vertical-align: middle;">SecondSavings</span>
             </a>
@@ -70,11 +70,15 @@
                     <a  href="/login_main_count_down" class="button" >Countdown</a>
                     <a  href="/login_main" class="button" >Countup</a>
                 </div>
-                <div id="timer-string" class="time">00:00</div>
+                <div id="timer-string" class="time">25:00</div>
                 <div class="container4">
                     <button id="startButton" color="rgb(186, 73, 73)" title="Press spacebar to start/pause" class="button">START</button>
-                    <!-- Finish 按钮 -->
-                    <button id="finishButton" class="button" onclick="finishTask()">FINISH</button>
+                    <!-- Finish button -->
+                    <button id="finishButton" class="button" onclick="resetTimer()">Reset</button>
+                    <audio id="audioPlayer" controls>
+                        <source src="{{ alarm_url }}" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
                 </div>
                 <div id="currentTask">No task running.</div>
                 {#                <div id="finalTime">Final Time: --:--</div>#}
@@ -104,6 +108,7 @@
             <div class="col-lg-6 input-area">
                 <div class="input-group">
                     <input type="text" id="taskName" class="form-control" placeholder="Input your task...">
+                    <input type="text" id="taskDuration" class="form-control" placeholder="Input your task Duration">
                     <select id="taskType" class="form-control task-type-select" style="margin-right: 5px">
                         <option value="" disabled selected hidden>Select type</option>
                         <option value="Work">Work</option>
@@ -125,6 +130,6 @@
 
 <script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static '/plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/js/login_main.js' %}"></script>
+<script src="{% static '/js/login_main_count_down.js' %}"></script>
 </body>
 </html>

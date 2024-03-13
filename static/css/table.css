@@ -1,3 +1,6 @@
  .form-control{
-        width: 200px;margin-left:900px;margin-bottom: -20px;margin-top: 20px;
+/*         width: 200px;margin-left:900px;margin-bottom: -20px;margin-top: 20px; */
+    width: 100%; /* 输入框宽度设置为100% */
+    margin-top: 20px; /* 保持顶部的间隙 */
+    margin-bottom: 0; /* 移除负值的底部间隙，或者设置为需要的值 */
     }
