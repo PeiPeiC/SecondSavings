@@ -1,29 +1,29 @@
-var taskIdTemp = null;                  //保留TaskID
-var recordTemp = null;                  //保留recordID
+var taskIdTemp = null;                  //Preserve TaskID
+var recordTemp = null;                  //Retain recordID
 var currentTaskColumn = null;
 var isBreak = false;
-var isRunning = false; // 跟踪计时器是否正在运行
+var isRunning = false; // Track if the timer is running
 let seconds = 0;
-var timer; // 用于 setInterval 的变量
-var remainingTime = 25 * 60; // 剩余时间，初始设置为 25 分钟
+var timer; // Variables for setInterval
+var remainingTime = 25 * 60; // Remaining time, initially set to 25 minutes
 
 function addTask() {
 
     const taskContent = document.getElementById('taskName').value;
     const taskType = document.getElementById('taskType').value;
     const taskDurationInput = document.getElementById('taskDuration').value;
-    const taskDuration = taskDurationInput * 60;                                //縂秒數
+    const taskDuration = taskDurationInput * 60;                                //Total seconds
     const taskDate = document.getElementById('taskDate').value;
     console.log(taskType)
 
-    if (taskContent && taskType && taskDate && taskDuration) { // 确保所有input都已输入
-        // 从cookie中获取CSRF令牌
+    if (taskContent && taskType && taskDate && taskDuration) { // Make sure all inputs are entered
+        // Getting CSRF tokens from cookies
         var csrftoken = getCookie('csrftoken');
 
 
-        // 在这里发送 AJAX 请求到后端创建新任务         测试代码**********************************
+        // Send an AJAX request to the backend         
         $.ajax({
-            url: '/secondSavings/create_count_down_task/', // 后端 URL，需要在Django的urls.py中定义这个路由
+            url: '/secondSavings/create_count_down_task/', 
             type: 'POST',
             data: {
                 'title': taskContent,
@@ -31,40 +31,40 @@ function addTask() {
                 'taskDate': taskDate,
                 'taskDuration': taskDuration,
                 //'isCountDown' : true,
-                'csrfmiddlewaretoken': csrftoken  // 添加CSRF令牌
+                'csrfmiddlewaretoken': csrftoken  // Adding a CSRF Token
             },
             success: function(response) {
-                // 任务创建成功后的操作
+                
                 console.log('Task created successfully.');
-                var taskId = response.task_id; // 假设后端返回了任务的ID
+                var taskId = response.task_id; 
 
-                // 创建任务项和删除按钮
+                // Create task item and delete button
 
-                // 创建任务内容元素
+                // Create task content elements
                 var taskContentSpan = $('<span>').addClass('task-content').text(taskContent);
 
-                // 创建任务日期元素
+                // Creating task date elements
                 var taskDateSpan = $('<span>').addClass('task-date').text('Set time:\n'+taskDate);
                 var taskInfo = $("<li>").addClass('taskItem');
                 //var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
 
                 
-                //删除的按钮及功能实现（新版本，同时删除前后端）
-                var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
+                //Delete button and function implementation
+                var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               //Setting data properties in buttons
                 .click(function () {
                     if(isRunning){
                         alert("A task is already running. Please pause before delete task.");
                     }else{
-                        // 弹出确认对话框
+                        // Pop-up confirmation dialog
                         var isConfirmed = confirm("Are you sure you want to delete this incomplete tasks? This action cannot be undone.");
                         if (isConfirmed) {
-                            // 获取当前task的ID
+                            // Get the ID of the current task
                             var task_id = $(this).data('task-id');
-                            var csrftoken = getCookie('csrftoken'); // 从cookie中获取CSRF令牌
+                            var csrftoken = getCookie('csrftoken'); 
 
-                            // 发送 AJAX 请求到后端删除任务
+                            // Send an AJAX request to the backend to delete the task
                             $.ajax({
-                                url: '/secondSavings/delete_task/', // 确保这个URL是正确的
+                                url: '/secondSavings/delete_task/', 
                                 type: 'POST',
                                 data: {
                                     'task_id': task_id,
@@ -72,10 +72,10 @@ function addTask() {
                                 },
                                 success: function(response) {
                                     if(response.status == 'success') {
-                            // 如果后端删除成功，也在前端删除任务项
+                            // If the back-end deletion is successful, also delete the task item on the front-end
                                         $(this).parent().remove();
                                     }
-                                }.bind(this), // 确保在回调函数中this指向按钮
+                                }.bind(this), 
                                 error: function(error) {
                                     console.error('Error deleting task:', error);
                                 }
@@ -85,8 +85,9 @@ function addTask() {
 
                 });
 
+                //statr btn implement
                 var startBtn = $("<button>").text("Start Task").addClass('startButton').data('task-id', taskId).data('chosenDate', response.chosenDate).data('totalSeconds', response.TotalSeconds).click(function () {
-                    //比较日期
+                    //Comparison date
                     var chosenDate = $(this).data('chosenDate');
                     remainTime=$(this).data('totalSeconds');
                     console.log(response.TotalSeconds);
@@ -115,8 +116,9 @@ function addTask() {
 
                 });
 
+                //break btn implement
                 var breakBtn = $("<button>").text("Start Break").addClass('breakButton').data('task-id', taskId).data('chosenDate', response.chosenDate).click(function () {
-                    //比较日期
+                    //Comparison date
                     var chosenDate = $(this).data('chosenDate');
                     var currentDate = new Date().toISOString().slice(0, 10);
 
@@ -139,32 +141,33 @@ function addTask() {
 
                 });
 
-                // 创建任务时间标记
+                // Creating task time labels
                 var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(response.TotalTaskTime));
 
-                // 创建休息时间标记
+                // Creating break labels
                 var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(response.TotalBreakTime));
 
-                //  创建剩餘时间标记
+                //  Creating Remaining Time label
                 var remaining = formatSecondsToMinutes(response.TotalSeconds);
                 var durationTimeLabel = $('<span>').addClass('duration-time-label').text("Remaining: " + remaining);
-                //日期选择器更改时间
+
+                //date changer
                 var dateInput = $('<input>').attr({
                     type: 'date',
                     class: 'task-date-input',
-                    value: taskDate // 设置为任务的当前日期
-                  }).data('task-id', taskId) // 存储任务ID以便稍后使用
+                    value: taskDate 
+                  }).data('task-id', taskId) // STORE TASK ID
                   .data('taskTitle', taskContent)
                   .change(function() {
-                    // 获取新的日期值和任务ID
+                    // Get new date value and task ID
                     var taskContent = $(this).data('taskTitle');
                     var newDate = $(this).val();
                     var taskId = $(this).data('task-id');
                     var taskInfo = $(this).parent();
-                    // 发送 AJAX 请求到后端更新日期
+                    // Send AJAX requests to the backend
                     var csrftoken = getCookie('csrftoken');
                     $.ajax({
-                      url: '/secondSavings/update_task_date/', // 后端更新日期的 URL
+                      url: '/secondSavings/update_task_date/', 
                       type: 'POST',
                       data: {
                         'task_id': taskId,
@@ -174,7 +177,7 @@ function addTask() {
                       success: function(response) {
                         alert('Task date updated successfully.');
                         console.log(taskInfo.find('.startButton').data('chosenDate'));
-                        // 更新按钮的 data('chosenDate')
+                        // Update the data('chosenDate') in the button
 
                         taskInfo.find('.startButton').data('chosenDate', newDate);
                         taskInfo.find('.breakButton').data('chosenDate', newDate);
@@ -188,7 +191,7 @@ function addTask() {
                   });
 
 
-                // 将按钮添加到任务项中
+                // Adding buttons to taskInfo
                 taskInfo.append(taskContentSpan).append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel).append(durationTimeLabel).append(taskDateSpan).append(dateInput);
                 $("#taskList").append(taskInfo);
 
@@ -198,7 +201,7 @@ function addTask() {
             }
         });
 
-        // 清空输入框和时间选择器           
+        // Empty input box and time picker           
         $("#task").val("");
         $("#taskDuration").val("");
 
@@ -208,13 +211,13 @@ function addTask() {
 
 
 $(document).ready(function () {
-    // 获取Task **********************测试代码********************************
+    // get Tasks
     $.ajax({
-        url: '/secondSavings/get_count_down_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
+        url: '/secondSavings/get_count_down_tasks/',  
         type: 'GET',
         dataType: 'json',
         success: function(tasks) {
-            // 使用从后端获取的任务列表来渲染页面
+            // Renders the page using a list of tasks retrieved from the backend
             tasks.forEach(function(task) {
                 createTaskItem(task.title, task.category, task.id, task.chosenDate, task.isCompleted, task.endTime, task.totalTaskTime, task.totalBreakTime,task.chosenDate,task.totalSeconds);
             });
@@ -228,42 +231,40 @@ $(document).ready(function () {
 });
 
 
-// 渲染已有Task的函数 ******************测试代码*******************
+// Functions that render existing Tasks 
 function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, endTime, TotalTaskTime, TotalBreakTime, chosenDate, TotalSeconds) {
     if (isCompleted) {   
 
     }
     else{
-        // 创建任务项和删除按钮等...
-        // 这里复用你已经有的代码来创建每个任务项
-        // 确保每个任务项都能够关联到它的任务ID
-        // 创建任务项和删除按钮
-        var taskType = category;       //获取任务类别
-        var taskDate = chosenDate;       //获取任务时间
+        //The main logic is the same as when creating
+        var taskType = category;      
+        var taskDate = chosenDate;       
 
-        // 创建任务内容元素
+        
         var taskContentSpan = $('<span>').addClass('task-content').text(taskContent + "-");
 
-        // 创建任务日期元素
+        
         var taskDateSpan = $('<span>').addClass('task-date').text('Set time- '+'\n' +taskDate);
         var taskInfo = $("<li>").addClass('taskItem');
         //var taskInfo = $("<li>").addClass('taskItem').text(taskContent + " - " + taskDate);
-        //删除的按钮及功能实现
-        var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               //在按钮中设置数据属性
+
+        //Delete button and function implementation
+        var deleteBtn = $("<button>").text("Delete Task").addClass('deleteButton').data('task-id', taskId)               
         .click(function () {
-            // 弹出确认对话框
+            
             if(isRunning){
                 alert("A task is already running. Please pause before delete task.");
             }else{
                 var isConfirmed = confirm("Are you sure you want to delete this incomplete tasks? This action cannot be undone.");
                 if (isConfirmed){
-                    // 获取当前task的ID
+                    
                     var task_id = $(this).data('task-id');
-                    var csrftoken = getCookie('csrftoken'); // 从cookie中获取CSRF令牌
+                    var csrftoken = getCookie('csrftoken'); 
     
-                    // 发送 AJAX 请求到后端删除任务
+                    
                     $.ajax({
-                        url: '/secondSavings/delete_task/', // 确保这个URL是正确的
+                        url: '/secondSavings/delete_task/', 
                         type: 'POST',
                         data: {
                             'task_id': task_id,
@@ -271,10 +272,10 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
                         },
                         success: function(response) {
                             if(response.status == 'success') {
-                                // 如果后端删除成功，也在前端删除任务项
+                                
                                 $(this).parent().remove();
                             }
-                        }.bind(this), // 确保在回调函数中this指向按钮
+                        }.bind(this), 
                         error: function(error) {
                             console.error('Error deleting task:', error);
                         }
@@ -283,10 +284,10 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
             }
         });
 
-        // 为每个任务添加开始计时的按钮
+        // start button and function implementation
         var startBtn = $("<button>").text("Start Task").addClass('startButton').data('task-id', taskId).data('chosenDate', chosenDate).data('totalSeconds', TotalSeconds).click(function () {
 
-            //比较日期
+            
             var chosenDate = $(this).data('chosenDate');
             remainTime=$(this).data('totalSeconds');
             var currentDate = new Date().toISOString().slice(0, 10);
@@ -301,7 +302,7 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
                 currentTaskColumn = $(this).parent();
                 var taskId = $(this).data('task-id');
                 //document.getElementById('timer-string').textContent = formatSecondsToMinutes(remainingTime);
-                startTimer(document.getElementById('timer-string'), taskId, 'task', remainingTime); // 传入任务ID
+                startTimer(document.getElementById('timer-string'), taskId, 'task', remainingTime); 
                 isRunning = true;
                 document.getElementById('startButton').textContent = "PAUSE";
                 $("#currentTask").text("Current Task: " + taskContent);
@@ -312,7 +313,7 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
         });
 
         var breakBtn = $("<button>").text("Start Break").addClass('breakButton').data('task-id', taskId).data('chosenDate', chosenDate).click(function () {
-            //比较日期
+            
             var chosenDate = $(this).data('chosenDate');
             var currentDate = new Date().toISOString().slice(0, 10);
 
@@ -336,23 +337,23 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
 
         });
 
-                //日期选择器更改时间
+                //time changer
         var dateInput = $('<input>').attr({
             type: 'date',
             class: 'task-date-input',
-            value: taskDate // 设置为任务的当前日期
-            }).data('task-id', taskId) // 存储任务ID以便稍后使用
+            value: taskDate 
+            }).data('task-id', taskId) 
             .data('taskTitle', taskContent)
             .change(function() {
-                // 获取新的日期值和任务ID
+                
                 var taskContent = $(this).data('taskTitle');
                 var newDate = $(this).val();
                 var taskId = $(this).data('task-id');
                 var taskInfo = $(this).parent();
-                // 发送 AJAX 请求到后端更新日期
+                
                 var csrftoken = getCookie('csrftoken');
                 $.ajax({
-                    url: '/secondSavings/update_task_date/', // 后端更新日期的 URL
+                    url: '/secondSavings/update_task_date/', 
                     type: 'POST',
                     data: {
                     'task_id': taskId,
@@ -362,7 +363,7 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
                     success: function(response) {
                     alert('Task date updated successfully.');
                     console.log(taskInfo.find('.startButton').data('chosenDate'));
-                    // 更新按钮的 data('chosenDate')
+                    
 
                     taskInfo.find('.startButton').data('chosenDate', newDate);
                     taskInfo.find('.breakButton').data('chosenDate', newDate);
@@ -375,43 +376,43 @@ function createTaskItem(taskContent, category, taskId, chosenDate, isCompleted, 
                 });
             });
 
-        // 创建任务时间标记
+        // Creating task time labels
         var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(TotalTaskTime));
 
-        // 创建休息时间标记
+        // Creating break time labels
         var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(TotalBreakTime));
         
-        //  创建剩餘时间标记
+        //  Creating Remaining Time labels
         var remaining = formatSecondsToMinutes(TotalSeconds);
         var durationTimeLabel = $('<span>').addClass('duration-time-label').text("Remaining: " + remaining);
 
-        // 将按钮添加到任务项中
+        
         taskInfo.append(taskContentSpan).append(startBtn).append(breakBtn).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel).append(durationTimeLabel).append(taskDateSpan).append(dateInput);
         $("#taskList").append(taskInfo);
     }
     
 }
 
-
+// clearAllTasks button function
 function clearAllTasks(){
     if(!isRunning)
     {
-            // 弹出确认对话框
+        //alert
     var isConfirmed = confirm("Are you sure you want to delete all incomplete tasks? This action cannot be undone.");
 
-    // 如果用户点击确认
+   
     if (isConfirmed) {
-        var csrftoken = getCookie('csrftoken'); // 获取 CSRF 令牌
+        var csrftoken = getCookie('csrftoken'); 
 
         $.ajax({
-            url: '/secondSavings/delete_incomplete_count_down_tasks/', // Django 视图的 URL
+            url: '/secondSavings/delete_incomplete_count_down_tasks/', 
             type: 'POST',
             data: {
                 'csrfmiddlewaretoken': csrftoken
             },
             success: function(response) {
                 if(response.status == 'success') {
-                    // 前端删除所有task栏
+                    // Front-end removes all task 
                     $("#taskList").empty();
                     //location.reload();
                 }
@@ -421,7 +422,7 @@ function clearAllTasks(){
             }
         });
     }
-    // 如果用户点击取消，则不执行任何操作
+    
     }
     else{
         alert("A task is already running. Please pause before clear tasks.");
@@ -430,21 +431,21 @@ function clearAllTasks(){
 }
 
 
-
+//EventListener of start button
 document.getElementById('startButton').addEventListener('click', function () {
     if (!isRunning) {
-        // 如果计时器未在运行，开始或继续计时
+        // If the timer is not running, start or continue the timer
         var recordType = null;
         if(isBreak) recordType = 'break';
         else recordType = 'task'
         startTimer(document.getElementById('timer-string'), taskIdTemp, recordType,remainingTime);
-        isRunning = true; // 更新状态为正在运行
-        this.textContent = "PAUSE"; // 更新按钮文本为 "PAUSE"
+        isRunning = true; // Update Status to Running
+        this.textContent = "PAUSE"; // Update button text to "PAUSE"
     } else {
-        // 如果计时器正在运行，暂停计时
+        // If the timer is running, pause the timer
         pauseTimer(taskIdTemp,currentTaskColumn);
-        isRunning = false; // 更新状态为未运行
-        this.textContent = "START"; // 更新按钮文本为 "START"
+        isRunning = false; // Update status to not running
+        this.textContent = "START"; // Update the button text to "START"
         console.log("HI");
 
 
@@ -458,8 +459,8 @@ document.getElementById('startButton').addEventListener('click', function () {
 function startTimer(display, taskid, record_type, remainingSeconds) {
     if(taskid !== null) {
         console.log(taskid);
-        taskIdTemp = taskid; // 保存任务ID
-        // 发送 AJAX 请求到后端创建新的记录
+        taskIdTemp = taskid; 
+        //after start create a record
         createRecord(taskid, 'start', record_type);
     }
 
@@ -476,7 +477,7 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
                 display.textContent = "TIME UP!";
                 var csrftoken = getCookie('csrftoken');
                 $.ajax({
-                    url: '/secondSavings/finish_task/', // 后端更新日期的 URL
+                    url: '/secondSavings/finish_task/', 
                     type: 'POST',
                     data: {
                     'taskId': taskIdTemp,
@@ -501,12 +502,12 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
             else display.textContent = "TIME UP!";
             
             resetTimer();
-/*             document.getElementById('startButton').textContent = "START"; // 重置开始按钮文本
-            isRunning = false; // 更新计时器状态为未运行
-            $("#currentTask").text("No task running."); // 清除当前任务显示
-            remainingTime = 25 * 60; // 可选：重置剩余时间为默认值或保留任务设定的时间 */
+/*             document.getElementById('startButton').textContent = "START";
+            isRunning = false; 
+            $("#currentTask").text("No task running."); 
+            remainingTime = 25 * 60; //  */
         } else {
-            //remainingTime = secondsLeft; // 更新剩余时间
+            //remainingTime = secondsLeft; 
         }
     }, 1000);
 
@@ -526,12 +527,12 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
         if (--secondsLeft < 0) {
             clearInterval(timer);
             display.textContent = "TIME UP!";
-            document.getElementById('startButton').textContent = "START"; // 重置开始按钮文本
-            isRunning = false; // 更新计时器状态为未运行
-            $("#currentTask").text("No task running."); // 清除当前任务显示
-            remainingTime = 25 * 60; // 可选：重置剩余时间为默认值或保留任务设定的时间
+            document.getElementById('startButton').textContent = "START"; 
+            isRunning = false; 
+            $("#currentTask").text("No task running."); 
+            remainingTime = 25 * 60; 
         } else {
-            remainingTime = secondsLeft; // 更新剩余时间
+            remainingTime = secondsLeft; 
         }
     }, 1000);
 } */
@@ -540,17 +541,18 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
     clearInterval(timer); // 停止计时器
 } */
 
+//function fo pause 
 function pauseTimer(taskId,currentTaskColumn) {
-    clearInterval(timer); // 停止计时器
+    clearInterval(timer);
     if(recordTemp !== null) {
-        createRecord(taskId, 'end',null,currentTaskColumn); // 发送 AJAX 请求到后端更新记录
+        createRecord(taskId, 'end',null,currentTaskColumn); 
     }
 }
 
-
+//function fo reset
 function resetTimer() {
-    clearInterval(timer); // 停止当前的计时器
-    //初始化
+    clearInterval(timer); 
+    
     taskIdTemp = null;
     recordTemp = null;
     isRunning = false;
@@ -565,7 +567,7 @@ function resetTimer() {
 }
 
 
-//startTimer()与pauseTimer()触发的create or set record的function
+//create and end record funtion
 function createRecord(taskId, action, record_type, currentTaskColumn) {
     console.log("taskId = " + taskId);         
     var url = action === 'start' ? '/secondSavings/start_record/' : '/secondSavings/end_record/';           //action == "start" → '/start_record/'  action == "end" → '/end_record/'
@@ -576,7 +578,7 @@ function createRecord(taskId, action, record_type, currentTaskColumn) {
     };
 
     if(action === 'end') {
-        data['recordId'] = recordTemp; // 添加记录ID
+        data['recordId'] = recordTemp; 
     }
 
     $.ajax({
@@ -585,13 +587,13 @@ function createRecord(taskId, action, record_type, currentTaskColumn) {
         data: data,
         success: function(response) {
             if(action === 'start') {
-                recordTemp = response.record_id; // 保存记录ID
+                recordTemp = response.record_id; 
                 console.log("TTTTT");
             }
             // 其他处理 ...
             else if(action === 'end'){
                 $.ajax({
-                    url: '/secondSavings/get_task_info/',  // 后端 URL
+                    url: '/secondSavings/get_task_info/',  
                     type: 'GET',
                     data: { 'taskId': taskId },
                     success: function(response) {
@@ -617,35 +619,33 @@ function createRecord(taskId, action, record_type, currentTaskColumn) {
 
 
 
-
+// funtion show all tasks finished
 var finishTasksShowed = false;
 function finishiedTasks(){
     if(finishTasksShowed){
         $("#taskList li").each(function() {
-            // 检查此任务列表项是否包含具有指定类的 <span> 元素
             if ($(this).find('.badge.badge-success.ml-2').length > 0) {
-                // 如果找到，删除整个任务列表项
                 $(this).remove();
             }
         });
         finishTasksShowed = false;
     }else{
         $.ajax({
-            url: '/secondSavings/get_count_down_tasks/',  // 确保这个URL与你在Django urls.py中定义的相符
+            url: '/secondSavings/get_count_down_tasks/',  
             type: 'GET',
             dataType: 'json',
             success: function(tasks) {
-                // 使用从后端获取的任务列表来渲染页面
+               
                 tasks.forEach(function(task) {
                     if(task.isCompleted){
-                        var EndTime = new Date(task.endTime).toLocaleString(); // 格式化时间
+                        var EndTime = new Date(task.endTime).toLocaleString(); 
                         var taskInfo = $("<li>").addClass('taskItem').css('background-color', '#d4edda').text(task.title + " - Finished on: " + EndTime);
                         var finishedLabel = $('<span>').text('Finished').addClass('badge badge-success ml-2');
                         var deleteBtn = $("<button>").text("Delete").addClass('deleteBtn') 
                         .click(function () {$(this).parent().remove();})
                         var taskTimeLabel = $('<span>').addClass('task-time-label').text("Task Time: " + cancelMilliseconds(task.totalTaskTime));
                         var breakTimeLabel = $('<span>').addClass('break-time-label').text("Break Time: " + cancelMilliseconds(task.totalBreakTime));
-                        //taskElement.css('background-color', '#d4edda');
+                        
                         taskInfo.append(finishedLabel).append(deleteBtn).append(taskTimeLabel).append(breakTimeLabel);
                         $("#taskList").append(taskInfo);
                         finishTasksShowed = true;
@@ -664,7 +664,7 @@ function finishiedTasks(){
 
 
 
-// 用于从cookie中获取CSRF令牌的辅助函数  所有POST的都需要向服务器传令牌 测试用***************************
+// Helper functions for getting CSRF tokens from cookies
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -694,7 +694,7 @@ function formatSecondsToMinutes(totalSeconds) {
     var minutes = Math.floor(totalSeconds / 60);
     var seconds = totalSeconds % 60;
 
-    // 将分钟和秒转换为两位数字的字符串
+    
     minutes = minutes.toString().padStart(2, '0');
     seconds = seconds.toString().padStart(2, '0');
 

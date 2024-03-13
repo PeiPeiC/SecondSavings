@@ -1,10 +1,12 @@
-var pathname = window.location.pathname; // 获取URL的路径部分
-var pathArray = pathname.split('/'); // 将路径分割成数组
-var groupId = pathArray[pathArray.length - 2]; // 群组ID通常是倒数第二个元素
+//get group id
+var pathname = window.location.pathname; 
+var pathArray = pathname.split('/'); 
+var groupId = pathArray[pathArray.length - 2]; 
 console.log(groupId)
 
 
-var isModalOpen = false; // 初始状态为关闭
+//top user popup
+var isModalOpen = false; // Initial state is off
 document.getElementById('show-top-users').addEventListener('click', function () {
 
     if (!isModalOpen) {
@@ -17,18 +19,18 @@ document.getElementById('show-top-users').addEventListener('click', function () 
             });
             modalContent += '</ul>';
             $('#top-users-modal').html(modalContent).show();
-            isModalOpen = true; // 更新状态为打开
+            isModalOpen = true; 
         }
     });
     } else {
-        $('#top-users-modal').hide(); // 如果已经打开，则关闭
-        isModalOpen = false; // 更新状态为关闭
+        $('#top-users-modal').hide(); 
+        isModalOpen = false;
     }
 });
 
 
 
-//實時更新
+//Live Updates
 $(document).ready(function() {
     function updateGroupStudy() {
         $.ajax({
