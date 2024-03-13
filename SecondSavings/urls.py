@@ -36,7 +36,9 @@ urlpatterns = [
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
     
-    path('oauth2callback/', oauth2callback, name='oauth2callback'),
+    path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
+    path('oauth2/initiate/', views.initiate_oauth2_process, name='initiate_oauth2_process'),
+    path('', views.update_sync_settings, name='update_sync_settings'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
