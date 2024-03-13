@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(JSON.parse(timeBarLabels.replace(/'/g, '"')))
     console.log(JSON.parse(taskTotalTime))
     console.log(JSON.parse(breakTotalTime))
-    // 创建图表
+    // create chart
     var timeBarCtx = document.getElementById('time_bar').getContext('2d');
     var timeChart = new Chart(timeBarCtx, {
         type: 'bar',
@@ -70,21 +70,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
-                order: 1 // 控制 Life 数据集的层次，数字越小越在下面
+                order: 1
             }, {
                 label: 'Work',
                 data: JSON.parse(workCnt),
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
-                order: 2 // 控制 Work 数据集的层次
+                order: 2
             }, {
                 label: 'Study',
                 data: JSON.parse(studyCnt),
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
-                order: 3 // 控制 Study 数据集的层次，数字越大越在上面
+                order: 3
             }]
         },
         options: {

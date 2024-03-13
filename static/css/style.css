@@ -129,6 +129,6 @@
 }
 
 .active {
-    background-color: #9D7553; /* 按钮激活时的背景色 */
-    color: #ffffff; /* 按钮激活时的文字颜色 */
+    background-color: #9D7553;
+    color: #ffffff;
 }

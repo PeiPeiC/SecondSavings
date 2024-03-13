@@ -222,39 +222,32 @@ def time_bar(tasks, labels, time_range):
 
 
 def get_previous_four_weeks_start_dates():
-    # 获取今天的日期
     today = datetime.now()
 
-    # 计算今天所在周的起始日期（周一）
+    # find Monday
     start_of_current_week = today - timedelta(days=today.weekday())
 
-    # 初始化存储结果的列表
     start_dates = []
 
-    # 逐步减去七天，直到获得四个周的起始日期
     for _ in range(4):
         start_dates.append(start_of_current_week.strftime('%Y-%m-%d'))
         start_of_current_week -= timedelta(days=7)
 
     start_dates.reverse()
-    # 返回前四周的起始日期
     return start_dates
 
 
 def get_previous_year_month_start_dates():
-    # 获取今天的日期
     today = datetime.now()
 
-    # 获取今天所在月的第一天的日期
+    # find first day of the month
     start_of_current_month = today.replace(day=1)
 
-    # 初始化存储结果的列表
     start_dates = []
 
-    # 逐步减去一个月，直到获得前一年的每月起始日期
     while start_of_current_month.year == today.year:
         start_dates.append(start_of_current_month.strftime('%Y-%m-%d'))
-        # 获取上一个月的起始日期
+        # last month
         start_of_current_month = start_of_current_month - timedelta(days=start_of_current_month.day)
 
     start_dates.reverse()
