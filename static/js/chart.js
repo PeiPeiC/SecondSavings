@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取存储在 data-* 属性中的值
+    // time distribution chart
     var timeBarDataElement = document.getElementById('time_bar_data');
     var timeBarLabels = timeBarDataElement.getAttribute('data-labels');
     var taskTotalTime = timeBarDataElement.getAttribute('data-task-total-time');
@@ -47,22 +47,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // task category chart
     var categoryBarDataElement = document.getElementById('category_bar_data');
-    var labels = categoryBarDataElement.getAttribute('data-labels');
+    var categoryBarlabels = categoryBarDataElement.getAttribute('data-labels');
     var workCnt = categoryBarDataElement.getAttribute('data-task-work')
     var studyCnt = categoryBarDataElement.getAttribute('data-task-study');
     var lifeCnt = categoryBarDataElement.getAttribute('data-task-life');
 
-    console.log(JSON.parse(labels.replace(/'/g, '"')))
+    console.log(JSON.parse(categoryBarlabels.replace(/'/g, '"')))
     console.log(workCnt)
     console.log(studyCnt)
     console.log(lifeCnt)
 
     var categoryBarCtx = document.getElementById('category_bar').getContext('2d');
-    var myChart = new Chart(categoryBarCtx, {
+    var categoryChart = new Chart(categoryBarCtx, {
         type: 'bar',
         data: {
-            labels: JSON.parse(timeBarLabels.replace(/'/g, '"')),
+            labels: JSON.parse(categoryBarlabels.replace(/'/g, '"')),
             datasets: [{
                 label: 'Life',
                 data: JSON.parse(lifeCnt),
@@ -105,6 +106,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 x: {
                     stacked:true
+                }
+            }
+        }
+    });
+
+    // task completed chart
+    var completedLineDataElement = document.getElementById('completed_line_data');
+    var completedLabels = completedLineDataElement.getAttribute('data-labels');
+    var completedCnt = completedLineDataElement.getAttribute('data-count');
+
+    console.log(JSON.parse(completedLabels.replace(/'/g, '"')))
+    console.log(completedCnt)
+
+    var completeLineCtx = document.getElementById('completed_line').getContext('2d');
+    var completedChart = new Chart(completeLineCtx, {
+        type: 'line',
+        data: {
+            labels: JSON.parse(completedLabels.replace(/'/g, '"')),
+            datasets: [{
+                label: 'completed',
+                data: JSON.parse(completedCnt),
+                fill: false,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Task Completed'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    }
                 }
             }
         }

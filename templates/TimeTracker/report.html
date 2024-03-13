@@ -13,6 +13,7 @@
 <body style="height: 100%; margin: 0">
     <canvas id="time_bar" width="400" height="200"></canvas>
     <canvas id="category_bar" width="400" height="200"></canvas>
+    <canvas id="completed_line" width="400" height="200"></canvas>
     <div id="time_bar_data"
          data-labels="{{ time_bar.labels|safe }}"
          data-task-total-time="{{ time_bar.total_task_time|safe }}"
@@ -24,6 +25,11 @@
          data-task-work="{{ category_bar.work_count|safe }}"
          data-task-study="{{ category_bar.study_count|safe }}"
          data-task-life="{{ category_bar.life_count|safe }}"
+         style="display: none;">
+    </div>
+    <div id="completed_line_data"
+         data-labels="{{ completed_line.labels|safe }}"
+         data-count="{{ completed_line.count|safe }}"
          style="display: none;">
     </div>
 

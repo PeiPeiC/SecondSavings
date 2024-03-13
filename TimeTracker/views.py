@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from TimeTracker.forms import GroupCreateForm
 from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, TaskTableItem, TimeReportResp, \
-    TaskCategoryReportResp
+    TaskCategoryReportResp, TaskCompletedReportResp
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
@@ -116,13 +116,40 @@ def report(request, time_range):
 
     times_bar_data = time_bar(all_tasks, labels, time_range)
     tasks_category_bar_data = tasks_category_bar(all_tasks, labels, time_range)
+    task_completed_line_data = task_completed_line(all_tasks, labels, time_range)
 
     return render(request, 'TimeTracker/report.html',
                   {'time_range': time_range,
                    'user_profile': user_profile,
                    'time_bar': times_bar_data,
                    'category_bar': tasks_category_bar_data,
+                   'completed_line': task_completed_line_data,
                    })
+
+
+def task_completed_line(tasks, labels, time_range):
+    tasks_completed = {}
+    for label in labels:
+        tasks_completed[label] = 0
+
+    for task in tasks:
+        task_date = task.chosenDate
+        if time_range == 'week':
+            key = task_date.strftime('%Y-%m-%d')
+        elif time_range == 'month':
+            key = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+        elif time_range == 'year':
+            key = task_date.replace(day=1).strftime('%Y-%m-%d')
+        else:
+            key = task_date.strftime('%Y-%m-%d')
+
+        if task.isCompleted:
+            tasks_completed[key] = tasks_completed.get(key, 0) + 1
+        else:
+            continue
+
+    tasks_completed = [(int(count)) for date, count in tasks_completed.items()]
+    return TaskCompletedReportResp(labels, tasks_completed)
 
 
 def tasks_category_bar(tasks, labels, time_range):

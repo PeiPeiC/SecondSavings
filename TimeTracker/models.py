@@ -150,3 +150,9 @@ class TaskCategoryReportResp:
         self.work_count = work_count
         self.life_count = life_count
         self.study_count = study_count
+
+
+class TaskCompletedReportResp:
+    def __init__(self, labels, count):
+        self.labels = labels
+        self.count = count
