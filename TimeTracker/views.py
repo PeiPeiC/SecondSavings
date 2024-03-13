@@ -172,7 +172,8 @@ def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
 
 def login_main_count_down(request):
-    return render(request, 'TimeTracker/login_main_count_down.html')
+    user_setting = UserSetting()
+    return render(request, 'TimeTracker/login_main_count_down.html', context={'alarm_url': user_setting.get_url()})
 
 def group(request):
     groups = Group.objects.filter(members=request.user)  

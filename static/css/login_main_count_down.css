@@ -299,3 +299,6 @@ body {
     max-width: 600px; /* 最大宽度，根据需要调整 */
     transition: all 0.3s ease-in-out; /* 平滑过渡效果 */
 }
+#audioPlayer {
+    display: none;
+}

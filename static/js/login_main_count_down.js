@@ -477,7 +477,8 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
             currentTaskColumn.remove();
             createRecord(taskIdTemp, 'end',null,currentTaskColumn)
             clearInterval(timer);
-            
+            console.log(audioPlayer)
+            audioPlayer.play();
             if(taskIdTemp && !isBreak){
                 display.textContent = "TIME UP!";
 
@@ -492,10 +493,9 @@ function startTimer(display, taskid, record_type, remainingSeconds) {
                     'csrfmiddlewaretoken': csrftoken
                     },
                     success: function(response) {
-                        alert('Task finished.');
-                        // audioPlayer.style.display = 'block';
-                        console.log(audioPlayer)
-                        audioPlayer.play();
+                        //alert('Task finished.');
+                        //audioPlayer.style.display = 'block';
+
                     },
                     error: function(error) {
                     console.error('Error finish task.', error);
