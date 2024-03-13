@@ -24,7 +24,8 @@
             {% for member in members %}
                 <div class="member">
                     <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
-                    <p>{{ member.userprofile.user.username }}</p>
+<!--                     <p>{{ member.userprofile.user.username }}</p> -->
+                    <p>{{ member.userprofile.nickName }}</p>
                     <p>Study Time: {{ member.userprofile.study_time|time:"H:i:s" }}</p>
                     <p>Work Time: {{ member.userprofile.work_time|time:"H:i:s" }}</p>
                     <p>Life Time: {{ member.userprofile.life_time|time:"H:i:s" }}</p>
