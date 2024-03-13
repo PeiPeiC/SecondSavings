@@ -355,9 +355,7 @@ def alarm_update(request):
                            'alarm_url': user_setting.get_url()})
 
 
-def badges(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/badges.html')
+
 
 
 @login_required

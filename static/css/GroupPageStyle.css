@@ -6,7 +6,7 @@ body {
 }
 
 header {
-    background: #333;
+    background: #9D7553;
     color: #fff;
     padding: 10px 20px;
     text-align: left;
@@ -14,7 +14,7 @@ header {
 
 header button {
     background: #f7f7f7;
-    color: #333;
+    color: #9D7553;
     border: none;
     padding: 5px 10px;
     margin-left: 5px;

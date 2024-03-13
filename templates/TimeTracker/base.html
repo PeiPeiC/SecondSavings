@@ -30,7 +30,7 @@
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
         <a href="{% url 'login_main' %}">
             <!-- main page button -->
-            <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
+            <i class="bi bi-house-door-fill" style="font-size: 35px;color: #9D7553;"></i>
         </a>
         <div class="sidebar-sticky pt-3">
             <ul class="nav flex-column">
@@ -48,7 +48,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/Coin/' %}active{% endif %}" href="{% url 'TimeTracker:coin' %}">Coin</a>
-
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/Badges/' %}active{% endif %}" href="{% url 'TimeTracker:badges' %}">Badges</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/setting/' %}active{% endif %}" href="{% url 'TimeTracker:setting' %}">
                         Setting
