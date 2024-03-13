@@ -15,7 +15,7 @@ urlpatterns = [
 
     # setting
     path('setting/', views.setting, name='setting'),
-    path('setting/sync_google_task/', views.setting_sync, name='setting_sync_google_task'),
+    path('setting/sync_google_task/', views.update_sync_settings, name='setting_sync_google_task'),
     path('setting/update_alarm/', views.alarm_update, name='setting_update_alarm'),
 
     # report
