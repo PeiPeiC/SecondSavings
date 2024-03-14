@@ -7,13 +7,15 @@
     <title>Group Study</title>
     <!-- Add your CSS for styling here -->
     <link rel="stylesheet" href="{% static 'css/GroupPageStyle.css' %}">
+    <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div id="group-study-container">
     <header>
+        <button onclick="location.href='{% url 'TimeTracker:group' %}'">Back</button> 
         <button onclick="location.href='{% url 'login_main' %}'">Main Page</button>        
         <!-- The second button is not implemented -->
-        <button id="show-top-users">Show Top Users</button>
+        <button id="show-top-users">Show Top Study Time</button>
     </header>
 
     <!--div id="group-study-container"-->
@@ -22,9 +24,17 @@
         <div class="members-list">
             {% for member in members %}
                 <div class="member">
-                    <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
-                    <p>{{ member.userprofile.user.username }}</p>
-                    <p>{{ member.userprofile.study_time|time:"H:i:s" }}</p>
+                    {% if  member.userprofile.avatar %}
+                        <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
+                    {% else %}
+                        <i class="bi bi-person-circle" style="font-size: 70px"></i>
+                    {% endif %}
+                  
+<!--                     <p>{{ member.userprofile.user.username }}</p> -->
+                    <p>{{ member.userprofile.nickName }}</p>
+                    <p>Study Time: {{ member.userprofile.study_time|time:"H:i:s" }}</p>
+                    <p>Work Time: {{ member.userprofile.work_time|time:"H:i:s" }}</p>
+                    <p>Life Time: {{ member.userprofile.life_time|time:"H:i:s" }}</p>
                 </div>
             {% endfor %}
         </div>
@@ -35,74 +45,22 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            let isModalOpen = false; // 初始状态为关闭
-            $('#show-top-users').click(function() {
-                /*$.ajax({
-                    url: "{% url 'TimeTracker:top_study_times' %}",
-                    dataType: 'json',       //new
-                    success: function(data) {
-                        let modalContent = '<ul>';
-                        data.top_users.forEach(function(user) {
-                            modalContent += '<li>' + user.username + ' - ' + user.study_time + ' hours</li>';
-                        });
-                        modalContent += '</ul>';
-                        $('#top-users-modal').html(modalContent).show();*/
-
-
-                        /*var topUsersContent = '<ul>';
-                        $.each(data.top_users, function(index, user) {
-                            topUsersContent += '<li>' + user.username + ' - ' + user.study_time + '</li>';
-                        });
-                        topUsersContent += '</ul>';
-                        // Assuming you have a modal or a div to show this content
-                        $('#top-users-modal').html(topUsersContent).show();
-                        
-                    }
-                });*/
-                if (!isModalOpen) {
-                $.ajax({
-                    url: "{% url 'TimeTracker:top_study_times' %}",
-                    success: function(data) {
-                        let modalContent = '<ul>';
-                        data.top_users.forEach(function(user) {
-                            modalContent += '<li>' + user.username + ' - ' + user.study_time + '</li>';
-                        });
-                        modalContent += '</ul>';
-                        $('#top-users-modal').html(modalContent).show();
-                        isModalOpen = true; // 更新状态为打开
-                    }
-                });
-                } else {
-                    $('#top-users-modal').hide(); // 如果已经打开，则关闭
-                    isModalOpen = false; // 更新状态为关闭
-                }
-            });
-        });
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            function updateGroupStudy() {
-                $.ajax({
-                    url: "{% url 'TimeTracker:group_study' group.id %}",
-            
-                    success: function(data) {
-                        $('#group-study-container').html(''); // clear all elements in contianer
-                        $('#group-study-container').html(data);
-                        
-                    }
-                });
+    <script src="{% static '/js/group_study.js' %}"></script>
+<!--     <script>
+$(document).ready(function() {
+    function updateGroupStudy() {
+        $.ajax({
+            url: "{% url 'TimeTracker:group_study' group.id %}",
+    
+            success: function(data) {
+                $('#group-study-container').html(''); // clear all elements in contianer
+                $('#group-study-container').html(data);
+                
             }
-            setTimeout(updateGroupStudy, 5000);
-            //updateGroupStudy();
-
-            // Refresh every five seconds
-            //setInterval(updateGroupStudy, 5000);
-            //setTimeout(updateGroupStudy, 5000); 
         });
-</script>
+    }
+    setTimeout(updateGroupStudy, 5000);
+});
+    </script> -->
 </body>
 </html>

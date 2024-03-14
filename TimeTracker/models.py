@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.utils import timezone
 
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
@@ -53,17 +55,37 @@ class Task(models.Model):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
     category = models.CharField(max_length=CATEGORY_MAX_LENGTH)
     status = models.CharField(max_length=CATEGORY_MAX_LENGTH, default='pending', blank=True)
+    Duration = models.IntegerField(default=0)
     totalSeconds = models.IntegerField(default=0)
     badge = models.ImageField(upload_to='badge_images', blank=True)
     startTime = models.DateTimeField(null=True, blank=True)
     endTime = models.DateTimeField(null=True, blank=True)
-    isCompleted = models.BooleanField(default=False)  # 新增字段标记任务是否完成
-    chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
-    totalTaskTime = models.TimeField(default="00:00:00")  # 新增总学习时间
-    totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间
+    isCompleted = models.BooleanField(default=False)  # New field to mark if the task is completed
+    isCountDown = models.BooleanField(default=False)  # New field to determine if the task is a countdown
+    chosenDate = models.DateField(null=True, blank=True)  # New field to store the user-selected date
+    totalTaskTime = models.TimeField(default="00:00:00")  # New field for total study time
+    totalBreakTime = models.TimeField(default="00:00:00")  # New field for total break time
+    google_task_id = models.CharField(max_length=255, blank=True, null=True)
+    google_tasklist_id = models.CharField(max_length=255, blank=True, null=True)
+    
 
     def __str__(self):
-        return self.title
+        return f"{self.title}, date:{self.chosenDate}"
+
+    def total_seconds(self):
+        # 将 TimeField 转换为 timedelta
+        task_timedelta_value = datetime.strptime(str(self.totalTaskTime).split('.')[0], '%H:%M:%S') - datetime.strptime(
+            '00:00:00',
+            '%H:%M:%S')
+        break_timedelta_value = datetime.strptime(str(self.totalBreakTime).split('.')[0],
+                                                  '%H:%M:%S') - datetime.strptime('00:00:00',
+                                                                                  '%H:%M:%S')
+
+        # Calculate total seconds
+        total_task_seconds = task_timedelta_value.total_seconds()
+        total_break_seconds = break_timedelta_value.total_seconds()
+
+        return total_task_seconds, total_break_seconds
 
 
 RECORD_TYPE_CHOICES = (('break', 'BREAK'), ('task', 'TASK'))
@@ -93,6 +115,10 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
     syncGoogleTask = models.BooleanField(default=False)
+    coin = models.IntegerField(default=1)
+    # google task
+    google_access_token = models.CharField(max_length=255, null=True, blank=True)
+    google_refresh_token = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return 'user:' + self.user.username + ' alarm:' + self.alarm
@@ -108,3 +134,33 @@ class UserSetting(models.Model):
             if url == value:
                 return key
         return None
+
+
+class TaskTableItem:
+    def __init__(self, task, user_setting):
+        self.task = task
+        task_seconds, break_seconds = task.total_seconds()
+        self.task_hours = task_seconds / 3600
+        self.break_hours = break_seconds / 3600
+        self.amount = self.task_hours * user_setting.coin
+
+
+class TimeReportResp:
+    def __init__(self, labels, total_task_time, total_break_time):
+        self.labels = labels
+        self.total_task_time = total_task_time
+        self.total_break_time = total_break_time
+
+
+class TaskCategoryReportResp:
+    def __init__(self, labels, work_count, life_count, study_count):
+        self.labels = labels
+        self.work_count = work_count
+        self.life_count = life_count
+        self.study_count = study_count
+
+
+class TaskCompletedReportResp:
+    def __init__(self, labels, count):
+        self.labels = labels
+        self.count = count

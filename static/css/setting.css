@@ -55,7 +55,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/* 合并新增部分 */
+
 .form-group {
   margin-top: 20px;
 }
@@ -82,4 +82,22 @@ label {
 
 .section-content .form-group {
   width: 55%;
+}
+
+.volume-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+}
+.volume-container {
+      position: relative;
+      display: inline-block;
+}
+
+#volume-slider {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 0;
 }

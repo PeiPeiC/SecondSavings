@@ -19,7 +19,7 @@ from SecondSavings import settings
 from TimeTracker import views
 from django.urls import path,include
 from django.conf.urls.static import static
-
+from TimeTracker.views import oauth2callback
 from django.urls import re_path
 
 urlpatterns = [
@@ -30,16 +30,19 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path("login_main/", views.login_main, name='login_main'),
+    path("login_main_count_down", views.login_main_count_down, name='login_main_count_down'),
     # Django admin
     path("admin/", admin.site.urls),
     # Django-allauth routes for authentication
     path('secondSavings/', include('TimeTracker.urls')),
+    path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
+    path('oauth2/initiate/', views.initiate_oauth2_process, name='initiate_oauth2_process'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     # Include your app's urls here
     
 # Static and media files in development
 
-# 确保在开发环境中也能正确服务静态文件
+# Make sure static files are served correctly in the development environment as well.
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

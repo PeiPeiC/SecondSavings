@@ -1,45 +1,22 @@
 {% extends 'TimeTracker/base.html' %}
 {% block css %}
-    <!-- 导入样式表 -->
+   <!-- Import stylesheet -->
     <link rel="stylesheet" href="/static/css/setting.css">
     <link rel="stylesheet" href="/static/css/style.css">
-    <style>
-    .nav-link.active{
-    background-color: #D2B48C; /* 土黄色 */
-    color: #fff;
-}
-    .volume-button {
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-    }
-   .volume-container {
-      position: relative;
-      display: inline-block;
-    }
-
-    #volume-slider {
-      display: none;
-      position: absolute;
-      left: 100%;
-      top: 0;
-    }
-  </style>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-3">
-  <!-- 设置标题为“通知” -->
+  <!-- Set the title to "Notification" -->
   <h4>Notification</h4>
-  <!-- 添加水平分割线 -->
+  <!-- Add a horizontal line -->
   <hr style="border-color: #ccc; margin-bottom: 20px;">
-  <!-- 创建一个行布局 -->
+  <!-- Create a row layout -->
   <div class="row">
-    <!-- 左侧列，占据6个网格 -->
+    <!-- Left column, occupying 6 grids -->
     <div class="col-md-6">
       <div class="form-group">
-        <!-- 标签：报警声音 -->
+        <!-- Label: Alarm Sound -->
         <label for="alarmSound">Alarm Sound</label>
  <div class="volume-container">
 
@@ -62,76 +39,32 @@
     {% endif %}
   {% endfor %}
 </select>
-{#        <div class="dropdown">#}
-{#          <!-- 触发下拉菜单的按钮 -->#}
-{#          <button class="btn btn-secondary dropdown-toggle" type="button" id="alarmSoundDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#            <!-- 按钮显示的文字 -->#}
-{#            {{ user_setting.alarm }}#}
-{#          </button>#}
-{#          <!-- 下拉菜单的选项 -->#}
-{#          <div class="dropdown-menu" aria-labelledby="alarmSoundDropdown">#}
-{##}
-{#            {% for key, value in alarm_choices %}#}
-{#            	<a class="dropdown-item" href={{ value }}>key</a>#}
-{#            {% endfor %}#}
-{#            #}
-{#          </div>#}
-{#        </div>#}
       </div>
     </div>
-    <!-- 右侧列，占据6个网格 -->
-{#    <div class="col-md-6">#}
-{#      <div class="form-group">#}
-{#        <!-- 标签：音量控制 -->#}
-{#        <label for="volumeControl">Volume Control</label>#}
-{#        <!-- 输入范围：音量控制 -->#}
-{#        <input type="range" class="form-control-range" id="volumeControl">#}
-{#      </div>#}
-{#    </div>#}
   </div>
-  <!-- 一些空行，如果需要的话 -->
+
   <br><br><br>
-  <!-- 设置标题为“同步” -->
+
+{% if is_google_account %}
   <h4>Synchronization</h4>
-  <!-- 添加水平分割线 -->
+<!-- Add horizontal line -->
   <hr style="border-color: #ccc; margin-bottom: 20px;">
-  <!-- 同步到Google任务的复选框 -->
   <div class="form-group">
-    <!-- 标签：同步到Google任务 -->
     <label for="syncGoogleTask">Sync to Google Task</label>
-    <!-- 开关复选框 -->
     <label class="switch">
-      <!-- 复选框 -->
       <input type="checkbox" id="syncCheckbox" {% if user_setting.syncGoogleTask == 1 %}checked{% endif %}>
-      <!-- 自定义样式的滑块 -->
       <span class="slider round"></span>
     </label>
+  {% endif %}
   </div>
 </div>
 
-   <!-- 引入 jQuery -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 $(document).ready(function(){
     $('.dropdown-toggle').dropdown();
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    let checkbox = document.getElementById('syncCheckbox');
-
-    checkbox.addEventListener('change', function () {
-        updateSetting(checkbox.checked);
-    });
-
-    function updateSetting(isSync) {
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{% url 'TimeTracker:setting_sync_google_task' %}', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-        let data = JSON.stringify({ 'isSync': isSync });
-        xhr.send(data);
-    }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -151,14 +84,31 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send(data);
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    let checkbox = document.getElementById('syncCheckbox');
+
+    checkbox.addEventListener('change', function () {
+        updateSetting(checkbox.checked);
+    });
+
+    function updateSetting(isSync) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'TimeTracker:setting_sync_google_task' %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        let data = JSON.stringify({ 'isSync': isSync });
+        xhr.send(data);
+    }
+});
 </script>
 
-<!-- 引入 Popper.js -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-<!-- 引入 Bootstrap JavaScript -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-  // 切换音量滑块的显示和隐藏
+ // Toggle the visibility of the volume slider
   function toggleVolumeSlider() {
     const selectedAlarm = document.querySelector(".form-select").value;
     console.log(selectedAlarm)
@@ -166,6 +116,37 @@ document.addEventListener('DOMContentLoaded', function () {
     audio.play();
   }
 </script>
+<script type="text/javascript">
+  var oauth2CallbackUrl = "{% url 'oauth2callback' %}";
+  var updateSyncSettingsUrl = "{% url 'TimeTracker:setting_sync_google_task' %}";
+  var initiate_oauth2_process = "{% url 'initiate_oauth2_process' %}"
+</script>
+<script>
+  $(document).ready(function(){
+      $('#syncCheckbox').change(function(){
+          var isChecked = $(this).is(':checked');
+          var actionUrl = isChecked ?  initiate_oauth2_process : updateSyncSettingsUrl;
 
+          $.ajax({
+              type: "POST",
+              url: actionUrl,
+              data: {
+                  'syncGoogleTask': isChecked,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function(response){
+                  if (response.redirectUrl) {
+                      window.location.href = response.redirectUrl;
+                  } else {
+                      alert("Settings updated.");
+                  }
+              },
+              error: function(response){
+                  alert("Error updating settings.");
+              }
+          });
+      });
+  });
+  </script>
 
 {% endblock %}

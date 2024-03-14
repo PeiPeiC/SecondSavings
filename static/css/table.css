@@ -1,3 +1,6 @@
- .form-control{
-        width: 200px;margin-left:900px;margin-bottom: -20px;margin-top: 20px;
-    }
+.form-control {
+/*         width: 200px;margin-left:900px;margin-bottom: -20px;margin-top: 20px; */
+    width: 100%; /* Set input field width to 100% */
+    margin-top: 20px; /* Maintain top gap */
+    margin-bottom: 0; /* Remove negative bottom gap, or set to desired value */
+}

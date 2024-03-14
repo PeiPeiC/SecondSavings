@@ -1,0 +1,301 @@
+body {
+    background-color: #9D7553;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    margin: 0;
+    padding: 0;
+}
+
+.header-container {
+    width: 620px;
+    margin: 0px 426px;
+    padding: 0px 12px;
+}
+
+.header a {
+    color: white;
+    display: inline-block;
+    margin: 0px 10px;
+    padding: 10px 0px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.header .menu {
+    float: left;
+    color: white;
+}
+
+.dropdown-menu {
+    background-color: #DABEA7; /* Background color. */
+    border: none; /* Remove border */
+}
+
+.account {
+    float: right;
+    margin-top: 8px;
+}
+
+.dropdown-item i {
+    width: 20px; /* Or any suitable width */
+    text-align: center; /* Ensure icon is centered within its width */
+    margin-right: 5px; /* Add some spacing between the icon and text */
+    display: inline-block; /* Make the icon behave like a block-level element but still inline */
+}
+
+ .dropdown-item {
+    color: white; /* Text color */
+    display: flex; /* Enable Flexbox layout */
+    align-items: center; /* Vertically center align icon and text */
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Hover background color */
+}
+
+.body-container {
+    margin: auto;
+    padding: 0px 12px;
+    max-width: 620px;
+}
+
+.sub-container {
+    text-align: center;
+}
+
+.sub-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 1px;
+    margin-bottom: 40px;
+}
+
+.sub-header1 {
+    height: 3px;
+    background-color: white;
+    border-radius: 100px;
+    transform: translateY(-1px);
+    width: 0%;
+}
+
+.container2 {
+    max-width: 480px;
+    margin: auto;
+}
+
+.container3 {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px 0px 30px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.page-switch-buttons {
+    display: inline-flex;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-switch-buttons a {
+    display: block;
+    background-color: white;
+    color: #A98B73;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    transition: background-color 0.3s, opacity 0.3s;
+    opacity: 0.7;
+}
+
+.page-switch-buttons a:hover, .page-switch-buttons a.active {
+    opacity: 1.0;
+    background-color: #f8f9fa;
+}
+
+.time {
+    font-size: 120px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: white;
+}
+
+.container4 {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+ .container5 {
+    max-width: 480px;
+    margin: 20px auto 42px;
+    display: flex; /* If using flex layout is needed */
+    flex-direction: column; /* Arrange children vertically */
+    align-items: center; /* Center align children */
+}
+
+.container6 {
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    padding-bottom: 14px;
+    z-index: 1000;
+}
+
+.button {
+    cursor: pointer;
+    border: none;
+    margin: 20px 0px 0px;
+    padding: 0px 12px;
+    border-radius: 4px;
+    box-shadow: rgb(235, 235, 235) 0px 6px 0px;
+    font-family: "Arial";
+    font-size: 22px;
+    height: 55px;
+    color: #A98B73;
+    font-weight: bold;
+    width: 200px;
+    background-color: white;
+    transition: color 0.5s, ease-in-out 0s;
+}
+
+.button4 {
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+    opacity: 0.9;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+    margin-left: 10px;
+    font-size: 13px;
+    padding: 8px;
+    min-width: auto;
+    border: none;
+    color: white;
+}
+
+.text {
+    color: white;
+    font-size: 18px;
+    font-weight: 100;
+    overflow-wrap: break-word;
+}
+
+.task {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.marg {
+    margin-top: 18px;
+}
+
+.input-area {
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Add margin */
+}
+
+.input-group input[type="text"],
+.input-group input[type="time"] {
+    border: 2px solid #ccc; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 8px 12px; /* Padding */
+    margin-right: 5px; /* Spacing between input fields */
+    width: auto; /* Automatic width, adjusts based on content */
+    flex-grow: 1; /* Allow input field to take available space */
+}
+
+.input-group-btn > button {
+    background-color: rgba(255, 255, 255, 0.2); /* Button background color */
+    color: white; /* Button text color */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px 15px; /* Padding */
+    box-shadow: 0 4px #999; /* Shadow effect */
+    cursor: pointer; /* Cursor shape on hover */
+}
+
+.input-group-btn > button:hover {
+    background-color: #876D5A; /* Background color on hover */
+}
+
+.input-group-btn > button:active {
+    box-shadow: 0 2px #666; /* Shadow effect when pressed */
+    transform: translateY(2px); /* Slightly move down when pressed */
+}
+
+#taskList {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+}
+
+#taskList li {
+    background-color: #f9f9f9; /* List item background color */
+    border: 1px solid #ddd; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px 15px; /* Padding */
+    margin: 8px 0; /* Margin */
+    display: flex;
+    justify-content: space-between; /* Content and delete button spread at two ends */
+    align-items: center; /* Vertically center align */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    transition: background-color 0.3s; /* Background color transition effect */
+}
+
+#taskList li:hover {
+    background-color: #eef9ff; /* Hover background color */
+}
+
+#taskList li button {
+    background-color: #DABEA7; /* Delete button background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px 10px; /* Padding */
+    cursor: pointer; /* Cursor shape on hover */
+    transition: background-color 0.2s; /* Background color transition effect */
+}
+
+#taskList li button:hover {
+    background-color: #876D5A; /* Hover button background color */
+}
+
+#currentTask {
+    margin: 20px auto;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.3); /* Slightly transparent white background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow effect */
+    color: white; /* Text color */
+    font-size: 18px; /* Text size */
+    text-align: center; /* Text alignment */
+    width: 80%; /* Width, adjust as needed */
+    max-width: 600px; /* Maximum width, adjust as needed */
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
+}

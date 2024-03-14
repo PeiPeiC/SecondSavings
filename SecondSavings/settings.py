@@ -29,7 +29,7 @@ if not IS_HEROKU_APP:
         environ.Env.read_env(str(env_file))
 
 env = environ.Env()
-# 读取.env文件
+# Read .env file
 environ.Env.read_env()
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
@@ -56,7 +56,7 @@ STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
     STATIC_DIR,
-    # 这里可以添加其他静态文件目录
+    # Additional static file directories can be added here.
 ]
 
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
@@ -82,7 +82,9 @@ else:
 # Application definition
 SITE_ID = 1
 
-INSTALLED_APPS = [
+FIRST_PARTY_APPS = ["TimeTracker",]
+
+INSTALLED_APPS = FIRST_PARTY_APPS + [
     # Use WhiteNoise's runserver implementation instead of the Django default, for dev-prod parity.
     "whitenoise.runserver_nostatic",
     "django.contrib.admin",
@@ -96,9 +98,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
+    'django_linear_migrations',
 
     'imagekit',
-    "TimeTracker",
 ]
 
 MIDDLEWARE = [
@@ -226,6 +228,24 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/tasks',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
+REDIRECT_URI = env("REDIRECT_URI")
+
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True

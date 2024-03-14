@@ -1,21 +1,29 @@
+from allauth.socialaccount.models import SocialAccount
 from django.utils import timezone
 from datetime import datetime, timedelta
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import base64
 import json
 import random
 import string
 from io import BytesIO
-
+import requests
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from TimeTracker.forms import GroupCreateForm
-from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting
+from TimeTracker.models import Group, UserProfile, Task, Record, UserSetting, TaskTableItem, TimeReportResp, \
+    TaskCategoryReportResp, TaskCompletedReportResp
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from google_auth_oauthlib.flow import Flow
+from google.oauth2.credentials import Credentials
+from django.conf import settings
+from urllib.parse import urlencode
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 logger = logging.getLogger('django')
 
@@ -25,6 +33,7 @@ def main(request):
         user_setting, created = UserSetting.objects.get_or_create(user=request.user)
         if created:
             logger.info(f"user {request.user} setting created.")
+        return redirect('login_main')
     else:
         user_setting = UserSetting()
 
@@ -48,7 +57,7 @@ def profile_update(request):
         user_profile.nickName = nick_name
         user_profile.save()
 
-        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        # messages.add_message(request, messages.SUCCESS, 'Update Successfully')
         return redirect('TimeTracker:profile')
     else:
         user_profile = UserProfile()
@@ -80,14 +89,180 @@ def avatar_update(request):
 
             return render(request, 'TimeTracker/base.html', context={'user_profile': user_profile})
         else:
-            messages.error(request, 'Invalid Image')
+            # messages.error(request, 'Invalid Image')
             logger.warning(f'Invalid image data received for user {request.user.username}')
     return render(request, 'TimeTracker/userInfo.html', context={'user_profile': user_profile})
 
 
-def report(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/report.html')
+@login_required
+def report(request, time_range):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if created:
+        logger.info(f'user {request.user} create profile')
+
+    now = datetime.now()
+    if time_range == 'week':
+        left_time = now - timedelta(days=6)
+        labels = [(left_time + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
+
+    elif time_range == 'month':
+        left_time = now - timedelta(days=30)
+        labels = get_previous_four_weeks_start_dates()
+
+    elif time_range == 'year':
+        left_time = now - timedelta(days=365)
+        labels = get_previous_year_month_start_dates()
+
+    else:  # default week
+        left_time = datetime.now() - timedelta(days=7)
+        labels = [(left_time + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
+
+    all_tasks = Task.objects.filter(user=request.user, chosenDate__range=(left_time, datetime.now())).order_by(
+        'chosenDate')
+    if len(all_tasks) == 0:
+        return render(request, 'TimeTracker/report.html',
+                      {'time_range': time_range,
+                       'user_profile': user_profile,
+                       })
+
+    times_bar_data = time_bar(all_tasks, labels, time_range)
+    tasks_category_bar_data = tasks_category_bar(all_tasks, labels, time_range)
+    task_completed_line_data = task_completed_line(all_tasks, labels, time_range)
+
+    return render(request, 'TimeTracker/report.html',
+                  {'time_range': time_range,
+                   'user_profile': user_profile,
+                   'time_bar': times_bar_data,
+                   'category_bar': tasks_category_bar_data,
+                   'completed_line': task_completed_line_data,
+                   })
+
+
+def task_completed_line(tasks, labels, time_range):
+    tasks_completed = {}
+    for label in labels:
+        tasks_completed[label] = 0
+
+    for task in tasks:
+        task_date = task.chosenDate
+        if time_range == 'week':
+            key = task_date.strftime('%Y-%m-%d')
+        elif time_range == 'month':
+            key = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+        elif time_range == 'year':
+            key = task_date.replace(day=1).strftime('%Y-%m-%d')
+        else:
+            key = task_date.strftime('%Y-%m-%d')
+
+        if task.isCompleted:
+            tasks_completed[key] = tasks_completed.get(key, 0) + 1
+        else:
+            continue
+
+    tasks_completed = [(int(count)) for date, count in tasks_completed.items()]
+    return TaskCompletedReportResp(labels, tasks_completed)
+
+
+def tasks_category_bar(tasks, labels, time_range):
+    work_tasks = {}
+    life_tasks = {}
+    study_tasks = {}
+    for label in labels:
+        work_tasks[label] = 0
+        life_tasks[label] = 0
+        study_tasks[label] = 0
+
+    for task in tasks:
+        task_date = task.chosenDate
+        if time_range == 'week':
+            key = task_date.strftime('%Y-%m-%d')
+        elif time_range == 'month':
+            key = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+        elif time_range == 'year':
+            key = task_date.replace(day=1).strftime('%Y-%m-%d')
+        else:
+            key = task_date.strftime('%Y-%m-%d')
+
+        if task.category == 'Work':
+            work_tasks[key] = work_tasks.get(key, 0) + 1
+        elif task.category == 'Study':
+            study_tasks[key] = study_tasks.get(key, 0) + 1
+        elif task.category == 'Life':
+            life_tasks[key] = life_tasks.get(key, 0) + 1
+        else:
+            continue
+
+    logger.info(f'{work_tasks}, {life_tasks}, {study_tasks}, {labels}')
+    work_tasks = [(int(count)) for date, count in work_tasks.items()]
+    life_tasks = [(int(count)) for date, count in life_tasks.items()]
+    study_tasks = [(int(count)) for date, count in study_tasks.items()]
+    return TaskCategoryReportResp(labels, work_tasks, life_tasks, study_tasks)
+
+
+def time_bar(tasks, labels, time_range):
+    task_time_totals = {}
+    break_time_totals = {}
+    # init
+    for label in labels:
+        task_time_totals[label] = 0
+        break_time_totals[label] = 0
+
+    for task in tasks:
+        task_date = task.chosenDate
+        tasks_time, breaks_time = task.total_seconds()
+        if time_range == 'week':
+            key = task_date.strftime('%Y-%m-%d')
+            task_time_totals[key] = task_time_totals.get(key, 0) + int(tasks_time / 60)  # mins
+            break_time_totals[key] = break_time_totals.get(key, 0) + int(breaks_time / 60)
+
+        elif time_range == 'month':
+            week_start = (task_date - timedelta(days=task_date.weekday())).strftime('%Y-%m-%d')
+            task_time_totals[week_start] = task_time_totals.get(week_start, 0) + int(tasks_time / 60)
+            break_time_totals[week_start] = break_time_totals.get(week_start, 0) + int(breaks_time / 60)
+
+        elif time_range == 'year':
+            month_start = task_date.replace(day=1).strftime('%Y-%m-%d')
+            task_time_totals[month_start] = task_time_totals.get(month_start, 0) + int(tasks_time / 60)
+            break_time_totals[month_start] = break_time_totals.get(month_start, 0) + int(breaks_time / 60)
+
+    logger.info(f'{task_time_totals}, {break_time_totals}, {labels}')
+    task_total_time_list = [(int(total_time)) for date, total_time in task_time_totals.items()]
+    break_total_time_list = [(int(total_time)) for date, total_time in break_time_totals.items()]
+
+    return TimeReportResp(labels, task_total_time_list, break_total_time_list)
+
+
+def get_previous_four_weeks_start_dates():
+    today = datetime.now()
+
+    # find Monday
+    start_of_current_week = today - timedelta(days=today.weekday())
+
+    start_dates = []
+
+    for _ in range(4):
+        start_dates.append(start_of_current_week.strftime('%Y-%m-%d'))
+        start_of_current_week -= timedelta(days=7)
+
+    start_dates.reverse()
+    return start_dates
+
+
+def get_previous_year_month_start_dates():
+    today = datetime.now()
+
+    # find first day of the month
+    start_of_current_month = today.replace(day=1)
+
+    start_dates = []
+
+    while start_of_current_month.year == today.year:
+        start_dates.append(start_of_current_month.strftime('%Y-%m-%d'))
+        # last month
+        start_of_current_month = start_of_current_month - timedelta(days=start_of_current_month.day)
+
+    start_dates.reverse()
+    return start_dates
 
 
 def table(request):
@@ -95,14 +270,49 @@ def table(request):
         return render(request, 'TimeTracker/Group.html')
 
 
-def music(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/music.html')
 
 
+
+@login_required
 def coin(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/coin.html')
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+    tasks = Task.objects.filter(user=request.user).order_by('chosenDate')
+    all_tasks = []
+    total_hours = 0
+    total_amount = 0
+    for task in tasks:
+        item = TaskTableItem(task, user_setting)
+        all_tasks.append(item)
+        total_amount += item.amount
+        total_hours += item.task_hours
+
+    return render(request, 'TimeTracker/coin.html',
+                  {'user_profile': user_profile,
+                   'user_setting': user_setting,
+                   'tasks': all_tasks,
+                   'total_hours': total_hours,
+                   'total_amount': total_amount})
+
+
+@login_required
+def coin_update(request):
+    if request.method == 'POST':
+        user_setting = UserSetting.objects.get(user=request.user)
+        coin_value = request.POST.get('coin', 1)
+        user_setting.coin = coin_value
+        user_setting.save()
+        return redirect('TimeTracker:coin')
+    else:
+        return HttpResponse('Invalid request method')
+
+
+def privacy_policy(request):
+    return render(request, 'TimeTracker/privacy_policy.html')
+
+
+def terms_of_service(request):
+    return render(request, 'TimeTracker/terms_of_service.html')
 
 
 def setting(request):
@@ -115,7 +325,8 @@ def setting(request):
     return render(request, 'TimeTracker/setting.html',
                   context={'user_setting': user_setting,
                            'alarm_choices': UserSetting.ALARM_CHOICES,
-                           'user_profile': user_profile})
+                           'user_profile': user_profile,
+                           'is_google_account': is_google_user(request.user)})
 
 
 def setting_sync(request):
@@ -128,7 +339,7 @@ def setting_sync(request):
         user_setting.syncGoogleTask = sync
         user_setting.save()
 
-        messages.add_message(request, messages.SUCCESS, 'Update Successfully')
+        # messages.add_message(request, messages.SUCCESS, 'Update Successfully')
         return redirect('TimeTracker:setting')
 
     return render(request, 'TimeTracker/setting.html',
@@ -155,14 +366,19 @@ def alarm_update(request):
                            'alarm_url': user_setting.get_url()})
 
 
-def badges(request):
-    if request.method == 'GET':
-        return render(request, 'TimeTracker/badges.html')
-
-
 @login_required
 def login_main(request):
     return render(request, 'TimeTracker/login_main.html')
+
+
+def login_main_count_down(request):
+    user_setting = UserSetting()
+    return render(request, 'TimeTracker/login_main_count_down.html', context={'alarm_url': user_setting.get_url()})
+
+
+def group(request):
+    groups = Group.objects.filter(members=request.user)
+    return render(request, 'TimeTracker/Group.html', {'groups': groups})
 
 
 @login_required
@@ -177,14 +393,16 @@ def group(request):
 def get_user_groups(request):
     if request.user.is_authenticated:
         groups = request.user.group_memberships.all().values(
-            'id', 'name', 'creator__username'
+            'id', 'name', 'creator__username', 'creator__userprofile__nickName'
         )
         groups_data = [
             {
                 'id': group['id'],
                 'name': group['name'],
                 'creator': group['creator__username'],
+                'creatorNickName': group['creator__userprofile__nickName'],
                 'is_creator': request.user.username == group['creator__username']
+
             }
             for group in groups
         ]
@@ -198,22 +416,24 @@ def create_group(request):
     if form.is_valid():
         new_group = form.save(commit=False)
         new_group.creator = request.user
-        new_group.key = request.POST.get('key')  # 获取并设置小组密码
+        new_group.key = request.POST.get('key')  # Retrieve and set the team password
         new_group.save()
         new_group.members.add(request.user)
-        # 如果需要，保存多对多关系
+        # If necessary, save many-to-many relationships
         form.save_m2m()
-        # 返回成功响应
+        # Return a successful response
 
+        user_profile = request.user.userprofile
         return JsonResponse({
             'success': True,
             'groupName': new_group.name,
             'creatorName': new_group.creator.username,
-            'groupId': new_group.id  # 新组的ID，用于创建链接
+            'creatorNickName': user_profile.nickName,
+            'groupId': new_group.id  # ID of the new group, used for creating links
         })
 
     else:
-        # 返回错误响应
+        # Return an error response
         return JsonResponse({'success': False, 'error': form.errors})
 
     # delete group
@@ -281,11 +501,13 @@ def group_study(request, group_id):
 
 
 # Study Time Ranking Popup
-def top_study_times(request):
-    top_users = UserProfile.objects.all().order_by('-study_time')[:3]
+def top_study_times(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    # top_users = UserProfile.objects.all().order_by('-study_time')[:3]
+    top_users = UserProfile.objects.filter(user__in=group.members.all()).order_by('-study_time')[:3]
     data = {
         'top_users': [
-            {'username': profile.user.username, 'study_time': profile.study_time}
+            {'nickName': profile.nickName, 'study_time': profile.study_time}
             for profile in top_users
         ]
     }
@@ -297,14 +519,75 @@ def index(request):
         return render(request, 'TimeTracker/userInfo.html')
 
 
-# 点击submit后创建task
+def get_google_tasks_service(user):
+    user_settings = UserSetting.objects.get(user=user)
+    credentials = Credentials(
+        token=user_settings.google_access_token,
+        refresh_token=user_settings.google_refresh_token,
+        client_id=settings.GOOGLE_CLIENT_ID,
+        client_secret=settings.GOOGLE_CLIENT_SECRET,
+        token_uri='https://oauth2.googleapis.com/token'
+    )
+    service = build('tasks', 'v1', credentials=credentials)
+    return service
+
+
+def ensure_work_list_exists(service, title):
+    page_token = None
+    #   print(f"Checking for Task list with title: {title}")
+    while True:
+        response = service.tasklists().list(maxResults=100, pageToken=page_token).execute()
+        for item in response.get('items', []):
+            #    print(f"Found Task list: {item['title']}")
+            if item['title'].lower() == title.lower():
+                return item['id']
+
+        page_token = response.get('nextPageToken')
+        if not page_token:
+            break
+
+    # Create a new task list if not found
+    tasklist = service.tasklists().insert(body={'title': title}).execute()
+    return tasklist['id']
+
+
+def add_task_to_tasklist(service, tasklist_id, task_title):
+    task = {'title': task_title}
+    result = service.tasks().insert(tasklist=tasklist_id, body=task).execute()
+    return result['id'] # Return the ID of the newly created task
+
+
+def add_task_to_google_tasks(user, tasklist_id, task_title):
+    service = get_google_tasks_service(user)
+    task = {'title': task_title}
+    result = service.tasks().insert(tasklist=tasklist_id, body=task).execute()
+    return result['id']  # Return the ID of the newly created Google Tasks task
+
+
+# Create task upon clicking submit
 def create_task(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         task_type = request.POST.get('taskType')
         task_date = request.POST.get('taskDate')
-        # 创建并保存任务对象
+        # Create and save task object
         task = Task(user=request.user, title=title, category=task_type, chosenDate=task_date)
+        # Check and update Google Tasks
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f'{request.user} create setting')
+
+        if user_setting.syncGoogleTask:
+            try:
+                service = get_google_tasks_service(request.user)
+                tasklist_id = ensure_work_list_exists(service, task_type)  # Use the task type as the title for the task list
+                google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # Add task to the task list
+                task.google_tasklist_id = tasklist_id
+                task.google_task_id = google_task_id
+                task.save() # Save task, including Google Tasks information
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
         task.save()
         return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime': task.totalTaskTime,
                              'TotalBreakTime': task.totalBreakTime, 'chosenDate': task.chosenDate})
@@ -323,24 +606,60 @@ def update_task_date(request):
     return JsonResponse({'status': 'error'}, status=400)
 
 
-# 点击delete后删除task
+def delete_google_task(service, tasklist_id, task_id):
+    try:
+        # Delete task from Google Tasks directly using task ID
+        service.tasks().delete(tasklist=tasklist_id, task=task_id).execute()
+    except Exception as e:
+        # Handle potential errors
+        print(f"Error deleting task from Google Tasks: {e}")
+
+
+# Delete task upon clicking delete
 def delete_task(request):
-    task_id = request.POST.get('task_id')
-    task = get_object_or_404(Task, pk=task_id, user=request.user)
-    task.delete()
-    return JsonResponse({'status': 'success'})
-
-
-def delete_incomplete_tasks(request):
     if request.method == 'POST':
-        # 删除当前登录用户的所有未完成任务
-        Task.objects.filter(user=request.user, isCompleted=False).delete()
+        task_id = request.POST.get('task_id')
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f'{request.user} create setting')
+
+        if user_setting.syncGoogleTask:
+            service = get_google_tasks_service(request.user)
+            # Delete task from Google Tasks
+            if task.google_tasklist_id and task.google_task_id:
+                delete_google_task(service, task.google_tasklist_id, task.google_task_id)
+
+        task.delete()
+        return JsonResponse({'status': 'success'})
+
+
+def delete_incomplete_count_up_tasks(request):
+    if request.method == 'POST':
+        # Delete all unfinished tasks for the currently logged-in user
+        tasks_to_delete = Task.objects.filter(user=request.user, isCompleted=False, isCountDown=False)
+
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f'{request.user} create setting')
+
+        if user_setting.syncGoogleTask:
+            service = get_google_tasks_service(request.user)
+            # Iterate over the tasks to delete each from Google Tasks if applicable
+            for task in tasks_to_delete:
+                if task.google_tasklist_id and task.google_task_id:
+                    delete_google_task(service, task.google_tasklist_id, task.google_task_id)
+
+        # Now delete the tasks from the database
+        tasks_to_delete.delete()
+
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 
-# 点击finish后调用
+# Call upon clicking finish
 def finish_task(request):
     task_id = request.POST.get('taskId')
     isCompleted = request.POST.get('isCompleted') == 'true'
@@ -365,20 +684,22 @@ def get_task_info(request):
         'endtime': task.endTime.isoformat() if task.endTime else None,
         'TotalTaskTime': task.totalTaskTime,
         'TotalBreakTime': task.totalBreakTime,
+        'TotalSeconds': task.totalSeconds,
     })
 
 
-# 前端获取用户task，保证每次刷新网页都保留已创建的task
-def get_tasks(request):
-    tasks = Task.objects.filter(user=request.user).values()  # 获取当前用户的任务
-    return JsonResponse(list(tasks), safe=False)  # 将任务列表转换为JSON格式并返回
+# Frontend retrieves user tasks, ensuring that tasks created are retained even after refreshing the webpage
+def get_count_up_tasks(request):
+    # tasks = Task.objects.filter(user=request.user).values()  # Get tasks for the current user
+    tasks = Task.objects.filter(user=request.user, isCountDown=False).values()
+    return JsonResponse(list(tasks), safe=False)  # Convert the task list to JSON format and return
 
 
-# startTimer()触发后调用，新建对应record
+# Called after startTimer() triggers, create a corresponding record
 def start_record(request):
     if request.method == 'POST':
         task_id = request.POST.get('taskId')
-        record_type = request.POST.get('recordType', 'task')  # 默认为 'task'
+        record_type = request.POST.get('recordType', 'task')  # Default is 'task'
         print(task_id)
         task = get_object_or_404(Task, pk=task_id, user=request.user)
         # task = Task.objects.get(pk=task_id)
@@ -409,10 +730,14 @@ def end_record(request):
         user_profile = UserProfile.objects.get(user=record.user)
         task = record.task
 
+        # if task.isCountDown == True:
+        # time_delta_seconds = time_delta.total_seconds()
+        # task.totalSeconds = task.totalSeconds - time_delta_seconds
+
         if record.type == 'task':
             task_type = task.category
 
-            # 更新了时间的处理方式
+            # Updated handling of time
             if task_type == "Work":
                 user_profile.work_time = add_timedelta_to_time(user_profile.work_time, time_delta)
                 task.totalTaskTime = add_timedelta_to_time(task.totalTaskTime, time_delta)
@@ -425,55 +750,159 @@ def end_record(request):
         else:
             task.totalBreakTime = add_timedelta_to_time(task.totalBreakTime, time_delta)
 
+        if task.isCountDown == True and record.type == 'task':
+            total_task_time = task.totalTaskTime
+            # Convert time to seconds
+            total_seconds = (total_task_time.hour * 3600) + (total_task_time.minute * 60) + total_task_time.second
+            print("test")
+            task.totalSeconds = task.Duration - total_seconds
+
         user_profile.save()
         task.save()
 
         return JsonResponse({'status': 'success'})
 
 
-"""  #pauseTimer()触发后调用
-def end_record(request): 
+def delete_incomplete_count_down_tasks(request):
     if request.method == 'POST':
-        record_id = request.POST.get('recordId')
-        record = Record.objects.get(pk=record_id)
-        record.endTime = timezone.now()
-        record.save()
-        # 这里可以计算study_time并更新UserProfile 还没实现
-        # 计算学习时间
-        
-        time_delta = record.endTime - record.startTime
+        # Delete all unfinished tasks for the currently logged-in user
+        tasks_to_delete = Task.objects.filter(user=request.user, isCompleted=False, isCountDown=True)
 
-        user_profile = UserProfile.objects.get(user=record.user)
-        task = record.task
-        # 更新UserProfile里的study_time\work_time\life_time  task中的totalTaskTime
-        if(record.type == 'task'):
-            # 获取当前的累积学习时间
-            current_user_study_time = user_profile.study_time
-            current_task_task_time = task.totalTaskTime
-            # 将 timedelta 转换为时间
-            new_user_task_type_time = (datetime.combine(date.min, current_user_study_time) + time_delta).time()
-            new_task_task_time = (datetime.combine(date.min, current_task_task_time) + time_delta).time() 
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f'{request.user} create setting')
 
-            task_type = task.category
-            if task_type == "Work":
-                user_profile.work_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time
-            elif task_type =="Study":
-                user_profile.study_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time    
-            else:
-                user_profile.life_time = new_user_task_type_time
-                record.task.totalTaskTime = new_task_task_time
+        if user_setting.syncGoogleTask:
+            service = get_google_tasks_service(request.user)
 
-        else:
-            # 更新task的totalBreakTime
-            current_task_break_time = task.totalBreakTime
-            # 将 timedelta 转换为时间
-            new_task_break_time = (datetime.combine(date.min, current_task_break_time) + time_delta).time() 
-            task.totalBreakTime = new_task_break_time
+            for task in tasks_to_delete:
+                if task.google_tasklist_id and task.google_task_id:
+                    delete_google_task(service, task.google_tasklist_id, task.google_task_id)
 
-        user_profile.save()
+        # Now delete the tasks from the database
+        tasks_to_delete.delete()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+# Create countdown task upon clicking submit
+def create_count_down_task(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        task_type = request.POST.get('taskType')
+        task_date = request.POST.get('taskDate')
+        taskDuration = request.POST.get('taskDuration')
+        countDown = True
+        # Create and save task object
+        task = Task(user=request.user, title=title, category=task_type, chosenDate=task_date, Duration=taskDuration,
+                    totalSeconds=taskDuration, isCountDown=countDown)
+
+        user_setting, created = UserSetting.objects.get_or_create(user=request.user)
+        if created:
+            logger.info(f'{request.user} create setting')
+
+        if user_setting.syncGoogleTask:
+
+            # Create and save task object
+            try:
+                service = get_google_tasks_service(request.user)
+                tasklist_id = ensure_work_list_exists(service, task_type)  # Use the task type as the title for the task list
+                google_task_id = add_task_to_tasklist(service, tasklist_id, title)  # Add task to the task list
+                task.google_tasklist_id = tasklist_id
+                task.google_task_id = google_task_id
+                task.save()  # Save task, including Google Tasks information
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
         task.save()
-        
+        return JsonResponse({'status': 'success', 'task_id': task.id, 'TotalTaskTime': task.totalTaskTime,
+                             'TotalBreakTime': task.totalBreakTime, 'chosenDate': task.chosenDate,
+                             'TotalSeconds': task.totalSeconds})
+    return JsonResponse({'status': 'error'}, status=400)
 
-        return JsonResponse({'status': 'success'})  """
+
+def get_count_down_tasks(request):
+    # tasks = Task.objects.filter(user=request.user).values()  # Retrieve tasks for the current user
+    tasks = Task.objects.filter(user=request.user, isCountDown=True).values()
+    return JsonResponse(list(tasks), safe=False)  # Convert task list to JSON format and return
+
+
+@login_required
+def initiate_oauth2_process(request):
+    # Define the authorization URL and required parameters
+    base_url = 'https://accounts.google.com/o/oauth2/v2/auth?'
+    params = {
+        'response_type': 'code',
+        'client_id': settings.GOOGLE_CLIENT_ID,
+        'redirect_uri': settings.REDIRECT_URI,
+        'scope': 'https://www.googleapis.com/auth/tasks',
+        'access_type': 'offline',  # Used to obtain a refresh token
+        'prompt': 'consent',
+    }
+
+    # Build the complete authorization URL
+    auth_url = f"{base_url}{urlencode(params)}"
+
+    # Redirect to the authorization URL
+    return JsonResponse({'redirectUrl': auth_url})
+
+
+@login_required
+@csrf_exempt
+def update_sync_settings(request):
+    user_setting = UserSetting.objects.get(user=request.user)
+    if request.method == "POST":
+        data = json.loads(request.body)
+        sync = data.get('isSync', False)
+
+        user_setting.syncGoogleTask = sync
+        user_setting.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def is_google_user(user):
+    try:
+        _ = SocialAccount.objects.get(user=user)
+        return True
+    except SocialAccount.DoesNotExist:
+        return False
+
+
+@login_required
+def oauth2callback(request):
+    code = request.GET.get('code')
+    if code:
+        # Prepare the data required for requesting an access token
+        data = {
+            'code': code,
+            'client_id': settings.GOOGLE_CLIENT_ID,
+            'client_secret': settings.GOOGLE_CLIENT_SECRET,
+            'redirect_uri': settings.REDIRECT_URI,
+            'grant_type': 'authorization_code',
+        }
+
+        # Use the authorization code to obtain an access token
+        token_response = requests.post('https://oauth2.googleapis.com/token', data=data)
+
+        # Check if the response is successful
+        if token_response.status_code == 200:
+            token_json = token_response.json()
+            access_token = token_json.get('access_token')
+            refresh_token = token_json.get('refresh_token')
+
+            # Store the access token and refresh token in the database
+            user_setting, _ = UserSetting.objects.get_or_create(user=request.user)
+            user_setting.google_access_token = access_token
+            user_setting.google_refresh_token = refresh_token
+            user_setting.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Google Tasks integration enabled.')
+            return redirect('TimeTracker:setting')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to retrieve access token.')
+            return redirect('TimeTracker:profile')
+    else:
+        # Handle the case where there is no authorization code
+        messages.add_message(request, messages.ERROR, 'Authorization failed or cancelled by user.')
+        return redirect('TimeTracker:profile')

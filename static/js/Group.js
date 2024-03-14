@@ -1,30 +1,29 @@
-console.log("1111");
+//Create btn eventListener
 document.getElementById('create-group-button').addEventListener('click', function() {
 
     var groupName = document.getElementById('group-name').value;
-    // 让用户输入小组密码
+    // Let users enter group passwords
     var groupKey = prompt("Please enter a key for the group:");
     if (groupKey === null || groupKey === "") {
         alert('You must enter a key for the group.');
-        return;  // 如果没有输入密码，终止操作
+        return;  // If no password is entered, terminate the operation
     }
     
-    // 构造表单数据
     var formData = new FormData();
     formData.append('name', groupName);
-    formData.append('key', groupKey);  // 将密码加入表单数据
+    formData.append('key', groupKey);  
 
-    // 发送AJAX请求到后端创建组的视图
+    // Send an AJAX request to the backend 
     fetch('/secondSavings/create_group/', {
         method: 'POST',
         body: formData,
         headers: {
-            'X-CSRFToken': getCookie('csrftoken'), // 从cookie中获取CSRF token
+            'X-CSRFToken': getCookie('csrftoken'), // Getting a CSRF token from a cookie
         }
     })
     .then(response => response.json())
     .then(data => {
-        // 处理响应数据
+        
         if (data.success) {
            // Display the newly created group column on the page without refreshing.
             var table = document.querySelector('.table tbody');
@@ -37,7 +36,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
             tdName.appendChild(link);
 
             var tdAccess = document.createElement('td');
-            tdAccess.textContent = data.creatorName;
+            tdAccess.textContent = data.creatorNickName;
 
             // adding a delete button
             var tdDelete = document.createElement('td');
@@ -58,7 +57,7 @@ document.getElementById('create-group-button').addEventListener('click', functio
 
             tr.appendChild(tdName);
             tr.appendChild(tdAccess);
-            tr.appendChild(tdDelete);  // 如果有删除列的话
+            tr.appendChild(tdDelete);  
             table.appendChild(tr);
 
             // Empty the input box
@@ -81,13 +80,13 @@ function deleteGroup(groupId, rowElement) {
         fetch('/secondSavings/delete_group/' + groupId + '/', {
             method: 'POST',
             headers: {
-                'X-CSRFToken': getCookie('csrftoken'), // 从cookie中获取CSRF token
+                'X-CSRFToken': getCookie('csrftoken'), // Getting a CSRF token from a cookie
             }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // 删除成功，移除行
+                // Delete successful, remove row
                 rowElement.remove();
             } else {
                 alert('Error deleting group: ' + data.error);
@@ -100,13 +99,12 @@ function deleteGroup(groupId, rowElement) {
 
 }
 
-// 假设 deleteButton 是您创建的删除按钮
 document.querySelectorAll('.delete-group-button').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
-        var groupId = this.dataset.groupId; // 获取组ID
-        var rowElement = this.closest('tr'); // 找到按钮所在的行元素
-        deleteGroup(groupId, rowElement); // 调用删除函数
+        var groupId = this.dataset.groupId; // Get Group ID
+        var rowElement = this.closest('tr'); // Find the line element where the button is located
+        deleteGroup(groupId, rowElement); // Calling the delete function
     });
 });
 
@@ -136,7 +134,7 @@ document.getElementById('search-button').addEventListener('click', function(even
 //draw serach Group List on frontend
 function searchGroupList(groups) {
     var table = document.querySelector('.table tbody');
-    table.innerHTML = ''; // 清空现有的组
+    table.innerHTML = ''; // Empty existing groups
 
     groups.forEach(group => {
         var tr = document.createElement('tr');
@@ -154,7 +152,7 @@ function searchGroupList(groups) {
         addButton.textContent = 'Join';
         addButton.setAttribute('data-group-id', group.id);
         addButton.addEventListener('click', function() {
-            // 加入组的逻辑
+            // Logic for joining groups
             var groupId = this.dataset.groupId;
             var groupKey = prompt("Please enter the key:");
             if (groupKey !== null) {
@@ -183,7 +181,6 @@ function joinGroup(groupId, groupKey) {
     .then(data => {
         if (data.success) {
             alert('Joined group successfully!');
-            // 这里您可以添加更新用户组列表的逻辑
             //updateGroupListForUser();
         } else {
             alert(data.error);
@@ -196,7 +193,7 @@ function joinGroup(groupId, groupKey) {
 
 $(document).ready(function() {
     $.ajax({
-        url: '/secondSavings/get_user_groups/',  // 替换成后端视图的URL
+        url: '/secondSavings/get_user_groups/',  
         method: 'GET',
         success: function(data) {
             updateGroupList(data.groups);
@@ -228,7 +225,7 @@ document.getElementById('reset-button').addEventListener('click', function() {
 
 function updateGroupList(groups) {
     var table = document.querySelector('.table tbody');
-    table.innerHTML = ''; // 清空现有的组
+    table.innerHTML = ''; // Empty existing groups
 
     groups.forEach(group => {
         var tr = document.createElement('tr');
@@ -242,7 +239,7 @@ function updateGroupList(groups) {
         tr.appendChild(tdName);
 
         var tdAccess = document.createElement('td');
-        tdAccess.textContent = group.creator;
+        tdAccess.textContent = group.creatorNickName;
         tr.appendChild(tdAccess);
 
         var tdAction = document.createElement('td');
@@ -252,7 +249,7 @@ function updateGroupList(groups) {
             actionButton.setAttribute('href', '#');
             actionButton.setAttribute('data-group-id', group.id);
             actionButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16"> <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path></svg>';
-            // 添加删除组的逻辑
+            // Add logic for deleting groups
             actionButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 var groupId = this.dataset.groupId;
@@ -287,7 +284,7 @@ function quitGroup(groupId, rowElement) {
     .then(data => {
         if (data.success) {
             alert('You have successfully quit the group.');
-            rowElement.remove(); // 从表格中移除该行
+            rowElement.remove(); 
         } else {
             alert('Error quitting group: ' + data.error);
         }
@@ -301,7 +298,7 @@ function quitGroup(groupId, rowElement) {
 
 
 
-// 从cookie中获取CSRF token的函数
+// Function to get CSRF token from cookie
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

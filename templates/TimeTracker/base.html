@@ -12,13 +12,6 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
-    <style>
-        .nav-link.active{
-    background-color: #D2B48C; /* 土黄色 */
-    color: #fff;
-}
-
-    </style>
     {% block css %}
     {% endblock %}
 </head>
@@ -30,7 +23,7 @@
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
         <a href="{% url 'login_main' %}">
             <!-- main page button -->
-            <i class="bi bi-house-door-fill" style="font-size: 35px"></i>
+            <i class="bi bi-house-door-fill" style="font-size: 35px;color: #9D7553;"></i>
         </a>
         <div class="sidebar-sticky pt-3">
             <ul class="nav flex-column">
@@ -41,19 +34,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/secondSavings/report/' %}active{% endif %}" href="{% url 'TimeTracker:report' %}">Report</a>
+                    <a class="nav-link {% if '/secondSavings/report/' in request.path %}active{% endif %}" href="{% url 'TimeTracker:report' 'week' %}">Report</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/Group/' %}active{% endif %}" href="{% url 'TimeTracker:group' %}">Group</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/Coin/' %}active{% endif %}" href="{% url 'TimeTracker:coin' %}">Coin</a>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/secondSavings/Badges/' %}active{% endif %}" href="{% url 'TimeTracker:badges' %}">Badges</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/secondSavings/setting/' %}active{% endif %}" href="{% url 'TimeTracker:setting' %}">
                         Setting
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/secondSavings/logout/' %}active{% endif %}" href="{% url 'account_logout' %}">
+                        Logout
                     </a>
                 </li>
 
