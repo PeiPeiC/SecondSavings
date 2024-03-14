@@ -137,3 +137,11 @@ button, .btn {
     white-space: nowrap;
     width: auto;
 }
+
+form {
+    display: inline;
+}
+
+label {
+    display: inline;
+}
