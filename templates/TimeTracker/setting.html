@@ -1,6 +1,6 @@
 {% extends 'TimeTracker/base.html' %}
 {% block css %}
-    <!-- 导入样式表 -->
+   <!-- Import stylesheet -->
     <link rel="stylesheet" href="/static/css/setting.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
@@ -26,16 +26,16 @@
 
 {% block content %}
 <div class="container mt-3">
-  <!-- 设置标题为“通知” -->
+  <!-- Set the title to "Notification" -->
   <h4>Notification</h4>
-  <!-- 添加水平分割线 -->
+  <!-- Add a horizontal line -->
   <hr style="border-color: #ccc; margin-bottom: 20px;">
-  <!-- 创建一个行布局 -->
+  <!-- Create a row layout -->
   <div class="row">
-    <!-- 左侧列，占据6个网格 -->
+    <!-- Left column, occupying 6 grids -->
     <div class="col-md-6">
       <div class="form-group">
-        <!-- 标签：报警声音 -->
+        <!-- Label: Alarm Sound -->
         <label for="alarmSound">Alarm Sound</label>
  <div class="volume-container">
 
@@ -61,29 +61,24 @@
       </div>
     </div>
   </div>
-  <!-- 一些空行，如果需要的话 -->
+
   <br><br><br>
-  <!-- 设置标题为“同步” -->
+
 {% if is_google_account %}
   <h4>Synchronization</h4>
-  <!-- 添加水平分割线 -->
+<!-- Add horizontal line -->
   <hr style="border-color: #ccc; margin-bottom: 20px;">
-  <!-- 同步到Google任务的复选框 -->
   <div class="form-group">
-    <!-- 标签：同步到Google任务 -->
     <label for="syncGoogleTask">Sync to Google Task</label>
-    <!-- 开关复选框 -->
     <label class="switch">
-      <!-- 复选框 -->
       <input type="checkbox" id="syncCheckbox" {% if user_setting.syncGoogleTask == 1 %}checked{% endif %}>
-      <!-- 自定义样式的滑块 -->
       <span class="slider round"></span>
     </label>
   {% endif %}
   </div>
 </div>
 
-   <!-- 引入 jQuery -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -127,12 +122,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- 引入 Popper.js -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-<!-- 引入 Bootstrap JavaScript -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-  // 切换音量滑块的显示和隐藏
+ // Toggle the visibility of the volume slider
   function toggleVolumeSlider() {
     const selectedAlarm = document.querySelector(".form-select").value;
     console.log(selectedAlarm)

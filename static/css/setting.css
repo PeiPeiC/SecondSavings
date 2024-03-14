@@ -55,7 +55,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/* 合并新增部分 */
+
 .form-group {
   margin-top: 20px;
 }

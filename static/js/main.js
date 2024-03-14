@@ -109,9 +109,9 @@ function startTimer(duration, display) {
 }
 
 function pauseTimer() {
-    clearInterval(timer); // 停止计时器
+    clearInterval(timer); // Stop the timer
 }
 
 function resetTimer() {
-    clearInterval(timer); // 停止当前的计时器
-} 
+    clearInterval(timer); // Stop the current timer
+}

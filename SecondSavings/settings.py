@@ -29,7 +29,7 @@ if not IS_HEROKU_APP:
         environ.Env.read_env(str(env_file))
 
 env = environ.Env()
-# 读取.env文件
+# Read .env file
 environ.Env.read_env()
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
@@ -56,7 +56,7 @@ STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
     STATIC_DIR,
-    # 这里可以添加其他静态文件目录
+    # Additional static file directories can be added here.
 ]
 
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
