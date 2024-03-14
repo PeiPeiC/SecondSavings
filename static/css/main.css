@@ -30,8 +30,8 @@ body {
 }
 
 .dropdown-menu {
-    background-color: #DABEA7; /* 背景颜色 */
-    border: none; /* 移除边框 */
+    background-color: #DABEA7; /* Background color */
+    border: none; /* Remove border */
 }
 
 .account {
@@ -40,20 +40,20 @@ body {
 }
 
 .dropdown-item i {
-    width: 20px; /* 或者其他适合的宽度 */
-    text-align: center; /* 确保图标在其宽度内居中 */
-    margin-right: 5px; /* 在图标和文本之间添加一些间距 */
-    display: inline-block; /* 使图标表现得像块级元素，但仍然在行内 */
+    width: 20px; /* Or any suitable width */
+    text-align: center; /* Ensure icon is centered within its width */
+    margin-right: 5px; /* Add some spacing between the icon and text */
+    display: inline-block; /* Make the icon behave like a block-level element but still inline */
 }
 
 .dropdown-item {
-    color: white; /* 文字颜色 */
-    display: flex; /* 启用Flexbox布局 */
-    align-items: center; /* 垂直居中对齐图标和文本 */
+    color: white; /* Text color */
+    display: flex; /* Enable Flexbox layout */
+    align-items: center; /* Vertically center align icon and text */
 }
 
 .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* 鼠标悬停背景色 */
+    background-color: rgba(255, 255, 255, 0.2); /* Hover background color */
 }
 
 .body-container {
@@ -131,9 +131,9 @@ body {
 .container5 {
     max-width: 480px;
     margin: 20px auto 42px;
-    display: flex; /* 如果需要使用flex布局 */
-    flex-direction: column; /* 子元素垂直排列 */
-    align-items: center; /* 子元素居中对齐 */
+    display: flex; /* Enable flex layout if needed */
+    flex-direction: column; /* Arrange children vertically */
+    align-items: center; /* Center align children */
 }
 
 .container6 {
@@ -216,86 +216,86 @@ body {
 .input-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px; /* 添加外边距 */
+    margin-bottom: 15px; /* Add margin */
 }
 
 .input-group input[type="text"],
 .input-group input[type="time"] {
-    border: 2px solid #ccc; /* 边框 */
-    border-radius: 8px; /* 圆角 */
-    padding: 8px 12px; /* 内边距 */
-    margin-right: 10px; /* 输入框之间的间距 */
-    width: auto; /* 自动宽度，根据内容调整 */
-    flex-grow: 1; /* 让输入框占据可用空间 */
+    border: 2px solid #ccc; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 8px 12px; /* Padding */
+    margin-right: 10px; /* Spacing between input fields */
+    width: auto; /* Automatic width, adjusts based on content */
+    flex-grow: 1; /* Allow input field to take available space */
 }
 
 .input-group-btn > button {
-    background-color: rgba(255, 255, 255, 0.2); /* 按钮背景色 */
-    color: white; /* 按钮文字颜色 */
+    background-color: rgba(255, 255, 255, 0.2); /* Button background color */
+    color: white; /* Button text color */
     border: none;
-    border-radius: 8px; /* 圆角 */
-    padding: 10px 15px; /* 内边距 */
-    box-shadow: 0 4px #999; /* 阴影效果 */
-    cursor: pointer; /* 鼠标悬停时指针形状 */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px 15px; /* Padding */
+    box-shadow: 0 4px #999; /* Shadow effect */
+    cursor: pointer; /* Cursor shape on hover */
 }
 
 .input-group-btn > button:hover {
-    background-color: #876D5A; /* 鼠标悬停时的背景色 */
+    background-color: #876D5A; /* Hover background color */
 }
 
 .input-group-btn > button:active {
-    box-shadow: 0 2px #666; /* 按下时的阴影效果 */
-    transform: translateY(2px); /* 按下时轻微下移 */
+    box-shadow: 0 2px #666; /* Shadow effect when pressed */
+    transform: translateY(2px); /* Slightly move down when pressed */
 }
 
 #taskList {
-    list-style-type: none; /* 移除小黑点 */
-    padding: 0; /* 移除内边距 */
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
 }
 
 #taskList li {
-    background-color: #f9f9f9; /* 列表项背景色 */
-    border: 1px solid #ddd; /* 边框 */
-    border-radius: 8px; /* 圆角 */
-    padding: 10px 15px; /* 内边距 */
-    margin: 8px 0; /* 外边距 */
+    background-color: #f9f9f9; /* List item background color */
+    border: 1px solid #ddd; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px 15px; /* Padding */
+    margin: 8px 0; /* Margin */
     display: flex;
-    justify-content: space-between; /* 内容和删除按钮分布在两端 */
-    align-items: center; /* 垂直居中对齐 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
-    transition: background-color 0.3s; /* 背景色变化过渡效果 */
+    justify-content: space-between; /* Content and delete button spread at two ends */
+    align-items: center; /* Vertically center align */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    transition: background-color 0.3s; /* Background color transition effect */
 }
 
 #taskList li:hover {
-    background-color: #eef9ff; /* 鼠标悬停背景色 */
+    background-color: #eef9ff; /* Hover background color */
 }
 
 #taskList li button {
-    background-color: #DABEA7; /* 删除按钮背景色 */
-    color: white; /* 文字颜色 */
-    border: none; /* 移除边框 */
-    border-radius: 4px; /* 圆角 */
-    padding: 5px 10px; /* 内边距 */
-    cursor: pointer; /* 鼠标悬停指针形状 */
-    transition: background-color 0.2s; /* 背景色变化过渡效果 */
+    background-color: #DABEA7; /* Delete button background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px 10px; /* Padding */
+    cursor: pointer; /* Cursor shape on hover */
+    transition: background-color 0.2s; /* Background color transition effect */
 }
 
 #taskList li button:hover {
-    background-color: #876D5A; /* 鼠标悬停时按钮背景色 */
+    background-color: #876D5A; /* Hover button background color */
 }
 
 #currentTask {
     margin: 20px auto;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.3); /* 轻微透明的白色背景 */
-    border-radius: 10px; /* 圆角边框 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
-    color: white; /* 文本颜色 */
-    font-size: 18px; /* 文本大小 */
-    text-align: center; /* 文本居中 */
-    width: 80%; /* 宽度，根据需要调整 */
-    max-width: 600px; /* 最大宽度，根据需要调整 */
-    transition: all 0.3s ease-in-out; /* 平滑过渡效果 */
+    background-color: rgba(255, 255, 255, 0.3); /* Slightly transparent white background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow effect */
+    color: white; /* Text color */
+    font-size: 18px; /* Text size */
+    text-align: center; /* Text alignment */
+    width: 80%; /* Width, adjust as needed */
+    max-width: 600px; /* Maximum width, adjust as needed */
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
 }
 #audioPlayer {
     display: none;

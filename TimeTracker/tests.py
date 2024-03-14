@@ -93,8 +93,8 @@ class ReportViewTestCase(TestCase):
             title='Task 2',
             category='Category 2',
             chosenDate=datetime.now().date() - timedelta(days=2),  # Simulate the date two days ago
-            totalTaskTime='01:00:00',  # Simulated study time 1 hour
-            totalBreakTime='00:30:00'  # Simulated breaks 30 minutes
+            totalTaskTime='01:00:00',  # Simulate study time of 1 hour
+            totalBreakTime='00:30:00'  # Simulate break time of 30 minutes
         )
         
     def test_report(self):

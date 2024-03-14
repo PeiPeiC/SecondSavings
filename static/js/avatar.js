@@ -1,13 +1,13 @@
-// profile base 头像
+// Profile base avatar
 document.addEventListener("DOMContentLoaded", function() {
-    // 添加事件监听器到头像图标
+    // Add event listener to avatar icon
     var avatarIcon = document.querySelector(".user-icon .bi-person-circle");
     if (avatarIcon) {
         avatarIcon.addEventListener("click", function() {
-            // 触发图片编辑功能
+            // Trigger image editing functionality
             console.log("Edit Avatar");
 
-            // 弹出文件选择框，让用户选择新头像图片文件
+            // Open file chooser dialog for user to select new avatar image file
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 var file = event.target.files[0];
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    // 更新头像图标的样式
+                    // Update avatar icon style
                     avatarIcon.style.backgroundImage = "url('" + event.target.result + "')";
-                    // 设置提示文本
+                    // Set tooltip text
                     avatarIcon.title = "Click to Change Avatar";
-                    // 可以在这里将新头像提交到服务器保存
+                    // New avatar can be submitted to server for saving here
                     console.log("New avatar has been submitted:", event.target.result);
                 };
                 reader.readAsDataURL(file);
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
             input.click();
         });
 
-        // 添加鼠标悬停提示
+        // Add mouse hover tooltip
         avatarIcon.title = "Click to Edit Avatar";
     }
 });

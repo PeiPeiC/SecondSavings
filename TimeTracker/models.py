@@ -60,11 +60,11 @@ class Task(models.Model):
     badge = models.ImageField(upload_to='badge_images', blank=True)
     startTime = models.DateTimeField(null=True, blank=True)
     endTime = models.DateTimeField(null=True, blank=True)
-    isCompleted = models.BooleanField(default=False)        # 新增字段标记任务是否完成
-    isCountDown = models.BooleanField(default=False)        #新增字段判斷task是否為count down
-    chosenDate = models.DateField(null=True, blank=True)  # 新增字段存储用户选择的日期
-    totalTaskTime = models.TimeField(default="00:00:00")  # 新增总学习时间
-    totalBreakTime = models.TimeField(default="00:00:00")  # 新增总休息时间
+    isCompleted = models.BooleanField(default=False)  # New field to mark if the task is completed
+    isCountDown = models.BooleanField(default=False)  # New field to determine if the task is a countdown
+    chosenDate = models.DateField(null=True, blank=True)  # New field to store the user-selected date
+    totalTaskTime = models.TimeField(default="00:00:00")  # New field for total study time
+    totalBreakTime = models.TimeField(default="00:00:00")  # New field for total break time
     google_task_id = models.CharField(max_length=255, blank=True, null=True)
     google_tasklist_id = models.CharField(max_length=255, blank=True, null=True)
     
@@ -81,7 +81,7 @@ class Task(models.Model):
                                                   '%H:%M:%S') - datetime.strptime('00:00:00',
                                                                                   '%H:%M:%S')
 
-        # 计算总秒数
+        # Calculate total seconds
         total_task_seconds = task_timedelta_value.total_seconds()
         total_break_seconds = break_timedelta_value.total_seconds()
 
