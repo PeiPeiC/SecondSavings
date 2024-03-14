@@ -141,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
                       alert("Settings updated.");
                   }
               },
-              error: function(response){
-                  alert("Error updating settings.");
+              {% comment %} error: function(response){
+                  alert("Error updating settings."); {% endcomment %}
               }
           });
       });
