@@ -863,7 +863,7 @@ def update_sync_settings(request):
 
 def is_google_user(user):
     try:
-        _ = SocialAccount.objects.get(provider='google', user=user)
+        _ = SocialAccount.objects.get(provider__iexact='google', user=user)
         return True
     except SocialAccount.DoesNotExist:
         return False
