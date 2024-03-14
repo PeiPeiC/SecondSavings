@@ -1,16 +1,58 @@
 {% extends 'TimeTracker/base.html' %}
 {% load static %}
 {% block css %}
-    <link rel="stylesheet " href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/report.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
+
 {% block content %}
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">Week</button>
-        <button type="button" class="btn btn-primary">Month</button>
-        <button type="button" class="btn btn-primary">Year</button>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<body style="height: 100%; margin: 0">
+    <div style="position: relative; width: 100%; height: 100%;">
+        <div class="btn-container">
+        <div class="btn-group" >
+            <button type="button" class="btn btn-primary {% if request.path == '/secondSavings/report/week/' %}active{% endif %}" id="weekBtn" >
+                <a href="{% url 'TimeTracker:report' 'week' %}" style="color: #ffffff; text-decoration: none">
+                Week
+                </a >
+            </button>
+            <button type="button" class="btn btn-primary {% if request.path == '/secondSavings/report/month/' %}active{% endif %}" id="monthBtn" >
+                <a href="{% url 'TimeTracker:report' 'month' %}" style="color: #ffffff; text-decoration: none">Month</a>
+            </button>
+            <button type="button" class="btn btn-primary {% if request.path == '/secondSavings/report/year/' %}active{% endif %}" id="yearBtn" >
+                <a href="{% url 'TimeTracker:report' 'year' %}" style="color: #ffffff; text-decoration: none">Year</a>
+            </button>
+        </div>
+        </div>
+
+        <div id="charts-container" style="margin-top: 50px;">
+            <canvas id="time_bar" width="400" height="200"></canvas>
+            <hr>
+            <canvas id="category_bar" width="400" height="200"></canvas>
+            <hr>
+            <canvas id="completed_line" width="400" height="200"></canvas>
+            <!-- Hidden data divs -->
+            <div id="time_bar_data"
+                data-labels="{{ time_bar.labels|safe }}"
+                data-task-total-time="{{ time_bar.total_task_time|safe }}"
+                data-break-total-time="{{ time_bar.total_break_time|safe }}"
+                style="display: none;">
+            </div>
+            <div id="category_bar_data"
+                data-labels="{{ category_bar.labels|safe }}"
+                data-task-work="{{ category_bar.work_count|safe }}"
+                data-task-study="{{ category_bar.study_count|safe }}"
+                data-task-life="{{ category_bar.life_count|safe }}"
+                style="display: none;">
+            </div>
+            <div id="completed_line_data"
+                data-labels="{{ completed_line.labels|safe }}"
+                data-count="{{ completed_line.count|safe }}"
+                style="display: none;">
+        </div>
     </div>
-    <div id="main"></div>
 
+    </div>
 
+<script src="{% static 'js/chart.js' %}"></script>
 {% endblock %}

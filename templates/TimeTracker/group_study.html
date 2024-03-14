@@ -7,6 +7,7 @@
     <title>Group Study</title>
     <!-- Add your CSS for styling here -->
     <link rel="stylesheet" href="{% static 'css/GroupPageStyle.css' %}">
+    <link href="https://cdn.staticfile.org/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div id="group-study-container">
@@ -23,7 +24,12 @@
         <div class="members-list">
             {% for member in members %}
                 <div class="member">
-                    <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
+                    {% if  member.userprofile.avatar %}
+                        <img src="{{ member.userprofile.avatar.url }}" alt="{{ member.username }}">
+                    {% else %}
+                        <i class="bi bi-person-circle" style="font-size: 70px"></i>
+                    {% endif %}
+                  
 <!--                     <p>{{ member.userprofile.user.username }}</p> -->
                     <p>{{ member.userprofile.nickName }}</p>
                     <p>Study Time: {{ member.userprofile.study_time|time:"H:i:s" }}</p>

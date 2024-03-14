@@ -15,12 +15,15 @@ urlpatterns = [
 
     # setting
     path('setting/', views.setting, name='setting'),
-    path('setting/sync_google_task', views.setting_sync, name='setting_sync_google_task'),
-    path('setting/update_alarm', views.alarm_update, name='setting_update_alarm'),
+    path('setting/sync_google_task/', views.update_sync_settings, name='setting_sync_google_task'),
+    path('setting/update_alarm/', views.alarm_update, name='setting_update_alarm'),
 
-    path('report/', views.report, name='report'),
+    # report
+    path('report/<str:time_range>/', views.report, name='report'),
+
+    # coin
     path('Coin/', views.coin, name='coin'),
-    path('Badges/', views.badges, name='badges'),
+    path('coin/update/', views.coin_update, name='coin_update'),
 
     #privacy policy
     path("privacy_policy/", views.privacy_policy, name='privacy_policy'),

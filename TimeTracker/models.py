@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.utils import timezone
 
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
@@ -68,7 +70,22 @@ class Task(models.Model):
     
 
     def __str__(self):
-        return self.title
+        return f"{self.title}, date:{self.chosenDate}"
+
+    def total_seconds(self):
+        # 将 TimeField 转换为 timedelta
+        task_timedelta_value = datetime.strptime(str(self.totalTaskTime).split('.')[0], '%H:%M:%S') - datetime.strptime(
+            '00:00:00',
+            '%H:%M:%S')
+        break_timedelta_value = datetime.strptime(str(self.totalBreakTime).split('.')[0],
+                                                  '%H:%M:%S') - datetime.strptime('00:00:00',
+                                                                                  '%H:%M:%S')
+
+        # 计算总秒数
+        total_task_seconds = task_timedelta_value.total_seconds()
+        total_break_seconds = break_timedelta_value.total_seconds()
+
+        return total_task_seconds, total_break_seconds
 
 
 RECORD_TYPE_CHOICES = (('break', 'BREAK'), ('task', 'TASK'))
@@ -98,6 +115,7 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     alarm = models.CharField(choices=ALARM_CHOICES, default='default', max_length=ALARM_MAX_LENGTH)
     syncGoogleTask = models.BooleanField(default=False)
+    coin = models.IntegerField(default=1)
     # google task
     google_access_token = models.CharField(max_length=255, null=True, blank=True)
     google_refresh_token = models.CharField(max_length=255, null=True, blank=True)
@@ -116,3 +134,33 @@ class UserSetting(models.Model):
             if url == value:
                 return key
         return None
+
+
+class TaskTableItem:
+    def __init__(self, task, user_setting):
+        self.task = task
+        task_seconds, break_seconds = task.total_seconds()
+        self.task_hours = task_seconds / 3600
+        self.break_hours = break_seconds / 3600
+        self.amount = self.task_hours * user_setting.coin
+
+
+class TimeReportResp:
+    def __init__(self, labels, total_task_time, total_break_time):
+        self.labels = labels
+        self.total_task_time = total_task_time
+        self.total_break_time = total_break_time
+
+
+class TaskCategoryReportResp:
+    def __init__(self, labels, work_count, life_count, study_count):
+        self.labels = labels
+        self.work_count = work_count
+        self.life_count = life_count
+        self.study_count = study_count
+
+
+class TaskCompletedReportResp:
+    def __init__(self, labels, count):
+        self.labels = labels
+        self.count = count
