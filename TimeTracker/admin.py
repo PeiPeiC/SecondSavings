@@ -52,14 +52,14 @@ class CustomUserAdmin(UserAdmin):
 
 class RecordInline(admin.TabularInline):
     model = Record
-    extra = 0  # 设置为0意味着不会显示额外的空行
+    extra = 0  # Setting to 0 means no extra blank lines will be displayed
 
 class TaskAdmin(admin.ModelAdmin):
     inlines = [
         RecordInline,
     ]
     list_display = ('title', 'user', 'startTime', 'endTime')  # 在这里添加你想显示的字段
-    # 其他自定义设置...
+    # Other custom settings...
 
 
 

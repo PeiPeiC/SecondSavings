@@ -58,21 +58,20 @@ header button:hover {
     margin: 5px 0;
 }
 
-
 #top-users-modal {
     background: #fff;
-    position: absolute; /* 改为绝对定位 */
-    top: 60px; /* 根据按钮的高度调整 */
-    left: 20px; /* 根据页面布局调整 */
-    width: 10%; /* 宽度自动 */
-    height: auto; /* 高度自动 */
-    display: none; /* 默认不显示 */
+    position: absolute; /* Change to absolute positioning */
+    top: 60px; /* Adjust based on button height */
+    left: 20px; /* Adjust based on page layout */
+    width: 10%; /* Automatic width */
+    height: auto; /* Automatic height */
+    display: none; /* Initially hidden */
     flex-direction: column;
-    align-items: flex-start; /* 内容左对齐 */
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.5); /* 添加一些阴影效果 */
+    align-items: flex-start; /* Align content to the left */
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5); /* Add some shadow effect */
     padding: 10px;
-    border-radius: 5px; /* 圆角 */
-    z-index: 1000; /* 确保在最上层 */
+    border-radius: 5px; /* Rounded corners */
+    z-index: 1000; /* Ensure it stays on top */
 }
 
 #top-users-modal ul {
@@ -84,7 +83,7 @@ header button:hover {
     background: #eee;
     padding: 10px;
     margin-bottom: 5px;
-    border-radius: 3px; /* 为列表项添加圆角 */
+    border-radius: 3px; /* Add rounded corners to list items. */
 }
 
 #top-users-modal li:last-child {

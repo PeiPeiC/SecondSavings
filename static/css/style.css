@@ -12,7 +12,7 @@
 
 
 .nav-link.active{
-    background-color: #9D7553; /* 土黄色 */
+    background-color: #9D7553;
     color: #fff;
 }
 
@@ -40,31 +40,31 @@
     margin-bottom: .5rem;
 }
 
-/* CSS样式：使用户头像呈圆形 */
+/* Make user icons circular */
 .user-icon img {
     border-radius: 50%;
-    width: 100px; /* 根据需要调整 */
-    height: 100px; /* 根据需要调整 */
+    width: 100px;
+    height: 100px;
     object-fit: cover;
 }
 
 .sidebar .nav-link {
-    color: #495057; /* 设置为默认颜色 */
-    background-color: #e9ecef; /* 设置为默认背景颜色 */
+    color: #495057; /* Set to default color */
+    background-color: #e9ecef; /* Set to default background color */
 }
 
 .sidebar a[href="{% url 'TimeTracker:mian' %}"] .bi-house-door-fill {
-    color: #000; /* 设置为默认颜色 */
+    color: #000; /* Set to default color */
 }
 .nav-link.active{
-    background-color: #9D7553; /* 土黄色 */
+    background-color: #9D7553;
     color: #fff;
 }
 
 .sananniu {
     max-width: 100%;
     height: 50px;
-    padding-left: 1150px; /* 左边距为1150像素 */
+    padding-left: 1150px; /* Left margin set to 1150 pixels */
 }
 
 .weekbtn {
@@ -72,30 +72,30 @@
     height: 50px;
     border-radius: 5px;
     border: 0;
-    background-color: #9D7553; /* 背景色为土黄色 */
-    font-weight: 600; /* 字体加粗 */
-    font-size: 20px; /* 字体大小为20像素 */
-    transition: color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; /* 过渡效果 */
-    margin-right: 10px; /* 右外边距为10像素 */
-    margin-top: 20px; /* 上外边距为20像素 */
+    background-color: #9D7553; /* Background color set to tan */
+    font-weight: 600; /* Font weight set to bold */
+    font-size: 20px; /* Font size set to 20 pixels */
+    transition: color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; /* Transition effect */
+    margin-right: 10px; /* Right margin set to 10 pixels */
+    margin-top: 20px; /* Top margin set to 20 pixels */
 }
 
 .weekbtn:hover {
-    transform: scale(1.02); /* 缩放为原来的1.02倍 */
-    box-shadow: 0 1px 10px 0 #8a8a8a; /* 添加阴影 */
-    color: white; /* 文字颜色为白色 */
+    transform: scale(1.02); /* Scale to 1.02 times original size */
+    box-shadow: 0 1px 10px 0 #8a8a8a; /* Add shadow */
+    color: white; /* Text color set to white */
 }
 
 .nav-link.active{
-    background-color: #9D7553; /* 土黄色 */
+    background-color: #9D7553;
     color: #fff;
 }
 
 #charts-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* 使图表和按钮水平居中 */
-    width: 100%; /* 根据需要调整宽度 */
+    align-items: center; /* Center charts and buttons horizontally */
+    width: 100%; /* Adjust width as needed */
 }
 
 .btn-group {

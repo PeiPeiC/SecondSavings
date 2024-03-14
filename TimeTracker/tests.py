@@ -60,17 +60,17 @@ class ReportViewTestCase(TestCase):
             user=self.user,
             title='Task 1',
             category='Category 1',
-            chosenDate=datetime.now().date() - timedelta(days=3),  # 模拟三天前的日期
-            totalTaskTime='02:30:00',  # 模拟学习时间 2 小时 30 分钟
-            totalBreakTime='01:00:00'  # 模拟休息时间 1 小时
+            chosenDate=datetime.now().date() - timedelta(days=3),  # Simulate the date three days ago
+            totalTaskTime='02:30:00',  # Simulate study time of 2 hours and 30 minutes
+            totalBreakTime='01:00:00'  # Simulate break time of 1 hour
         )
         self.task2 = Task.objects.create(
             user=self.user,
             title='Task 2',
             category='Category 2',
-            chosenDate=datetime.now().date() - timedelta(days=2),  # 模拟两天前的日期
-            totalTaskTime='01:00:00',  # 模拟学习时间 1 小时
-            totalBreakTime='00:30:00'  # 模拟休息时间 30 分钟
+            chosenDate=datetime.now().date() - timedelta(days=2),  # Simulate the date two days ago
+            totalTaskTime='01:00:00',  # Simulate study time of 1 hour
+            totalBreakTime='00:30:00'  # Simulate break time of 30 minutes
         )
 
     def test_report(self):
