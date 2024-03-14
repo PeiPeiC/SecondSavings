@@ -2,50 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/account_style.css">
     <title>Reset Password</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 300px;
-            justify-content: center;
-            align-items: center;
-        }
-        h2, h5 {
-            text-align: center;
-        }
-        input[type=email], input[type=password] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        .submit-btn {
-            background: black;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 20px; /* Move the button down a bit */
-        }
-        .login-links {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        .login-links a {
-            color: #4285F4;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -59,7 +17,7 @@
                     {{ field.label_tag }}{{ field }}
                 </div>
             {% endfor %}
-            <button type="submit" class="submit-btn">Log out</button>
+            <button type="submit" class="logout-submit-btn">Log out</button>
     </form>
     <div class="login-links">
         <a href="#" onclick="history.back();">BACK</a>
