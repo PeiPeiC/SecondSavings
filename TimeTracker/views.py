@@ -852,10 +852,12 @@ def initiate_oauth2_process(request):
 @login_required
 @csrf_exempt
 def update_sync_settings(request):
+    user_setting = UserSetting.objects.get(user=request.user)
     if request.method == "POST":
-        syncGoogleTask = request.POST.get('syncGoogleTask') == 'true'
-        user_setting, _ = UserSetting.objects.get_or_create(user=request.user)
-        user_setting.syncGoogleTask = syncGoogleTask
+        data = json.loads(request.body)
+        sync = data.get('isSync', False)
+
+        user_setting.syncGoogleTask = sync
         user_setting.save()
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Invalid request'}, status=400)
