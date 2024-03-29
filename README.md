@@ -3,6 +3,8 @@
 ## About
 
 SecondSavings is a comprehensive Time Tracking Web App designed to help users effectively track, analyze, and optimize their time usage. Our platform focuses on enabling individuals to log and categorize their daily activities, encompassing work, study, personal routines (such as eating and exercise), and more. With SecondSavings, users gain deeper insights into how they spend their time, supported by advanced features like report generation and time-to-money calculations, highlighting the principle that "time is money" and enhancing awareness against time wastage.
+## Video Demo
+[![SecondSaving Youtube video](https://img.youtube.com/vi/9v88hEWe7WA/0.jpg)](https://www.youtube.com/watch?v=9v88hEWe7WA)
 
 ## Features
 
