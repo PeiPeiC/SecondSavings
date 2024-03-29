@@ -2,16 +2,19 @@
 
 ## About
 
-SecondSavings is a comprehensive Time Tracking Web App designed to help users effectively track, analyze, and optimize their time usage. Our platform focuses on enabling individuals to log and categorize their daily activities, encompassing work, study, personal routines (such as eating and exercise), and more. With SecondSavings, users gain deeper insights into how they spend their time, supported by advanced features like report generation and time-to-money calculations, highlighting the principle that "time is money" and enhancing awareness against time wastage.
-## Video Demo
+SecondSavings is a comprehensive Time Tracking Web App designed to empower users in efficiently managing, analyzing, and optimizing their time utilization. Our platform facilitates the meticulous logging and categorizing daily activities, spanning work commitments, personal routines, study sessions, and more. With SecondSavings, users gain invaluable insights into their time allocation, supported by advanced functionalities such as report generation and time-to-money calculations, reinforcing the adage that "time is money" and fostering heightened awareness against time squandering. Additionally, our innovative study group feature fosters a sense of community, enabling users to collaborate and motivate each other toward achieving their goals.
+
+## Youtube Video Demo
 [![SecondSaving Youtube video](https://img.youtube.com/vi/9v88hEWe7WA/0.jpg)](https://www.youtube.com/watch?v=9v88hEWe7WA)
 
 ## Features
 
-- **Activity Logging**: Users can log various daily activities, categorizing them into work, study, personal routines, etc.
-- **Categorization**: Activities can be categorized for better analysis and understanding of time distribution.
-- **Report Generation**: Generate detailed reports on time usage to help users make informed decisions about time management.
-- **Time-to-Money Calculations**: Understand the monetary value of your time to emphasize the cost of time wastage.
+- **Activity Logging**: Seamlessly categorize daily activities into work, life, and study segments.
+- **Categorization**: Utilize customizable categories for a comprehensive understanding of time distribution.
+- **Report Generation**: Generate detailed reports on time usage to facilitate informed decision-making in time management.
+- **Time-to-Money Calculations**: Ascertain the monetary value of time, underscoring the significance of efficient time utilization.
+- **Google Task Integration**: Connect tasks to Google Task lists within the app's categories, streamlining task management for users who log in with their Google account.
+- **Group Study**: Foster collaboration and motivation by creating or joining study groups, facilitating shared progress tracking within the community.
 
 ## Development Setup
 
